@@ -42,7 +42,7 @@ The JAR-File of this tool can be executed from the command line (use: *java -jar
 First, a general command has to be given. This can be either *check*, to see if processing a file is needed or *process* to resort a file.
 
 ### Usage of the *process*-Command
-Syntax:	process <Input file> <Output file> [<Flags>]
+Syntax:	`process <Input file> <Output file> [<Flags>]`
 
 __Input file:__ The path to the MDF3 / MDF4 file to be processed.  
 __Output file:__ A valid file name, where the output should be written. If this file already exists, it is overwritten without prior warning.  
@@ -56,7 +56,7 @@ __Flags:__ The flags for this program call. The order of flags is not important.
 Example: *process C:\\file1.mf4 C:\\file2.mf4 -unzip -maxblocksize=800k*
 
 #### Usage of the *check*-Command
-Syntax: check <Input file> <MaxBlockSize> [<ZipFlag>]
+Syntax: `check <Input file> <MaxBlockSize> [<ZipFlag>]`
 
 __Input file:__ The path to the MDF3 / MDF4 file to be checked.  
 __MaxBlockSize:__ The maximum size of data blocks in the output (in bytes). Default value is 2GB. The value can be passed using the decimal prefixes, e.g. *1k*, *32m*, *2g*. Decimal values are not allowed.  
@@ -65,7 +65,7 @@ __ZipFlag:__ *-zip* or *-unzip*. If the *-zip*-flag is set the file is also chec
 Example: *check C:\\file1.mf4 800k -zip*
 
 ### Java API
-The MDFSorter \versionnum also provides a Java-Interface, for usage in other programs. It consists of two methods from the *MDFSorter*-Class:
+The MDFSorter also provides a Java-Interface, for usage in other programs. It consists of two methods from the *MDFSorter*-Class:
 
  - __*sortMDF()*__: Processes an MDF-File and sorts it if needed.
  - __*checkForProblems()*__: Check if processing a file is needed. Returns *true* only if this is the case.
