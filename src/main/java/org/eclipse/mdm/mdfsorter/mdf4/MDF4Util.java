@@ -261,17 +261,7 @@ public abstract class MDF4Util {
 			throws IOException {
 		byte[] b = new byte[length];
 		bb.get(b);
-
-		// lookup null character for string termination
-		int strLength = 0;
-		for (byte element : b) {
-			if (element == 0) {
-				break;
-			}
-			strLength++;
-		}
-
-		return new String(b, 0, strLength, CHARSET_ISO8859);
+		return new String(b, 0, length, CHARSET_ISO8859);
 	}
 
 	/**
@@ -289,17 +279,7 @@ public abstract class MDF4Util {
 			throws IOException {
 		byte[] b = new byte[length];
 		bb.get(b);
-
-		// lookup null character for string termination
-		int strLength = 0;
-		for (byte element : b) {
-			if (element == 0) {
-				break;
-			}
-			strLength++;
-		}
-
-		return new String(b, 0, strLength, CHARSET_UTF8);
+		return new String(b, 0, length, CHARSET_UTF8);
 	}
 
 	public static byte[] getBytesCharsUTF8(String s) throws IOException {

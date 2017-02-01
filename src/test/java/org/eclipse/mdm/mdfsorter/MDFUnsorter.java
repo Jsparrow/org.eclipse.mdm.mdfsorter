@@ -61,6 +61,7 @@ abstract public class MDFUnsorter {
 	 *            if all data should be Zipped (Stored in DZBlocks) in the
 	 *            output file.
 	 */
+	@SuppressWarnings("unchecked")
 	public static void unsortMDF(String inputfile, String outputfile,
 			long maxblocksize, boolean unzip) {
 		ArgumentStruct struct = new ArgumentStruct();
@@ -77,7 +78,7 @@ abstract public class MDFUnsorter {
 			MDFFileContent<? extends MDFGenBlock> con = MDFParser
 					.serializeFile(bufstream.getChannel());
 
-			MDFAbstractProcessWriter processorwriter;
+			MDFAbstractProcessWriter<?> processorwriter;
 
 			if (con.isMDF3()) {
 				processorwriter = new MDF3UnsortProcessor(

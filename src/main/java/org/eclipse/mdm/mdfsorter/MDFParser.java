@@ -83,7 +83,7 @@ public abstract class MDFParser {
 	 * @throws IOException
 	 *             If an input error occurs.
 	 */
-	public static byte[] readBytes(int bytes, FileChannel in)
+	private static byte[] readBytes(int bytes, FileChannel in)
 			throws IOException {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;

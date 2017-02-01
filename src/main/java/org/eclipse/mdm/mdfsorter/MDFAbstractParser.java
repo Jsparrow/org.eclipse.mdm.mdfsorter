@@ -39,7 +39,7 @@ public abstract class MDFAbstractParser<MDFXBlock extends MDFGenBlock> {
 	protected long lasthandled = 0;
 
 	// Debug purposes
-	protected int fileruns = 0, foundblocks = 0;;
+	protected int fileruns = 0, foundblocks = 0;
 
 	/**
 	 * This map contains all MDFGenBlocks that have not been parsed, but their

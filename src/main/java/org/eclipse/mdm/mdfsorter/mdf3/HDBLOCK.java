@@ -85,13 +85,6 @@ public class HDBLOCK extends MDF3GenBlock {
 		parent.setPrec(this);
 	}
 
-	public HDBLOCK(boolean bigendian) {
-		super(bigendian);
-		setId("HD");
-		setLength(26);
-		setLinkCount(4);
-	}
-
 	public MDF3GenBlock getLnkFirstFileGroup() {
 		return links[0];
 	}
@@ -290,16 +283,6 @@ public class HDBLOCK extends MDF3GenBlock {
 		}
 
 		return b.array();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return super.equals(o);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 
 }

@@ -59,14 +59,6 @@ public class CGBLOCK extends MDF3GenBlock {
 		parent.setPrec(this);
 	}
 
-	public CGBLOCK(boolean bigendian) {
-		super(bigendian);
-		// always the same for a CGBlock
-		setLength(30);
-		setLinkCount(4);
-		setId("CG");
-	}
-
 	public MDF3GenBlock getLnkCgNext() {
 		return links[0];
 	}
@@ -199,16 +191,6 @@ public class CGBLOCK extends MDF3GenBlock {
 		}
 		// LINK
 		return ret;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return super.equals(o);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 
 	@Override

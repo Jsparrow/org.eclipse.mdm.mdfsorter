@@ -84,11 +84,6 @@ public class CCBLOCK extends MDF3GenBlock {
 		parent.setPrec(this);
 	}
 
-	public CCBLOCK(boolean bigendian) {
-		super(bigendian);
-		setId("CC");
-	}
-
 	public boolean isKnownPhysValue() {
 		return knownPhysValue;
 	}

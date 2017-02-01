@@ -10,15 +10,11 @@ package org.eclipse.mdm.mdfsorter.mdf3;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.SeekableByteChannel;
 
 import org.eclipse.mdm.mdfsorter.ArgumentStruct;
 import org.eclipse.mdm.mdfsorter.MDFCompatibilityProblem;
 import org.eclipse.mdm.mdfsorter.MDFGenBlock;
 import org.eclipse.mdm.mdfsorter.MDFProblemType;
-import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
 
 public class MDF3GenBlock extends MDFGenBlock
 implements Comparable<MDF3GenBlock> {
@@ -51,7 +47,7 @@ implements Comparable<MDF3GenBlock> {
 	/**
 	 * True, if this block is part of an bigendian file. False if not.
 	 */
-	protected boolean bigendian = false;;
+	protected boolean bigendian = false;
 
 	public MDF3GenBlock(long pos, boolean bigendian) {
 
@@ -258,28 +254,6 @@ implements Comparable<MDF3GenBlock> {
 	}
 
 	/**
-	 * Returns the block type string at given position.
-	 *
-	 * @param channel
-	 *            The channel to read from.
-	 * @param pos
-	 *            The position within the channel.
-	 * @return The block type as string.
-	 * @throws IOException
-	 *             Error reading block type.
-	 */
-	protected static String getBlockType(SeekableByteChannel channel, long pos)
-			throws IOException {
-		// read block header
-		ByteBuffer bb = ByteBuffer.allocate(4);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		channel.position(pos);
-		channel.read(bb);
-		bb.rewind();
-		return MDF4Util.readCharsISO8859(bb, 4);
-	}
-
-	/**
 	 * Parses the body section of a block. For a subclass of MDFGenBlock, this
 	 * method should fill all other fields with the correct values. DataBlock's
 	 * content should normally not be included in content, because the amount of
@@ -331,11 +305,6 @@ implements Comparable<MDF3GenBlock> {
 		System.arraycopy(length, 0, ret, 2, 2);
 
 		return ret;
-	}
-
-	public byte[] getBytes() {
-		throw new RuntimeException(
-				"getBytes cannot be invoked on a general Block.");
 	}
 
 	/**

@@ -178,16 +178,6 @@ public class DLBLOCK extends MDF4GenBlock {
 		return ret;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		return super.equals(o);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
 	/**
 	 * Checks if this list can be improved by merging blocks.
 	 *

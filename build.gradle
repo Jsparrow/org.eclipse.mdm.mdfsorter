@@ -8,11 +8,10 @@
 
 description = 'MDF Sorter'
 group = 'org.eclipse.mdm'
-version = '1.0.1'
+version = '1.0.2'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 
 repositories {
     mavenCentral()
@@ -21,4 +20,9 @@ repositories {
 dependencies {
     // testing
     testCompile 'junit:junit:4.12'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
 }

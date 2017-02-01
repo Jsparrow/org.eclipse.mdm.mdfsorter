@@ -85,13 +85,6 @@ public class CNBLOCK extends MDF3GenBlock {
 		parent.setPrec(this);
 	}
 
-	public CNBLOCK(boolean bigendian) {
-		super(bigendian);
-		setId("##DG");
-		setLength(26);
-		setLinkCount(4);
-	}
-
 	public MDF3GenBlock getLnkNextCnBlock() {
 		return links[0];
 	}
@@ -367,15 +360,5 @@ public class CNBLOCK extends MDF3GenBlock {
 
 		return b.array();
 
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return super.equals(o);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 }

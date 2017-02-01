@@ -22,13 +22,6 @@ import java.io.IOException;
 public class DTBLOCK extends MDF4GenBlock {
 
 	/**
-	 * Constructor.
-	 */
-	public DTBLOCK() {
-		super(0);
-	}
-
-	/**
 	 * Parse a HLBLOCK from an existing MDFGenBlock
 	 *
 	 * @param parent

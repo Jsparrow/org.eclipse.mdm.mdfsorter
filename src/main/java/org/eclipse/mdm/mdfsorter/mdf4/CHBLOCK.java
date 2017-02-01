@@ -117,7 +117,4 @@ public class CHBLOCK extends MDF4GenBlock {
 		setHirarchyType(MDF4Util.readUInt8(bb));
 	}
 
-
-
-
 }

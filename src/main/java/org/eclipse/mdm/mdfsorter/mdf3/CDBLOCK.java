@@ -22,17 +22,17 @@ public class CDBLOCK extends MDF3GenBlock{
 	/**
 	 * Dependency Type
 	 */
-	int dependancyType;
+	private int dependancyType;
 
 	/**
 	 * UINT16: The number of dependencies.
 	 */
-	int noDependencies;
+	private int noDependencies;
 
 	/**
 	 * INT16[]: Size of each dimension, only valid for N-dimensional dependency.
 	 */
-	int dimensionsSize[];
+	private int dimensionsSize[];
 
 	/**
 	 * Parse a CDBLOCK from an existing MDF3GenBlock

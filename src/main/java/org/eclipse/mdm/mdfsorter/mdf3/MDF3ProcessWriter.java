@@ -55,7 +55,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		writtenblocks = new LinkedList<MDF3GenBlock>();
 	}
 
-	public int numberOfDatagroups = 0;
+	private int numberOfDatagroups = 0;
 
 	/**
 	 * Main Function of this class.

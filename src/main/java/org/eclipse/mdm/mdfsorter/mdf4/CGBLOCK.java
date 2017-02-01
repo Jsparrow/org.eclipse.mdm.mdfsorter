@@ -90,14 +90,6 @@ public class CGBLOCK extends MDF4GenBlock {
 		parent.setPrec(this);
 	}
 
-	public CGBLOCK() {
-		super();
-		// always the same for a CGBlock
-		setLength(104L);
-		setLinkCount(6);
-		setId("##CG");
-	}
-
 	public MDF4GenBlock getLnkCgNext() {
 		return links[0];
 	}
@@ -278,16 +270,6 @@ public class CGBLOCK extends MDF4GenBlock {
 		System.arraycopy(invalbytes, 0, ret, 28, 4);
 
 		return ret;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		return super.equals(o);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 
 }

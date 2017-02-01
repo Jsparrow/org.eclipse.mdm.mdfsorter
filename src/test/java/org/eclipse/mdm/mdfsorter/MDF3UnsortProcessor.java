@@ -144,7 +144,6 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 			MDFCompatibilityProblem prob = l.get(0);
 			MDFProblemType probtype = prob.getType();
 			MDF3GenBlock node = (MDF3GenBlock) prob.getStartnode();
-			MDF3GenBlock parentnode = (MDF3GenBlock) prob.getParentnode();
 			if (probtype == MDFProblemType.UNSORTED_DATA_PROBLEM) {
 				// Refactor Channel Group!
 				// We have more than one channel group in a single

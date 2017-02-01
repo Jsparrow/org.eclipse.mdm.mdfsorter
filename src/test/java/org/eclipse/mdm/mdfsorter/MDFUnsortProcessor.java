@@ -160,7 +160,6 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 			MDFCompatibilityProblem prob = l.get(0);
 			MDFProblemType probtype = prob.getType();
 			MDF4GenBlock node = (MDF4GenBlock) prob.getStartnode();
-			MDF4GenBlock parentnode = (MDF4GenBlock) prob.getParentnode();
 			if (probtype == MDFProblemType.UNSORTED_DATA_PROBLEM) {
 				// Refactor Channel Group!
 				// We have more than one channel group in a single

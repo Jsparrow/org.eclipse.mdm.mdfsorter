@@ -9,9 +9,6 @@
 package org.eclipse.mdm.mdfsorter.mdf4;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.SeekableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -231,28 +228,6 @@ implements Comparable<MDF4GenBlock> {
 		} else {
 			return -1;
 		}
-	}
-
-	/**
-	 * Returns the block type string at given position.
-	 *
-	 * @param channel
-	 *            The channel to read from.
-	 * @param pos
-	 *            The position within the channel.
-	 * @return The block type as string.
-	 * @throws IOException
-	 *             Error reading block type.
-	 */
-	protected static String getBlockType(SeekableByteChannel channel, long pos)
-			throws IOException {
-		// read block header
-		ByteBuffer bb = ByteBuffer.allocate(4);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		channel.position(pos);
-		channel.read(bb);
-		bb.rewind();
-		return MDF4Util.readCharsISO8859(bb, 4);
 	}
 
 	/**
