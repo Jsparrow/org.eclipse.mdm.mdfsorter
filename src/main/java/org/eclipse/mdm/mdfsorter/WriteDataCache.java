@@ -22,8 +22,7 @@ import org.eclipse.mdm.mdfsorter.mdf4.MDF4ProcessWriter;
  * will be splitted into smaller pieces, slowing down the write operation.
  */
 public class WriteDataCache {
-	private static final int WRITE_CACHE_SIZE = MDF4ProcessWriter.MAX_OUTPUTBLOCKSIZE
-			/ 2;
+	private static final int WRITE_CACHE_SIZE = MDF4ProcessWriter.MAX_OUTPUTBLOCKSIZE / 2;
 
 	/**
 	 * The buffer the data is send to, once the cache is full
@@ -68,8 +67,7 @@ public class WriteDataCache {
 				}
 				int spaceremaining = WRITE_CACHE_SIZE - cachewriteposition;
 
-				int bytesfirstsection = spaceremaining < length ? spaceremaining
-						: length;
+				int bytesfirstsection = spaceremaining < length ? spaceremaining : length;
 				// maybe data needs to be split up
 				data.get(cache, cachewriteposition, bytesfirstsection);
 				cachewriteposition += bytesfirstsection;
@@ -107,12 +105,10 @@ public class WriteDataCache {
 			}
 			int spaceremaining = WRITE_CACHE_SIZE - cachewriteposition;
 
-			int bytesfirstsection = spaceremaining < length ? spaceremaining
-					: length;
+			int bytesfirstsection = spaceremaining < length ? spaceremaining : length;
 			// maybe data needs to be split up
 
-			System.arraycopy(data, 0, cache, cachewriteposition,
-					bytesfirstsection);
+			System.arraycopy(data, 0, cache, cachewriteposition, bytesfirstsection);
 			cachewriteposition += bytesfirstsection;
 
 			CheckAndWriteout();
@@ -120,8 +116,7 @@ public class WriteDataCache {
 			// write second part if needed
 			if (bytesfirstsection < length) {
 				int bytessecond = length - bytesfirstsection;
-				System.arraycopy(data, bytesfirstsection, cache,
-						cachewriteposition, bytessecond);
+				System.arraycopy(data, bytesfirstsection, cache, cachewriteposition, bytessecond);
 				cachewriteposition += bytessecond;
 			}
 		}
@@ -133,8 +128,7 @@ public class WriteDataCache {
 	public void flush() {
 		// Cache has been flushed?
 		if (cache != null) {
-			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(cache,
-					cachewriteposition));
+			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(cache, cachewriteposition));
 			cachewriteposition = 0;
 			cache = null;
 		}
@@ -143,8 +137,7 @@ public class WriteDataCache {
 	public void CheckAndWriteout() {
 		if (cachewriteposition == WRITE_CACHE_SIZE) {
 			// write all data out.
-			buf.putData(
-					new AbstractMap.SimpleEntry<byte[], Integer>(cache, -1));
+			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(cache, -1));
 			cache = new byte[WRITE_CACHE_SIZE];
 			cachewriteposition = 0;
 		}

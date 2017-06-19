@@ -48,8 +48,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 	 */
 	protected WriteDataCache myCache;
 
-	public abstract void processAndWriteOut()
-			throws IOException, DataFormatException;
+	public abstract void processAndWriteOut() throws IOException, DataFormatException;
 
 	public abstract void writeSpacer(long length);
 
@@ -88,10 +87,8 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 		boolean ret = false;
 		for (MDFXGenBlock blk : filestructure.getList()) {
 			for (int i = 0; i < blk.getLinkCount(); i++) {
-				if (blk.getLink(i) != null
-						&& blk.getLink(i).getProblems() != null) {
-					for (MDFCompatibilityProblem p : blk.getLink(i)
-							.getProblems()) {
+				if (blk.getLink(i) != null && blk.getLink(i).getProblems() != null) {
+					for (MDFCompatibilityProblem p : blk.getLink(i).getProblems()) {
 						p.setParentnode(blk);
 					}
 					ret = true;
@@ -111,8 +108,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 	 * @throws IOException
 	 *             If an I/O error occurs.
 	 */
-	public void copyBlock(MDFXGenBlock blk, FileChannel reader)
-			throws IOException {
+	public void copyBlock(MDFXGenBlock blk, FileChannel reader) throws IOException {
 		reader.position(blk.getPos());
 		blk.setOutputpos(writeptr);
 
@@ -124,8 +120,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 		do {
 			int bytesread;
 			if (written + MAX_OUTPUTBLOCKSIZE > length) {
-				ByteBuffer custombuffer = ByteBuffer
-						.allocate((int) (length - written));
+				ByteBuffer custombuffer = ByteBuffer.allocate((int) (length - written));
 				bytesread = reader.read(custombuffer);
 				performPut(custombuffer, bytesread, false);
 			} else {
@@ -136,8 +131,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: "
-					+ length + "/" + written);
+			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
 		}
 		// insert space if length%8!=0
 		if (length % 8 != 0) {
@@ -159,8 +153,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 	 * @throws IOException
 	 *             If an Output error occurs.
 	 */
-	public void writeBlock(MDFXGenBlock blk, byte[] appendData)
-			throws IOException {
+	public void writeBlock(MDFXGenBlock blk, byte[] appendData) throws IOException {
 		blk.setOutputpos(writeptr);
 
 		performPut(blk.getHeaderBytes());

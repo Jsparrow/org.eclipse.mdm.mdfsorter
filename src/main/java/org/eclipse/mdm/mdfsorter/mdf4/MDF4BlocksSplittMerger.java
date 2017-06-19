@@ -145,10 +145,12 @@ public class MDF4BlocksSplittMerger {
 	 * @param oldsection
 	 *            The data section that is split up. This is used to create a
 	 *            provider and set section length.
-	 * @param maxblocksize The maximum size of a block in the output. Should be a multiple of the size of one record.
+	 * @param maxblocksize
+	 *            The maximum size of a block in the output. Should be a
+	 *            multiple of the size of one record.
 	 */
-	public MDF4BlocksSplittMerger(MDF4ProcessWriter ps, String blocktype,
-			MDF4GenBlock parentnode, MDF4GenBlock oldsection, long maxblocksize) {
+	public MDF4BlocksSplittMerger(MDF4ProcessWriter ps, String blocktype, MDF4GenBlock parentnode,
+			MDF4GenBlock oldsection, long maxblocksize) {
 		this.ps = ps;
 		this.blocktype = blocktype;
 		unzip = ps.getArgs().unzip;
@@ -180,8 +182,7 @@ public class MDF4BlocksSplittMerger {
 	 * @param prov
 	 *            The DataProvider to read from.
 	 */
-	public MDF4BlocksSplittMerger(MDF4ProcessWriter ps, String blocktype,
-			MDF4GenBlock parentnode, long totdatalength,
+	public MDF4BlocksSplittMerger(MDF4ProcessWriter ps, String blocktype, MDF4GenBlock parentnode, long totdatalength,
 			MDF4DataProvider prov, long maxblocksize) {
 		this.ps = ps;
 		this.blocktype = blocktype;
@@ -217,8 +218,7 @@ public class MDF4BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is given an an invalid format.
 	 */
-	public void splitmerge(MDF4GenBlock datablock)
-			throws IOException, DataFormatException {
+	public void splitmerge(MDF4GenBlock datablock) throws IOException, DataFormatException {
 		prov = new MDF4DataProvider(datablock, reader);
 		BlockReadPtr = 0;
 		long leftbytes;
@@ -244,8 +244,7 @@ public class MDF4BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void splitmerge(long startaddress, long length)
-			throws IOException, DataFormatException {
+	public void splitmerge(long startaddress, long length) throws IOException, DataFormatException {
 		// we are doing a non-blockwise read
 		towrite = null;
 		GlobalReadPtr = startaddress;
@@ -263,14 +262,12 @@ public class MDF4BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void appendDataFromPos(long leftbytes)
-			throws IOException, DataFormatException {
+	public void appendDataFromPos(long leftbytes) throws IOException, DataFormatException {
 		// check if space in curr-Block is available, and fill with first data,
 		// or attach all data if it fits
 		if (curr != null) {
 			if (datawritten < thisblockend) { // Space available
-				long bytestowrite = leftbytes < thisblockend - datawritten
-						? leftbytes : thisblockend - datawritten;
+				long bytestowrite = leftbytes < thisblockend - datawritten ? leftbytes : thisblockend - datawritten;
 				abstractcopy(bytestowrite);
 				datawritten += bytestowrite;
 
@@ -287,9 +284,8 @@ public class MDF4BlocksSplittMerger {
 			// we need at least
 			// one new block
 			// last block: adapt length, else use maxlength
-			long newblocklength = totdatalength < (blockcounter + 1)
-					* maxblocksize ? totdatalength - blockcounter * maxblocksize
-							: maxblocksize;
+			long newblocklength = totdatalength < (blockcounter + 1) * maxblocksize
+					? totdatalength - blockcounter * maxblocksize : maxblocksize;
 			curr = abstractcreate(newblocklength, blocktype); // This method
 			// creates a
 			// zipblock if
@@ -300,8 +296,7 @@ public class MDF4BlocksSplittMerger {
 
 			thisblockend += newblocklength;
 
-			long bytestowrite = leftbytes < newblocklength ? leftbytes
-					: newblocklength;
+			long bytestowrite = leftbytes < newblocklength ? leftbytes : newblocklength;
 			abstractcopy(bytestowrite);
 
 			datawritten += bytestowrite;
@@ -337,8 +332,7 @@ public class MDF4BlocksSplittMerger {
 
 				ps.performPut(dzblk.getHeaderBytes());
 				ps.performPut(dzblk.getBodyBytes());
-				ps.performPut(ByteBuffer.wrap(output), compressedDataLength,
-						false);
+				ps.performPut(ByteBuffer.wrap(output), compressedDataLength, false);
 				ps.writeSpacer(compressedDataLength);
 			} else {
 				ps.writeSpacer(curr.getLength());
@@ -359,8 +353,7 @@ public class MDF4BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public ByteBuffer abstractread(int length)
-			throws IOException, DataFormatException {
+	public ByteBuffer abstractread(int length) throws IOException, DataFormatException {
 		if (towrite != null) {
 			// blockwise
 
@@ -386,8 +379,7 @@ public class MDF4BlocksSplittMerger {
 	 */
 	public void abstractput(byte[] datasection) {
 		if (curr.getId().equals("##DZ")) {
-			System.arraycopy(datasection, 0, uncompressedoutData,
-					uncompressedWritePtr, datasection.length);
+			System.arraycopy(datasection, 0, uncompressedoutData, uncompressedWritePtr, datasection.length);
 			uncompressedWritePtr += datasection.length;
 		} else {
 			ps.performPut(datasection);
@@ -424,16 +416,13 @@ public class MDF4BlocksSplittMerger {
 	 *             If an I/O error occurs.
 	 * @see checkfinalized
 	 */
-	public MDF4GenBlock abstractcreate(long newblocklength, String blocktype)
-			throws IOException {
+	public MDF4GenBlock abstractcreate(long newblocklength, String blocktype) throws IOException {
 		uncompressedWritePtr = 0;
 		MDF4GenBlock ret;
 		if (estimatedblockcounter != 1 && blockcounter % MAX_LIST_COUNT == 0) {
 			// new list block needs to be created.
-			int childblocks = (int) (estimatedblockcounter
-					- blockcounter < MAX_LIST_COUNT
-					? estimatedblockcounter - blockcounter
-							: MAX_LIST_COUNT);
+			int childblocks = (int) (estimatedblockcounter - blockcounter < MAX_LIST_COUNT
+					? estimatedblockcounter - blockcounter : MAX_LIST_COUNT);
 			DLBLOCK newparentlist = createDList(childblocks);
 			if (parentlist == null) {
 				if (structuralroot == null) {
@@ -474,7 +463,9 @@ public class MDF4BlocksSplittMerger {
 
 	/**
 	 * Creates a HLBLOCK if needed.
-	 * @throws IOException If an I/O-Error occurs.
+	 * 
+	 * @throws IOException
+	 *             If an I/O-Error occurs.
 	 */
 	public void createStructure() throws IOException {
 		// Do we need a list block?
@@ -495,7 +486,7 @@ public class MDF4BlocksSplittMerger {
 			if (totdatalength % maxblocksize == 0) {
 				estimatedblockcounter = (int) (totdatalength / maxblocksize);
 			} else {
-				estimatedblockcounter = (int) (totdatalength / maxblocksize)+ 1;
+				estimatedblockcounter = (int) (totdatalength / maxblocksize) + 1;
 			}
 
 			// if we created a HLblock the root the subtree will be this one
@@ -519,8 +510,7 @@ public class MDF4BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void abstractcopy(long length)
-			throws IOException, DataFormatException {
+	public void abstractcopy(long length) throws IOException, DataFormatException {
 		long written = 0L;
 		do {
 			int bytesread = 0;
@@ -529,16 +519,14 @@ public class MDF4BlocksSplittMerger {
 				ByteBuffer custombuffer = abstractread(bytesread);
 				abstractput(custombuffer, bytesread);
 			} else {
-				ByteBuffer buffer = abstractread(
-						MDF4ProcessWriter.MAX_OUTPUTBLOCKSIZE);
+				ByteBuffer buffer = abstractread(MDF4ProcessWriter.MAX_OUTPUTBLOCKSIZE);
 				bytesread = MDF4ProcessWriter.MAX_OUTPUTBLOCKSIZE;
 				abstractput(buffer, bytesread);
 			}
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: "
-					+ length + "/" + written);
+			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
 		}
 	}
 

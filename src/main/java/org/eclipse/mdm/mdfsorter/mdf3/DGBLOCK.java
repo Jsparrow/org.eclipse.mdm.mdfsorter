@@ -92,19 +92,16 @@ public class DGBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "DGBLOCK [numberOfRecId=" + numberOfRecId + ", channelGroups="
-				+ channelGroups + "]";
+		return "DGBLOCK [numberOfRecId=" + numberOfRecId + ", channelGroups=" + channelGroups + "]";
 	}
 
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// UNINT16 Number of Channel Groups
-		setChannelGroups(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
+		setChannelGroups(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// UINT16 RecordIDLayout
-		setNumOfRecId(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 2, 4), isBigEndian()));
+		setNumOfRecId(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 2, 4), isBigEndian()));
 
 	}
 

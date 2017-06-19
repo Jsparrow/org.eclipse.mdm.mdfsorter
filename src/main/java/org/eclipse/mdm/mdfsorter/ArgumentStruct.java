@@ -37,11 +37,9 @@ public class ArgumentStruct {
 	 * @throws IllegalArgumentException
 	 *             If the arguments are not valid.
 	 */
-	public static ArgumentStruct parseArgs(String[] argv)
-			throws IllegalArgumentException {
+	public static ArgumentStruct parseArgs(String[] argv) throws IllegalArgumentException {
 		if (argv.length < 3) {
-			throw new IllegalArgumentException(
-					"At least two arguments must be provided.");
+			throw new IllegalArgumentException("At least two arguments must be provided.");
 		} else {
 			ArgumentStruct args = new ArgumentStruct();
 			args.inputname = argv[1];
@@ -51,8 +49,7 @@ public class ArgumentStruct {
 				switch (splitted[0]) {
 				case "-unzip":
 					if (args.zipflagset) {
-						throw new MDFSorterArgException(
-								"Ambigous zip flags.");
+						throw new MDFSorterArgException("Ambigous zip flags.");
 					}
 					args.unzip = true;
 					args.zipflagset = true;
@@ -65,8 +62,7 @@ public class ArgumentStruct {
 					break;
 				case "-zip":
 					if (args.zipflagset) {
-						throw new MDFSorterArgException(
-								"Ambigous zip flags.");
+						throw new MDFSorterArgException("Ambigous zip flags.");
 					}
 					args.unzip = false;
 					args.zipflagset = true;
@@ -75,15 +71,13 @@ public class ArgumentStruct {
 					}
 				case "-maxblocksize":
 					if (splitted.length < 2) {
-						throw new MDFSorterArgException(
-								"Argument must be provided after \"-maxblocksize=\" flag.");
+						throw new MDFSorterArgException("Argument must be provided after \"-maxblocksize=\" flag.");
 					} else {
 						args.maxblocksize = parseLong(splitted[1]);
 					}
 					break;
 				default:
-					throw new MDFSorterArgException(
-							"Unknown Argument " + splitted[0]);
+					throw new MDFSorterArgException("Unknown Argument " + splitted[0]);
 				}
 			}
 
@@ -97,12 +91,10 @@ public class ArgumentStruct {
 		}
 	}
 
-	public static ArgumentStruct parseArgsCheck(String[] argv)
-			throws IllegalArgumentException {
+	public static ArgumentStruct parseArgsCheck(String[] argv) throws IllegalArgumentException {
 		ArgumentStruct args = new ArgumentStruct();
 		if (argv.length < 1) {
-			throw new MDFSorterArgException(
-					"At least one arguments must be provided.");
+			throw new MDFSorterArgException("At least one arguments must be provided.");
 		}
 		args.inputname = argv[1];
 
@@ -137,8 +129,7 @@ public class ArgumentStruct {
 		// Numerical value only
 		if (c > 47 && c < 58) {
 			return Long.parseLong(arg);
-		} else if (c == 'M' || c == 'm' || c == 'K' || c == 'k' || c == 'G'
-				|| c == 'g') {
+		} else if (c == 'M' || c == 'm' || c == 'K' || c == 'k' || c == 'G' || c == 'g') {
 			String numval = arg.substring(0, arg.length() - 1);
 			long l = Long.parseLong(numval);
 			switch (c) {

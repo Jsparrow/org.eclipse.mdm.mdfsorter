@@ -15,8 +15,9 @@ import java.nio.ByteBuffer;
  * <p>
  * THE SOURCE INFORMATION BLOCK <code>SIBLOCK</code>
  * </p>
- * The SIBLOCK describes the source of an acquisition mode or of a signal. The source information is also used to ensure
- * a unique identification of a channel.
+ * The SIBLOCK describes the source of an acquisition mode or of a signal. The
+ * source information is also used to ensure a unique identification of a
+ * channel.
  *
  * @author Christian Rechner
  */
@@ -29,13 +30,15 @@ public class SIBLOCK extends MDF4GenBlock {
 	// 1 = ECU source is an ECU
 	// 2 = BUS source is a bus (e.g. for bus monitoring)
 	// 3 = I/O source is an I/O device (e.g. analog I/O)
-	// 4 = TOOL source is a software tool (e.g. for tool generated signals/events)
+	// 4 = TOOL source is a software tool (e.g. for tool generated
+	// signals/events)
 	// 5 = USER source is a user interaction/input
 	// (e.g. for user generated events)
 	// UINT8
 	private byte sourceType;
 
-	// Bus type: additional classification of used bus (should be 0 for si_type ≥ 3):
+	// Bus type: additional classification of used bus (should be 0 for si_type
+	// ≥ 3):
 	// 0 = NONE no bus
 	// 1 = OTHER bus type does not fit into given categories or is unknown
 	// 2 = CAN
@@ -116,8 +119,10 @@ public class SIBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a SIBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {
@@ -125,7 +130,8 @@ public class SIBLOCK extends MDF4GenBlock {
 		// UINT8: Source type: additional classification of source:
 		setSourceType(MDF4Util.readUInt8(bb));
 
-		// UINT8: Bus type: additional classification of used bus (should be 0 for si_type ≥ 3):
+		// UINT8: Bus type: additional classification of used bus (should be 0
+		// for si_type ≥ 3):
 		setBusType(MDF4Util.readUInt8(bb));
 
 		// UINT8: Flags

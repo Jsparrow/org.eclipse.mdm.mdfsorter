@@ -15,17 +15,19 @@ import java.nio.ByteBuffer;
  * <p>
  * THE CHANNEL HIERARCHY BLOCK <code>CHBLOCK</code>
  * </p>
- * The CHBLOCKs describe a logical ordering of the channels in a tree-like structure. This only serves to structure the
- * channels and is totally independent to the data group and channel group structuring. A channel even may not be
- * referenced at all or more than one time.<br>
- * Each CHBLOCK can be seen as a node in a tree which has a number of channels as leafs and which has a reference to its
- * next sibling and its first child node (both CHBLOCKs). The reference to a channel is always a triple link to the
- * CNBLOCK of the channel and its parent CGBLOCK and DGBLOCK. Each CHBLOCK can have a name.
+ * The CHBLOCKs describe a logical ordering of the channels in a tree-like
+ * structure. This only serves to structure the channels and is totally
+ * independent to the data group and channel group structuring. A channel even
+ * may not be referenced at all or more than one time.<br>
+ * Each CHBLOCK can be seen as a node in a tree which has a number of channels
+ * as leafs and which has a reference to its next sibling and its first child
+ * node (both CHBLOCKs). The reference to a channel is always a triple link to
+ * the CNBLOCK of the channel and its parent CGBLOCK and DGBLOCK. Each CHBLOCK
+ * can have a name.
  *
  * @author Christian Rechner, Tobias Leemann
  */
 public class CHBLOCK extends MDF4GenBlock {
-
 
 	/**
 	 * Parse a CHBLOCK from an existing MDFGenBlock
@@ -52,36 +54,35 @@ public class CHBLOCK extends MDF4GenBlock {
 	 */
 	private byte hirarchyType;
 
-
-	//Getters and Setters
-	//Link to next CHBLOCK
-	public MDF4GenBlock getLnkChNext(){
+	// Getters and Setters
+	// Link to next CHBLOCK
+	public MDF4GenBlock getLnkChNext() {
 		return links[0];
 	}
 
-	//Link to first child CHBLOCK
-	public MDF4GenBlock getLnkChFirst(){
+	// Link to first child CHBLOCK
+	public MDF4GenBlock getLnkChFirst() {
 		return links[1];
 	}
 
-	//Link to name of this block
-	public MDF4GenBlock getLnkTxName(){
+	// Link to name of this block
+	public MDF4GenBlock getLnkTxName() {
 		return links[2];
 	}
 
-	//Link to MDBlock
-	public MDF4GenBlock getLnkMdComment(){
+	// Link to MDBlock
+	public MDF4GenBlock getLnkMdComment() {
 		return links[3];
 	}
 
-	//Links to DG, CG, CN of element i
-	public MDF4GenBlock getLnkElement(int i){
-		if(i>= getElementCount()){
-			System.out.println("Invalid acces to element "+ i +".");
+	// Links to DG, CG, CN of element i
+	public MDF4GenBlock getLnkElement(int i) {
+		if (i >= getElementCount()) {
+			System.out.println("Invalid acces to element " + i + ".");
 			return null;
 		}
 		MDF4GenBlock[] ret = new MDF4GenBlock[3];
-		System.arraycopy(links, 4+3*i, ret, 0, 3);
+		System.arraycopy(links, 4 + 3 * i, ret, 0, 3);
 		return links[3];
 	}
 
@@ -104,8 +105,10 @@ public class CHBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a CHBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {

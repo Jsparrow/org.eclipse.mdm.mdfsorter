@@ -220,11 +220,9 @@ public class HDBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [ startTimeNs=" + startTimeNs + ", tzOffsetMin="
-				+ tzOffsetMin + ", dstOffsetMin=" + dstOffsetMin
-				+ ", timeFlags=" + timeFlags + ", timeClass=" + timeClass
-				+ ", flags=" + flags + ", startAngleRad=" + startAngleRad
-				+ ", startDistanceM=" + startDistanceM + "]";
+		return "HDBLOCK [ startTimeNs=" + startTimeNs + ", tzOffsetMin=" + tzOffsetMin + ", dstOffsetMin="
+				+ dstOffsetMin + ", timeFlags=" + timeFlags + ", timeClass=" + timeClass + ", flags=" + flags
+				+ ", startAngleRad=" + startAngleRad + ", startDistanceM=" + startDistanceM + "]";
 	}
 
 	@Override
@@ -232,24 +230,19 @@ public class HDBLOCK extends MDF4GenBlock {
 
 		// UINT64: Time stamp at start of measurement in nanoseconds elapsed
 		// since 00:00:00 01.01.1970
-		setStartTimeNs(
-				MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 0, 8)));
+		setStartTimeNs(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 0, 8)));
 
 		// INT16: Time zone offset in minutes.
-		setTzOffsetMin(
-				MDF4Util.readInt16(MDFParser.getDataBuffer(content, 8, 10)));
+		setTzOffsetMin(MDF4Util.readInt16(MDFParser.getDataBuffer(content, 8, 10)));
 
 		// INT16: Daylight saving time (DST) offset in minutes for start time
-		setDstOffsetMin(
-				MDF4Util.readInt16(MDFParser.getDataBuffer(content, 10, 12)));
+		setDstOffsetMin(MDF4Util.readInt16(MDFParser.getDataBuffer(content, 10, 12)));
 
 		// UINT8: Time flags block.setTimeFlags(MDF4Util.readUInt8(bb));
-		setTimeFlags(
-				MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 12, 13)));
+		setTimeFlags(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 12, 13)));
 
 		// UINT8: Time quality class
-		setTimeClass(
-				MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 13, 14)));
+		setTimeClass(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 13, 14)));
 
 		// UINT8: Flags block.setFlags(MDF4Util.readUInt8(bb)); if
 		setFlags(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 14, 15)));
@@ -258,12 +251,10 @@ public class HDBLOCK extends MDF4GenBlock {
 
 		// REAL: Start angle in radians at start of measurement (only for
 		// angle synchronous measurements)
-		setStartAngleRad(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 16, 24)));
+		setStartAngleRad(MDF4Util.readReal(MDFParser.getDataBuffer(content, 16, 24)));
 
 		// REAL: Start distance in meters at start of measurement
-		setStartDistanceM(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 24, 32)));
+		setStartDistanceM(MDF4Util.readReal(MDFParser.getDataBuffer(content, 24, 32)));
 
 	}
 

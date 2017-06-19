@@ -71,10 +71,8 @@ abstract public class MDFSorter {
 					printUsage();
 					return;
 				case "check":
-					ArgumentStruct structchk = ArgumentStruct
-					.parseArgsCheck(args);
-					checkForProblems(structchk.inputname,
-							structchk.maxblocksize, structchk.unzip);
+					ArgumentStruct structchk = ArgumentStruct.parseArgsCheck(args);
+					checkForProblems(structchk.inputname, structchk.maxblocksize, structchk.unzip);
 					return;
 				case "process":
 					setUpLogging();
@@ -110,8 +108,7 @@ abstract public class MDFSorter {
 	 *            if all data should be Zipped (Stored in DZBlocks) in the
 	 *            output file.
 	 */
-	public static void sortMDF(String inputfile, String outputfile,
-			long maxblocksize, boolean unzip) {
+	public static void sortMDF(String inputfile, String outputfile, long maxblocksize, boolean unzip) {
 		setUpLogging();
 		ArgumentStruct struct = new ArgumentStruct();
 		struct.inputname = inputfile;
@@ -121,8 +118,7 @@ abstract public class MDFSorter {
 
 		// Larger blocks cannot be zipped (see Specification of MDF4.1)
 		if (!unzip && maxblocksize > 4L * 1024L * 1024L) {
-			log.log(Level.WARNING,
-					"Setting maxblocksize to 4MB. Larger blocks are not allowed for zipped data.");
+			log.log(Level.WARNING, "Setting maxblocksize to 4MB. Larger blocks are not allowed for zipped data.");
 			struct.maxblocksize = 4L * 1024L * 1024L;
 		}
 
@@ -145,10 +141,9 @@ abstract public class MDFSorter {
 	 * @throws IOException
 	 *             (File not found)
 	 */
-	public static boolean checkForProblems(String inputfile, long maxblocksize,
-			boolean unzip) throws IOException {
+	public static boolean checkForProblems(String inputfile, long maxblocksize, boolean unzip) throws IOException {
 		setUpLogging();
-		//wrap arguments.
+		// wrap arguments.
 		ArgumentStruct args = new ArgumentStruct();
 		args.unzip = unzip;
 		args.maxblocksize = maxblocksize;
@@ -172,17 +167,18 @@ abstract public class MDFSorter {
 	 * @throws IOException
 	 *             (File not found)
 	 */
-	public static boolean checkForProblems(String inputfile, long maxblocksize)
-			throws IOException {
+	public static boolean checkForProblems(String inputfile, long maxblocksize) throws IOException {
 		return checkForProblems(inputfile, maxblocksize, true);
 	}
 
-
 	/**
 	 * Internally called Method that really performs the "check" operation.
-	 * @param struct The Arguments for this call
+	 * 
+	 * @param struct
+	 *            The Arguments for this call
 	 * @return True, if problems were found, false if not.
-	 * @throws IOException If an I/O error occurs.
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	static boolean checkForProblems(ArgumentStruct struct) throws IOException {
 		setUpLogging();
@@ -190,21 +186,17 @@ abstract public class MDFSorter {
 		bufstream = new FileInputStream(struct.inputname);
 		log.log(Level.INFO, "File opened.");
 		// 1. Parse file and get Content-Struct
-		MDFFileContent<? extends MDFGenBlock> con = MDFParser
-				.serializeFile(bufstream.getChannel());
-
+		MDFFileContent<? extends MDFGenBlock> con = MDFParser.serializeFile(bufstream.getChannel());
 
 		// 2. Check for Problems.
 		boolean ret = false;
 		if (!con.isMDF3()) {
 			@SuppressWarnings("unchecked")
-			MDF4ProcessWriter pw = new MDF4ProcessWriter(
-					(MDFFileContent<MDF4GenBlock>) con, struct);
+			MDF4ProcessWriter pw = new MDF4ProcessWriter((MDFFileContent<MDF4GenBlock>) con, struct);
 			ret = pw.checkProblems();
 		} else {
 			@SuppressWarnings("unchecked")
-			MDF3ProcessWriter pw = new MDF3ProcessWriter(
-					(MDFFileContent<MDF3GenBlock>) con, struct);
+			MDF3ProcessWriter pw = new MDF3ProcessWriter((MDFFileContent<MDF3GenBlock>) con, struct);
 			ret = pw.checkProblems();
 		}
 
@@ -235,19 +227,16 @@ abstract public class MDFSorter {
 			bufstream = new FileInputStream(struct.inputname);
 			log.log(Level.INFO, "File opened.");
 			// 1. Parse file and get Content-Struct
-			MDFFileContent<? extends MDFGenBlock> con = MDFParser
-					.serializeFile(bufstream.getChannel());
+			MDFFileContent<? extends MDFGenBlock> con = MDFParser.serializeFile(bufstream.getChannel());
 
 			// 2. Init processing and write out
 			@SuppressWarnings("rawtypes")
 			MDFAbstractProcessWriter processorwriter;
 
 			if (con.isMDF3()) {
-				processorwriter = new MDF3ProcessWriter(
-						(MDFFileContent<MDF3GenBlock>) con, struct);
+				processorwriter = new MDF3ProcessWriter((MDFFileContent<MDF3GenBlock>) con, struct);
 			} else {
-				processorwriter = new MDF4ProcessWriter(
-						(MDFFileContent<MDF4GenBlock>) con, struct);
+				processorwriter = new MDF4ProcessWriter((MDFFileContent<MDF4GenBlock>) con, struct);
 			}
 			processorwriter.processAndWriteOut();
 			bufstream.close();
@@ -302,22 +291,19 @@ abstract public class MDFSorter {
 		System.out.println(
 				"\tProcess an MDF4 file for usage with an ASAM ODS Server.\n\tThis call requires the following parameters:\n\t <inputfile> <outputfile> [<flags>]");
 		System.out.println("\tInputfile: The MDF4-File to process");
-		System.out.println(
-				"\tOutputfile: The MDF-File where the output will be written.");
-		System.out.println(
-				"\tFlags: Other parameters. Ordering of flags is not important.");
+		System.out.println("\tOutputfile: The MDF-File where the output will be written.");
+		System.out.println("\tFlags: Other parameters. Ordering of flags is not important.");
 		System.out.println("\t\t-zip: Zip all Data found. ");
 		System.out.println("\t\t-unzip: Unzip all Data found.");
-		System.out.println(
-				"\t\t-maxblocksize=<Value>: Maximum size of a DataBlock. \n\t\te.g. \"200M\", \"3K\", \"1G\"");
-		System.out.println(
-				"\tExample: process infile.mf4 outfile.mf4 -maxblocksize=20m -zip");
+		System.out
+				.println("\t\t-maxblocksize=<Value>: Maximum size of a DataBlock. \n\t\te.g. \"200M\", \"3K\", \"1G\"");
+		System.out.println("\tExample: process infile.mf4 outfile.mf4 -maxblocksize=20m -zip");
 		System.out.println("\"check\":");
 		System.out.println(
 				"\tCheck if processing an MDF4 file for usage with an ASAM ODS Server\n\tis necessary. This call requires the following parameters:\n\t <inputfile> [<maxblocksize>] [<zipflag>]");
 		System.out.println("\tInputfile: The MDF4-File to process");
-		System.out.println(
-				"\t\t-maxblocksize=<Value>: Maximum size of a DataBlock. \n\t\te.g. \"200M\", \"3K\", \"1G\"");
+		System.out
+				.println("\t\t-maxblocksize=<Value>: Maximum size of a DataBlock. \n\t\te.g. \"200M\", \"3K\", \"1G\"");
 		System.out.println(
 				"\tzipflag: \"-zip\" or \"-unzip\", zip if all data will be zipped,\n\t\tunzipped if all data block will be unzipped.");
 		System.out.println("\tExample: check infile.mf4 4M -zip");

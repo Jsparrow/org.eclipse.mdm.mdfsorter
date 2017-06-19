@@ -15,7 +15,8 @@ import java.nio.ByteBuffer;
  * <p>
  * THE Attachment block<code>ATBLOCK</code>
  * </p>
- * The ATBLOCK specifies attached data, eiher by referencing an external file or by embedding the data in the MDF-File.
+ * The ATBLOCK specifies attached data, eiher by referencing an external file or
+ * by embedding the data in the MDF-File.
  *
  * @author Christian Rechner, Tobias Leemann
  */
@@ -27,7 +28,6 @@ public class ATBLOCK extends MDF4GenBlock {
 	// UTF-8 encoded, zero terminated, new line indicated by CR and LF.
 	// CHAR
 	private String txData;
-
 
 	/**
 	 * Parse a TXBLOCK from an existing MDFGenBlock
@@ -44,25 +44,25 @@ public class ATBLOCK extends MDF4GenBlock {
 		parent.setPrec(this);
 	}
 
-	//Getters and Setters
+	// Getters and Setters
 
-	//Link to next ATBLOCK
-	public MDF4GenBlock getLnkAtNext(){
+	// Link to next ATBLOCK
+	public MDF4GenBlock getLnkAtNext() {
 		return links[0];
 	}
 
-	//Link to TextBlock with path of the referenced file
-	public MDF4GenBlock getLnkTxFilename(){
+	// Link to TextBlock with path of the referenced file
+	public MDF4GenBlock getLnkTxFilename() {
 		return links[1];
 	}
 
-	//Link to the MIME-Type (as text)
-	public MDF4GenBlock getLnkTxMIMEType(){
+	// Link to the MIME-Type (as text)
+	public MDF4GenBlock getLnkTxMIMEType() {
 		return links[2];
 	}
 
-	//Link to MDBlock with comment
-	public MDF4GenBlock getLnkMdComment(){
+	// Link to MDBlock with comment
+	public MDF4GenBlock getLnkMdComment() {
 		return links[3];
 	}
 
@@ -82,14 +82,16 @@ public class ATBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a TXBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// Read text String
 		setTxData(MDF4Util.readCharsUTF8(ByteBuffer.wrap(content), content.length));
-		//TODO: Bytes after zero termination?
+		// TODO: Bytes after zero termination?
 	}
 
 }

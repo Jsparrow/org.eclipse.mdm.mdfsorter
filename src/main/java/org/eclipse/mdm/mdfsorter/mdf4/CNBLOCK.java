@@ -71,7 +71,8 @@ public class CNBLOCK extends MDF4GenBlock {
 	// been applied.
 	// If zero, the signal value is 1-Byte aligned. A value different to zero is
 	// only allowed for Integer data types
-	// (cn_data_type ≤ 3) and if the Integer signal value fits into 8 contiguous
+	// (cn_data_type ≤ 3) and if the Integer signal value fits into 8
+	// contiguous
 	// Bytes (cn_bit_count + cn_bit_offset ≤
 	// 64). For all other cases, cn_bit_offset must be zero.
 	// UINT8
@@ -365,24 +366,17 @@ public class CNBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CNBLOCK [lnkCnNext=" + getLnkCnNext().getPos()
-				+ ", lnkComposition=" + getLnkComposition().getPos()
-				+ ", lnkTxName=" + getLnkTxName().getPos() + ", lnkSiSource="
-				+ getLnkSiSource().getPos() + ", lnkCcConversion="
-				+ getLnkComposition().getPos() + ", lnkData="
-				+ getLnkData().getPos() + ", lnkMdUnit="
-				+ getLnkMdUnit().getPos() + ", lnkMdComment="
-				+ getLnkMdComment().getPos() + ", lnkAtReference=" + "{"
-				+ getLnkAtReference().length + "}" + ", lnkDefaultX=" + "{"
-				+ getLnkDefaultX().length + "}" + ", channelType=" + channelType
-				+ ", syncType=" + syncType + ", dataType=" + dataType
-				+ ", bitOffset=" + bitOffset + ", byteOffset=" + byteOffset
-				+ ", bitCount=" + bitCount + ", flags=" + flags
-				+ ", invalBitPos=" + invalBitPos + ", precision=" + precision
-				+ ", attachmentCount=" + attachmentCount + ", valRangeMin="
-				+ valRangeMin + ", valRangeMax=" + valRangeMax + ", limitMin="
-				+ limitMin + ", limitMax=" + limitMax + ", limitExtMin="
-				+ limitExtMin + ", limitExtMax=" + limitExtMax + "]";
+		return "CNBLOCK [lnkCnNext=" + getLnkCnNext().getPos() + ", lnkComposition=" + getLnkComposition().getPos()
+				+ ", lnkTxName=" + getLnkTxName().getPos() + ", lnkSiSource=" + getLnkSiSource().getPos()
+				+ ", lnkCcConversion=" + getLnkComposition().getPos() + ", lnkData=" + getLnkData().getPos()
+				+ ", lnkMdUnit=" + getLnkMdUnit().getPos() + ", lnkMdComment=" + getLnkMdComment().getPos()
+				+ ", lnkAtReference=" + "{" + getLnkAtReference().length + "}" + ", lnkDefaultX=" + "{"
+				+ getLnkDefaultX().length + "}" + ", channelType=" + channelType + ", syncType=" + syncType
+				+ ", dataType=" + dataType + ", bitOffset=" + bitOffset + ", byteOffset=" + byteOffset + ", bitCount="
+				+ bitCount + ", flags=" + flags + ", invalBitPos=" + invalBitPos + ", precision=" + precision
+				+ ", attachmentCount=" + attachmentCount + ", valRangeMin=" + valRangeMin + ", valRangeMax="
+				+ valRangeMax + ", limitMin=" + limitMin + ", limitMax=" + limitMax + ", limitExtMin=" + limitExtMin
+				+ ", limitExtMax=" + limitExtMax + "]";
 	}
 
 	@Override
@@ -401,19 +395,16 @@ public class CNBLOCK extends MDF4GenBlock {
 
 		// UINT32: Offset to first Byte in the data record that contains bits of
 		// the signal value.
-		setByteOffset(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 4, 8)));
+		setByteOffset(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 4, 8)));
 
 		// UINT32: Number of bits for signal value in record.
-		setBitCount(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 8, 12)));
+		setBitCount(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 8, 12)));
 
 		// UINT32: Flags
 		setFlags(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 12, 16)));
 
 		// UINT32: Position of invalidation bit.
-		setInvalBitPos(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 16, 20)));
+		setInvalBitPos(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 16, 20)));
 
 		// UINT8: Precision for display of floating point values.
 		setPrecision(content[20]);
@@ -422,36 +413,29 @@ public class CNBLOCK extends MDF4GenBlock {
 
 		// UINT16: Length N of cn_at_reference list, i.e. number of attachments
 		// for this channel. Can be zero.
-		setAttachmentCount(
-				MDF4Util.readUInt16(MDFParser.getDataBuffer(content, 22, 24)));
+		setAttachmentCount(MDF4Util.readUInt16(MDFParser.getDataBuffer(content, 22, 24)));
 
 		// REAL: Minimum signal value that occurred for this signal (raw value)
-		setValRangeMin(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 24, 32)));
+		setValRangeMin(MDF4Util.readReal(MDFParser.getDataBuffer(content, 24, 32)));
 
 		// REAL: Maximum signal value that occurred for this signal (raw value)
-		setValRangeMax(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 32, 40)));
+		setValRangeMax(MDF4Util.readReal(MDFParser.getDataBuffer(content, 32, 40)));
 
 		// REAL: Lower limit for this signal (physical value for numeric
 		// conversion rule, otherwise raw value)
-		setLimitMin(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 40, 48)));
+		setLimitMin(MDF4Util.readReal(MDFParser.getDataBuffer(content, 40, 48)));
 
 		// REAL: Upper limit for this signal (physical value for numeric
 		// conversion rule, otherwise raw value)
-		setLimitMax(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 48, 56)));
+		setLimitMax(MDF4Util.readReal(MDFParser.getDataBuffer(content, 48, 56)));
 
 		// REAL: Lower extended limit for this signal (physical value for
 		// numeric conversion rule, otherwise raw value)
-		setLimitExtMin(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 56, 64)));
+		setLimitExtMin(MDF4Util.readReal(MDFParser.getDataBuffer(content, 56, 64)));
 
 		// REAL: Upper extended limit for this signal (physical value for
 		// numeric conversion rule, otherwise raw value)
-		setLimitExtMax(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 64, 72)));
+		setLimitExtMax(MDF4Util.readReal(MDFParser.getDataBuffer(content, 64, 72)));
 
 	}
 

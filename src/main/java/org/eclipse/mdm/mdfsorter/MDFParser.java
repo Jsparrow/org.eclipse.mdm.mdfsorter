@@ -29,8 +29,7 @@ import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
 public abstract class MDFParser {
 
 	@SuppressWarnings("unchecked")
-	public static MDFFileContent<? extends MDFGenBlock> serializeFile(
-			FileChannel in) throws IOException {
+	public static MDFFileContent<? extends MDFGenBlock> serializeFile(FileChannel in) throws IOException {
 		// some IDBLOCK Checks.
 		char[] versionnum = new char[8];
 		byte[] idblock = readBytes(64, in);
@@ -50,19 +49,16 @@ public abstract class MDFParser {
 		}
 
 		int version = MDF4Util.readUInt16(getDataBuffer(idblock, 28, 30));
-		MDFSorter.log.log(Level.FINE, "Found MDF Version "
-				+ String.valueOf(versionnum) + " (" + version + ")");
+		MDFSorter.log.log(Level.FINE, "Found MDF Version " + String.valueOf(versionnum) + " (" + version + ")");
 
 		@SuppressWarnings("rawtypes")
 		MDFAbstractParser myParser = null;
 
 		if (version < 300 || version > 411) {
-			MDFSorter.log.severe("MDF Version " + String.valueOf(versionnum)
-			+ "is not supported. Aborting.");
+			MDFSorter.log.severe("MDF Version " + String.valueOf(versionnum) + "is not supported. Aborting.");
 			throw new IllegalArgumentException("Unsupported MDF Version.");
 		} else if (version < 400) {
-			boolean bigendian = MDF4Util
-					.readUInt16(getDataBuffer(idblock, 24, 26)) != 0;
+			boolean bigendian = MDF4Util.readUInt16(getDataBuffer(idblock, 24, 26)) != 0;
 			myParser = new MDF3Parser(in, bigendian);
 		} else {
 			myParser = new MDF4Parser(in);
@@ -83,13 +79,11 @@ public abstract class MDFParser {
 	 * @throws IOException
 	 *             If an input error occurs.
 	 */
-	private static byte[] readBytes(int bytes, FileChannel in)
-			throws IOException {
+	private static byte[] readBytes(int bytes, FileChannel in) throws IOException {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;
 		if ((bytesread = in.read(chunk)) != bytes) {
-			System.err.println(
-					"Read only " + bytesread + " Bytes instead of " + bytes);
+			System.err.println("Read only " + bytesread + " Bytes instead of " + bytes);
 		}
 		return chunk.array();
 	}
@@ -108,13 +102,11 @@ public abstract class MDFParser {
 	 */
 	public static ByteBuffer getDataBuffer(byte[] data, int start, int end) {
 		if (start >= 0 && end <= data.length) {
-			return java.nio.ByteBuffer
-					.wrap(Arrays.copyOfRange(data, start, end));
+			return java.nio.ByteBuffer.wrap(Arrays.copyOfRange(data, start, end));
 		} else {
 			// just for testing
 			throw new ArrayIndexOutOfBoundsException(
-					"Tried to access bytes " + start + " to " + end
-					+ "with array length " + data.length);
+					"Tried to access bytes " + start + " to " + end + "with array length " + data.length);
 		}
 	}
 

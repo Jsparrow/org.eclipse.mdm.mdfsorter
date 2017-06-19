@@ -15,6 +15,7 @@ import java.util.zip.DataFormatException;
 
 import org.eclipse.mdm.mdfsorter.AbstractDataProvider;
 import org.eclipse.mdm.mdfsorter.ReadDataCache;
+
 /**
  * This Class is used to read Data from a data section, with an given offset. If
  * Data is stored in a linked list or in a zipped block, it is this classes job
@@ -88,8 +89,7 @@ public class MDF3DataProvider implements AbstractDataProvider {
 
 		if (globaloffset + data.capacity() > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only "
-							+ sectionlength + " bytes long.");
+					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
 		}
 
 		if (dataarr != null) {
@@ -120,13 +120,11 @@ public class MDF3DataProvider implements AbstractDataProvider {
 	 *             here)
 	 */
 	@Override
-	public ByteBuffer cachedRead(long globaloffset, int length)
-			throws IOException, DataFormatException {
+	public ByteBuffer cachedRead(long globaloffset, int length) throws IOException, DataFormatException {
 		// argument check
 		if (globaloffset + length > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only "
-							+ sectionlength + " bytes long.");
+					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
 		}
 
 		if (dataarr != null) {
@@ -151,7 +149,7 @@ public class MDF3DataProvider implements AbstractDataProvider {
 	 * @return The length.
 	 */
 	private long calculateLength() {
-		if(datasectionhead!=null){
+		if (datasectionhead != null) {
 			return datasectionhead.getLength();
 		}
 		return 0;

@@ -28,8 +28,7 @@ public class MDF4UtilTest {
 	@Test
 	public void testGetBytesUInt32() {
 		long l = Integer.MAX_VALUE * 2L + 1L;
-		assertArrayEquals(MDF4Util.getBytesUInt32(l),
-				new byte[] { -1, -1, -1, -1 });
+		assertArrayEquals(MDF4Util.getBytesUInt32(l), new byte[] { -1, -1, -1, -1 });
 	}
 
 	@Test

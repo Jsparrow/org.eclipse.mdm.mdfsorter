@@ -24,8 +24,7 @@ import org.eclipse.mdm.mdfsorter.MDFProblemType;
  *
  * @author Tobias Leemann
  */
-public class MDF4GenBlock extends MDFGenBlock
-implements Comparable<MDF4GenBlock> {
+public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock> {
 
 	// Number of links
 	// UINT64
@@ -171,8 +170,7 @@ implements Comparable<MDF4GenBlock> {
 	 */
 	@Override
 	public String toString() {
-		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length
-				+ ", linkCount=" + linkCount + "]";
+		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length + ", linkCount=" + linkCount + "]";
 	}
 
 	/**
@@ -242,8 +240,7 @@ implements Comparable<MDF4GenBlock> {
 	 *             If an I/O error occurs.
 	 */
 	public void parse(byte[] content) throws IOException {
-		throw new UnsupportedOperationException(
-				"parse not valid on unspecified block.");
+		throw new UnsupportedOperationException("parse not valid on unspecified block.");
 	}
 
 	/**
@@ -340,14 +337,12 @@ implements Comparable<MDF4GenBlock> {
 			// is sublist improvable? If yes, we have a problem here.
 			if (((DLBLOCK) dlblk).isImproveable(args)) {
 				startRecursiveTouch();
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.LINKED_DATALIST_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.LINKED_DATALIST_PROBLEM, this));
 			} else {
 				if (args.unzip) {
 					// we have a problem anyway, if data should be unzipped.
 					startRecursiveTouch();
-					addProblem(new MDFCompatibilityProblem(
-							MDFProblemType.LINKED_DATALIST_PROBLEM, this));
+					addProblem(new MDFCompatibilityProblem(MDFProblemType.LINKED_DATALIST_PROBLEM, this));
 				}
 			}
 			break;
@@ -357,8 +352,7 @@ implements Comparable<MDF4GenBlock> {
 			}
 			if (((DLBLOCK) this).isImproveable(args)) {
 				startRecursiveTouch();
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.LINKED_DATALIST_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.LINKED_DATALIST_PROBLEM, this));
 			}
 			break;
 		case "##DG":
@@ -370,8 +364,7 @@ implements Comparable<MDF4GenBlock> {
 			CGBLOCK blk = (CGBLOCK) dgblk.getLnkCgFirst();
 			if (blk.getLnkCgNext() != null) {
 				// more than one channel group per datagroup! Unsorted.
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.UNSORTED_DATA_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM, this));
 				// which block will be touched?
 				// all channel groups!
 				do {
@@ -382,16 +375,14 @@ implements Comparable<MDF4GenBlock> {
 			break;
 		case "##DZ":
 			if (args.unzip) {
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.ZIPPED_DATA_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.ZIPPED_DATA_PROBLEM, this));
 			}
 			break;
 		case "##DT":
 		case "##SD":
 		case "##RD":
 			if (!args.unzip) {
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.UNZIPPED_DATA_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.UNZIPPED_DATA_PROBLEM, this));
 			}
 			break;
 		}

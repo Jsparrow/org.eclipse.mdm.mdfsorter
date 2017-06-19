@@ -85,10 +85,9 @@ public class DGBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public String toString() {
-		return "DGBLOCK [lnkDgNext=" + getLnkDgNext().getPos() + ", lnkCgFirst="
-				+ getLnkCgFirst().getPos() + ", lnkData="
-				+ getLnkData().getPos() + ", lnkMdComment="
-				+ getLnkMdComment().getPos() + ", recIdSize=" + recIdSize + "]";
+		return "DGBLOCK [lnkDgNext=" + getLnkDgNext().getPos() + ", lnkCgFirst=" + getLnkCgFirst().getPos()
+				+ ", lnkData=" + getLnkData().getPos() + ", lnkMdComment=" + getLnkMdComment().getPos() + ", recIdSize="
+				+ recIdSize + "]";
 	}
 
 	/**
@@ -98,8 +97,7 @@ public class DGBLOCK extends MDF4GenBlock {
 	public void parse(byte[] content) throws IOException {
 
 		// UINT8: Number of Bytes used for record IDs in the data block.
-		setRecIdSize(
-				MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 0, 1)));
+		setRecIdSize(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 0, 1)));
 
 	}
 

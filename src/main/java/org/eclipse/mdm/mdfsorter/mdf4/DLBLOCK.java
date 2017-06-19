@@ -124,10 +124,9 @@ public class DLBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public String toString() {
-		return "DLBLOCK [lnkDlNext=" + getLnkDlNext() + ", lnkDlData="
-				+ Arrays.toString(getLnkDlData()) + ", flags=" + flags
-				+ ", count=" + count + ", equalLength=" + equalLength
-				+ ", offset=" + Arrays.toString(offset) + "]";
+		return "DLBLOCK [lnkDlNext=" + getLnkDlNext() + ", lnkDlData=" + Arrays.toString(getLnkDlData()) + ", flags="
+				+ flags + ", count=" + count + ", equalLength=" + equalLength + ", offset=" + Arrays.toString(offset)
+				+ "]";
 	}
 
 	@Override
@@ -135,13 +134,11 @@ public class DLBLOCK extends MDF4GenBlock {
 		setFlags(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 0, 1)));
 		setCount(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 4, 8)));
 		if (isEqualLengthFlag()) {
-			setEqualLength(MDF4Util
-					.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
+			setEqualLength(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
 		} else {
 			long[] offset = new long[(int) getCount()];
 			for (int i = 0; i < offset.length; i++) {
-				offset[i] = MDF4Util.readUInt64(MDFParser.getDataBuffer(content,
-						8 + 8 * i, 16 + 8 * i));
+				offset[i] = MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8 + 8 * i, 16 + 8 * i));
 			}
 			setOffset(offset);
 		}
@@ -187,12 +184,11 @@ public class DLBLOCK extends MDF4GenBlock {
 	 *         not.
 	 */
 	public boolean isImproveable(ArgumentStruct args) {
-		if(getCount() == 0){
+		if (getCount() == 0) {
 			return true;
 		}
 		// A data list that only contains one block is useless.
-		if (getCount() == 1
-				&& getLink(1).getLength() < args.maxblocksize) {
+		if (getCount() == 1 && getLink(1).getLength() < args.maxblocksize) {
 			return true;
 		}
 		// Split blocks if necessary
@@ -205,8 +201,7 @@ public class DLBLOCK extends MDF4GenBlock {
 			do {
 				for (int i = 0; i < curr.count; i++) {
 					String chldid = curr.getLink(i + 1).getId();
-					if (chldid.equals("##DT") || chldid.equals("##RD")
-							|| chldid.equals("##SD")) {
+					if (chldid.equals("##DT") || chldid.equals("##RD") || chldid.equals("##SD")) {
 						return true;
 					}
 				}
@@ -229,8 +224,13 @@ public class DLBLOCK extends MDF4GenBlock {
 				long datasectionlength = getOffset()[(int) (getCount() - 1)]; // Calculate
 				// last
 				// offset
-				datasectionlength += getLink((int) getCount()).getLength()
-						- 24L; // ... and add length of last block
+				datasectionlength += getLink((int) getCount()).getLength() - 24L; // ...
+																					// and
+																					// add
+																					// length
+																					// of
+																					// last
+																					// block
 				if (datasectionlength / args.maxblocksize + 1 < getCount()) {
 					// fewer blocks are possible
 					return true;

@@ -15,9 +15,10 @@ import java.nio.ByteBuffer;
  * <p>
  * THE META DATA BLOCK <code>MDBLOCK</code>
  * </p>
- * The MDBLOCK contains information encoded as XML string. For example this can be comments for the measured data file,
- * file history information or the identification of a channel. This information is ruled by the parent block and
- * follows specific XML schemas definitions.
+ * The MDBLOCK contains information encoded as XML string. For example this can
+ * be comments for the measured data file, file history information or the
+ * identification of a channel. This information is ruled by the parent block
+ * and follows specific XML schemas definitions.
  *
  * @author Christian Rechner, Tobias Leemann
  */
@@ -53,7 +54,6 @@ public class MDBLOCK extends MDF4GenBlock {
 		this.mdData = mdData;
 	}
 
-
 	@Override
 	public String toString() {
 		return "MDBLOCK [mdData=" + mdData + "]";
@@ -62,14 +62,16 @@ public class MDBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a MDBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// ReadXML String
 		setMdData(MDF4Util.readCharsUTF8(ByteBuffer.wrap(content), content.length));
-		//TODO: Bytes after zero termination?
+		// TODO: Bytes after zero termination?
 	}
 
 }

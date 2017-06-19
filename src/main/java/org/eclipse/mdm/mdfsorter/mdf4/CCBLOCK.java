@@ -12,19 +12,19 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-
 /**
  * <p>
  * THE CHANNEL CONVERSION BLOCK <code>CCBLOCK</code>
  * </p>
- * The data records can be used to store raw values (often also denoted as implementation values or internal values).
- * The CCBLOCK serves to specify a conversion formula to convert the raw values to physical values with a physical unit.
- * The result of a conversion always is either a floating-point value (REAL) or a character string (UTF-8).
+ * The data records can be used to store raw values (often also denoted as
+ * implementation values or internal values). The CCBLOCK serves to specify a
+ * conversion formula to convert the raw values to physical values with a
+ * physical unit. The result of a conversion always is either a floating-point
+ * value (REAL) or a character string (UTF-8).
  *
  * @author Christian Rechner
  */
 public class CCBLOCK extends MDF4GenBlock {
-
 
 	/** Data section */
 
@@ -45,8 +45,10 @@ public class CCBLOCK extends MDF4GenBlock {
 
 	// Precision for display of floating point values.
 	// 0xFF means unrestricted precision (infinite)
-	// Any other value specifies the number of decimal places to use for display of floating point values.
-	// Note: only valid if "precision valid" flag (bit 0) is set and if cn_precision of the parent CNBLOCK is invalid,
+	// Any other value specifies the number of decimal places to use for display
+	// of floating point values.
+	// Note: only valid if "precision valid" flag (bit 0) is set and if
+	// cn_precision of the parent CNBLOCK is invalid,
 	// otherwise cn_precision must be used.
 	// UINT8
 	private byte precision;
@@ -80,7 +82,6 @@ public class CCBLOCK extends MDF4GenBlock {
 	// REAL N
 	private double[] val;
 
-
 	/**
 	 * Parse a CCBLOCK from an existing MDFGenBlock
 	 *
@@ -101,26 +102,31 @@ public class CCBLOCK extends MDF4GenBlock {
 		return links[0];
 	}
 
-	// Link to TXBLOCK/MDBLOCK with physical unit of signal data (after conversion). (can be NIL)
+	// Link to TXBLOCK/MDBLOCK with physical unit of signal data (after
+	// conversion). (can be NIL)
 	public MDF4GenBlock getLnkMdUnit() {
 		return links[1];
 	}
 
-	// Link to TXBLOCK/MDBLOCK with comment of conversion and additional information. (can be NIL)
+	// Link to TXBLOCK/MDBLOCK with comment of conversion and additional
+	// information. (can be NIL)
 	public MDF4GenBlock getLnkMdComment() {
 		return links[2];
 	}
 
-	// Link to CCBLOCK for inverse formula (can be NIL, must be NIL for CCBLOCK of the inverse formula (no cyclic
+	// Link to CCBLOCK for inverse formula (can be NIL, must be NIL for CCBLOCK
+	// of the inverse formula (no cyclic
 	// reference allowed).
 	public MDF4GenBlock getLnkCcInverse() {
 		return links[3];
 	}
 
-	// List of additional links to TXBLOCKs with strings or to CCBLOCKs with partial conversion rules. Length of list is
-	// given by cc_ref_count. The list can be empty. Details are explained in formula-specific block supplement.
+	// List of additional links to TXBLOCKs with strings or to CCBLOCKs with
+	// partial conversion rules. Length of list is
+	// given by cc_ref_count. The list can be empty. Details are explained in
+	// formula-specific block supplement.
 	public MDF4GenBlock[] getLnkCcRef() {
-		MDF4GenBlock[] ret = new MDF4GenBlock[getLinkCount()-4];
+		MDF4GenBlock[] ret = new MDF4GenBlock[getLinkCount() - 4];
 		System.arraycopy(links, 4, ret, 0, ret.length);
 		return ret;
 	}
@@ -191,17 +197,18 @@ public class CCBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CCBLOCK [type=" + type
-				+ ", precision=" + precision + ", flags=" + flags + ", refCount=" + refCount + ", valCount=" + valCount
-				+ ", phyRangeMin=" + phyRangeMin + ", phyRangeMax=" + phyRangeMax + ", val=" + Arrays.toString(val)
-				+ "]";
+		return "CCBLOCK [type=" + type + ", precision=" + precision + ", flags=" + flags + ", refCount=" + refCount
+				+ ", valCount=" + valCount + ", phyRangeMin=" + phyRangeMin + ", phyRangeMax=" + phyRangeMax + ", val="
+				+ Arrays.toString(val) + "]";
 	}
 
 	/**
 	 * Reads a CCBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {

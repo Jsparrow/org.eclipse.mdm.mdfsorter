@@ -16,8 +16,7 @@ import org.eclipse.mdm.mdfsorter.MDFCompatibilityProblem;
 import org.eclipse.mdm.mdfsorter.MDFGenBlock;
 import org.eclipse.mdm.mdfsorter.MDFProblemType;
 
-public class MDF3GenBlock extends MDFGenBlock
-implements Comparable<MDF3GenBlock> {
+public class MDF3GenBlock extends MDFGenBlock implements Comparable<MDF3GenBlock> {
 
 	// Number of links
 	private int linkCount;
@@ -54,8 +53,7 @@ implements Comparable<MDF3GenBlock> {
 		super(pos);
 		// Check with UINT32.Maxvalue.
 		if (pos > 2L * Integer.MAX_VALUE + 1L) {
-			throw new IllegalArgumentException(
-					"Block address " + pos + " is too large for MDF3 format.");
+			throw new IllegalArgumentException("Block address " + pos + " is too large for MDF3 format.");
 		}
 		this.bigendian = bigendian;
 	}
@@ -194,8 +192,7 @@ implements Comparable<MDF3GenBlock> {
 	 */
 	@Override
 	public String toString() {
-		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length
-				+ ", linkCount=" + linkCount + "]";
+		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length + ", linkCount=" + linkCount + "]";
 	}
 
 	/**
@@ -265,8 +262,7 @@ implements Comparable<MDF3GenBlock> {
 	 *             If an input error occurs.
 	 */
 	public void parse(byte[] content) throws IOException {
-		throw new UnsupportedOperationException(
-				"parse not valid on unspecified block.");
+		throw new UnsupportedOperationException("parse not valid on unspecified block.");
 	}
 
 	/**
@@ -300,8 +296,7 @@ implements Comparable<MDF3GenBlock> {
 		}
 		System.arraycopy(idtext, 0, ret, 0, 2);
 
-		byte[] length = MDF3Util.getBytesUInt16((int) this.length,
-				isBigEndian());
+		byte[] length = MDF3Util.getBytesUInt16((int) this.length, isBigEndian());
 		System.arraycopy(length, 0, ret, 2, 2);
 
 		return ret;
@@ -334,8 +329,7 @@ implements Comparable<MDF3GenBlock> {
 			CGBLOCK blk = (CGBLOCK) dgblk.getLnkCgFirst();
 			if (blk.getLnkCgNext() != null) { // more than one channel group per
 				// datagroup! Unsorted.
-				addProblem(new MDFCompatibilityProblem(
-						MDFProblemType.UNSORTED_DATA_PROBLEM, this));
+				addProblem(new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM, this));
 				// which block will be touched?
 				// all channel groups!
 				dgblk.getLnkData().touch();
@@ -363,8 +357,7 @@ implements Comparable<MDF3GenBlock> {
 		MDF3GenBlock linkedblock;
 		for (int i = 0; i < getLinkCount(); i++) {
 			if ((linkedblock = getLink(i)) != null) {
-				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(),
-						isBigEndian()));
+				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(), isBigEndian()));
 			} else {
 				r.write(MDF3Util.getBytesLink(0, isBigEndian()));
 			}

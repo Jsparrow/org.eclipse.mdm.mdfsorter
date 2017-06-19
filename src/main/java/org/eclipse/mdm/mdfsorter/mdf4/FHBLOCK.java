@@ -97,12 +97,9 @@ public class FHBLOCK extends MDF4GenBlock {
 	@Override
 	public void parse(byte[] content) throws IOException {
 		setTime_ns(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 0, 8)));
-		setTz_offset_min(
-				MDF4Util.readInt16(MDFParser.getDataBuffer(content, 8, 10)));
-		setDst_offset_min(
-				MDF4Util.readInt16(MDFParser.getDataBuffer(content, 10, 12)));
-		setTime_flags(
-				MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 12, 13)));
+		setTz_offset_min(MDF4Util.readInt16(MDFParser.getDataBuffer(content, 8, 10)));
+		setDst_offset_min(MDF4Util.readInt16(MDFParser.getDataBuffer(content, 10, 12)));
+		setTime_flags(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 12, 13)));
 	}
 
 	@Override

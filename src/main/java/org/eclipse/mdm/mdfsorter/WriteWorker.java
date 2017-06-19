@@ -38,8 +38,8 @@ public class WriteWorker implements Runnable {
 	}
 
 	/*
-	 * Takes bytes of Data from the buffer until a null-Pointer signals, that no more data
-	 * will be expected.
+	 * Takes bytes of Data from the buffer until a null-Pointer signals, that no
+	 * more data will be expected.
 	 *
 	 * @see java.lang.Runnable#run()
 	 */

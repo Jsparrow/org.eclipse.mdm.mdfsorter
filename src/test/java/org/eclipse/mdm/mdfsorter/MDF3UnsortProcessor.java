@@ -30,8 +30,7 @@ import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
 
 public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 
-	public MDF3UnsortProcessor(MDFFileContent<MDF3GenBlock> filestructure,
-			ArgumentStruct args) {
+	public MDF3UnsortProcessor(MDFFileContent<MDF3GenBlock> filestructure, ArgumentStruct args) {
 		super(filestructure, args);
 	}
 
@@ -72,13 +71,11 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 
 					// write file out in 64k blocks
 					long length = blk.getLength();
-					ByteBuffer custombuffer = ByteBuffer
-							.allocate((int) length);
+					ByteBuffer custombuffer = ByteBuffer.allocate((int) length);
 					int bytesread = reader.read(custombuffer);
 					// alter head entry.
 					custombuffer.position(16);
-					custombuffer.put(MDF3Util.getBytesUInt16(1,
-							filestructure.isBigEndian()));
+					custombuffer.put(MDF3Util.getBytesUInt16(1, filestructure.isBigEndian()));
 					performPut(custombuffer, bytesread, false);
 					writtenblocks.addLast(blk);
 				} else {
@@ -87,8 +84,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 			} else {
 				if (blk.getProblems() != null) {
 					for (MDFCompatibilityProblem p : blk.getProblems()) {
-						MDFSorter.log.log(Level.FINE,
-								"Problem of Type: " + p.getType());
+						MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType());
 					}
 					solveProblem(blk.getProblems(), buf, dgroups);
 				} else {
@@ -112,8 +108,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 
 		out.close();
 		MDFSorter.log.log(Level.INFO, "Wrote " + writeptr / 1000 + " kB.");
-		MDFSorter.log.log(Level.INFO,
-				"Writing took " + (System.currentTimeMillis() - start) + " ms");
+		MDFSorter.log.log(Level.INFO, "Writing took " + (System.currentTimeMillis() - start) + " ms");
 
 		// Update links with RandomAccessFile
 		RandomAccessFile r = new RandomAccessFile(args.outputname, "rw");
@@ -133,9 +128,8 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	public void solveProblem(List<MDFCompatibilityProblem> l,
-			DataBlockBuffer buf, LinkedList<DGBLOCK> dgroups)
-					throws IOException, DataFormatException {
+	public void solveProblem(List<MDFCompatibilityProblem> l, DataBlockBuffer buf, LinkedList<DGBLOCK> dgroups)
+			throws IOException, DataFormatException {
 		if (l.size() != 1) {
 			System.out.println("To many Problems.");
 			// This may be supported in later versions.
@@ -149,10 +143,8 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 				// We have more than one channel group in a single
 				// DataGroup. We have to create new DataGroups for each
 				// Channel Group.
-				LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup(
-						(DGBLOCK) node);
-				MDFSorter.log.log(Level.INFO,
-						"Found " + groups.size() + " Channel Groups in DG.");
+				LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
+				MDFSorter.log.log(Level.INFO, "Found " + groups.size() + " Channel Groups in DG.");
 				MDF3GenBlock datasection = ((DGBLOCK) node).getLnkData();
 				UnSortDataGroup(prob, dgroups, datasection);
 
@@ -162,9 +154,8 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 		}
 	}
 
-	public void UnSortDataGroup(MDFCompatibilityProblem prob,
-			LinkedList<DGBLOCK> dgroups, MDF3GenBlock datasection)
-					throws IOException, DataFormatException {
+	public void UnSortDataGroup(MDFCompatibilityProblem prob, LinkedList<DGBLOCK> dgroups, MDF3GenBlock datasection)
+			throws IOException, DataFormatException {
 
 		boolean redundantIDs = true;
 		// create master DG
@@ -194,8 +185,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 			} else {
 				last.setLink(0, dgblk.getLnkCgFirst());
 			}
-			providers[count++] = new MDF3DataProvider(dgblk.getLnkData(),
-					filestructure.getInput());
+			providers[count++] = new MDF3DataProvider(dgblk.getLnkData(), filestructure.getInput());
 			last = (CGBLOCK) dgblk.getLnkCgFirst();
 			last.setRecordId(count);
 			newsize += last.getCycleCount() * last.getDataBytes();
@@ -207,8 +197,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 
 		// unsort records.
 		newsize += totreccount * (redundantIDs ? 2 : 1);
-		MDF3BlocksSplittMerger bsm = new MDF3BlocksSplittMerger(this, master,
-				newsize, providers[0]);
+		MDF3BlocksSplittMerger bsm = new MDF3BlocksSplittMerger(this, master, newsize, providers[0]);
 
 		MDF3DataProvider idprovider = new MDF3DataProvider(new byte[] { 0 });
 
@@ -226,8 +215,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 
 			// write record
 			bsm.setProv(providers[rectowrite]);
-			bsm.splitmerge(written[rectowrite] * sizes[rectowrite],
-					sizes[rectowrite]);
+			bsm.splitmerge(written[rectowrite] * sizes[rectowrite], sizes[rectowrite]);
 			written[rectowrite]++;
 			writtenrecords++;
 
@@ -236,8 +224,7 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 				bsm.splitmerge(0, 1);
 			}
 			if (writtenrecords % 10000 == 0) {
-				System.out.println("Wrote " + writtenrecords + " of "
-						+ totreccount + " Records.");
+				System.out.println("Wrote " + writtenrecords + " of " + totreccount + " Records.");
 			}
 		}
 		bsm.setLinks();
@@ -247,8 +234,8 @@ public class MDF3UnsortProcessor extends MDF3ProcessWriter {
 		LinkedList<DGBLOCK> ret = new LinkedList<DGBLOCK>();
 		MDF3GenBlock hdroot = filestructure.getRoot();
 		// Set Problem to first datagroup
-		MDFCompatibilityProblem prob = new MDFCompatibilityProblem(
-				MDFProblemType.UNSORTED_DATA_PROBLEM, hdroot.getLink(0));
+		MDFCompatibilityProblem prob = new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM,
+				hdroot.getLink(0));
 		prob.setParentnode(hdroot);
 		hdroot.getLink(0).addProblem(prob);
 		for (MDF3GenBlock blk : filestructure.getList()) {

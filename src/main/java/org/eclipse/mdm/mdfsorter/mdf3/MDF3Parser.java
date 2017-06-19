@@ -41,13 +41,11 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 	 * @throws IOException
 	 *             If an input error occurs.
 	 */
-	private static byte[] readBytes(int bytes, FileChannel in)
-			throws IOException {
+	private static byte[] readBytes(int bytes, FileChannel in) throws IOException {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;
 		if ((bytesread = in.read(chunk)) != bytes) {
-			System.err.println(
-					"Read only " + bytesread + " Bytes instead of " + bytes);
+			System.err.println("Read only " + bytesread + " Bytes instead of " + bytes);
 		}
 		return chunk.array();
 	}
@@ -101,8 +99,8 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 
 		MDFSorter.log.log(Level.INFO, "Needed " + fileruns + " runs.");
 		MDFSorter.log.log(Level.INFO, "Found " + blocklist.size() + " blocks.");
-		MDFSorter.log.log(Level.FINE,
-				"ValidatorListSize: " + (foundblocks + 1)); // Expected number
+		MDFSorter.log.log(Level.FINE, "ValidatorListSize: " + (foundblocks + 1)); // Expected
+																					// number
 		// of node in Vector
 		// MDFValidators
 		// node list for
@@ -122,11 +120,9 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		in.position(start.getPos());
 		byte[] head = readBytes(4, in);
 		// Read header of this block
-		String blktyp = MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(head, 0, 2), 2);
+		String blktyp = MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(head, 0, 2), 2);
 		start.setId(blktyp);
-		int blklength = MDF4Util
-				.readUInt16(MDFParser.getDataBuffer(head, 2, 4));
+		int blklength = MDF4Util.readUInt16(MDFParser.getDataBuffer(head, 2, 4));
 		start.setLength(blklength);
 
 		// set standard link-count
@@ -136,9 +132,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		// Read links and create new blocks
 		head = readBytes(blklinkcount * 4, in);
 		for (int i = 0; i < blklinkcount; i++) {
-			long nextlink = MDF3Util.readLink(
-					MDFParser.getDataBuffer(head, i * 4, (i + 1) * 4),
-					isBigEndian);
+			long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, i * 4, (i + 1) * 4), isBigEndian);
 			if (nextlink != 0) {
 				if (blktyp.equals("DG") && i == 3) { // special case: pointer to
 					// data section (4th
@@ -155,8 +149,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		// read possible extra links in CGBLOCK
 		if (blktyp.equals("CG") && blklength == 30) {
 			head = readBytes(14, in);
-			long nextlink = MDF3Util.readLink(
-					MDFParser.getDataBuffer(head, 10, 14), isBigEndian);
+			long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, 10, 14), isBigEndian);
 			start.moreLinks(4);
 			checkFoundLink(start, nextlink, 3);
 		}
@@ -164,8 +157,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		// read possible extra links CNBLOCK
 		if (blktyp.equals("CN") && blklength > 218) {
 			head = readBytes(198, in);
-			long nextlink = MDF3Util.readLink(
-					MDFParser.getDataBuffer(head, 194, 198), isBigEndian);
+			long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, 194, 198), isBigEndian);
 			start.moreLinks(6);
 			if (nextlink != 0) {
 				checkFoundLink(start, nextlink, 5);
@@ -173,8 +165,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 
 			if (blklength > 222) {
 				head = readBytes(4, in);
-				nextlink = MDF3Util.readLink(
-						MDFParser.getDataBuffer(head, 0, 4), isBigEndian);
+				nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, 0, 4), isBigEndian);
 				start.moreLinks(7);
 				if (nextlink != 0) {
 					checkFoundLink(start, nextlink, 6);
@@ -186,14 +177,15 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		if (blktyp.equals("CC")) {
 			head = readBytes(40, in);
 			int convtype = MDF3Util.readUInt16(MDFParser.getDataBuffer(head, 38, 40), isBigEndian);
-			if(convtype == 12){
-				//TextTable has links to textblocks, get number
+			if (convtype == 12) {
+				// TextTable has links to textblocks, get number
 				head = readBytes(2, in);
 				int numberOfValues = MDF3Util.readUInt16(MDFParser.getDataBuffer(head, 0, 2), isBigEndian);
 				start.moreLinks(numberOfValues);
-				head = readBytes((8+8+4)*numberOfValues, in);
-				for(int i = 0; i < numberOfValues;i++){
-					long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, i*20+16, (i+1)*20), isBigEndian);
+				head = readBytes((8 + 8 + 4) * numberOfValues, in);
+				for (int i = 0; i < numberOfValues; i++) {
+					long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, i * 20 + 16, (i + 1) * 20),
+							isBigEndian);
 					if (nextlink != 0) {
 						checkFoundLink(start, nextlink, i);
 					}
@@ -201,15 +193,14 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 			}
 		}
 
-
 		// read possible extra links CDBLOCK
 		if (blktyp.equals("CD")) {
 			head = readBytes(4, in);
 			int numdep = MDF3Util.readUInt16(MDFParser.getDataBuffer(head, 2, 4), isBigEndian);
-			start.moreLinks(2*numdep);
-			head = readBytes(8*numdep, in);
-			for(int i = 0; i < 2*numdep;i++){
-				long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, 4*i, 4*(i+1)), isBigEndian);
+			start.moreLinks(2 * numdep);
+			head = readBytes(8 * numdep, in);
+			for (int i = 0; i < 2 * numdep; i++) {
+				long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, 4 * i, 4 * (i + 1)), isBigEndian);
 				if (nextlink != 0) {
 					checkFoundLink(start, nextlink, i);
 				}
@@ -258,8 +249,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 	 *            The number of the link from startblock to the found
 	 *            childblock.
 	 */
-	public void checkFoundDataBlockLink(MDF3GenBlock start, long address,
-			int chldnum) {
+	public void checkFoundDataBlockLink(MDF3GenBlock start, long address, int chldnum) {
 		foundblocks++;
 		if (blocklist.containsKey(address)) {
 			start.addLink(chldnum, blocklist.get(address));
@@ -286,8 +276,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 	 */
 	private void forceparse(MDF3GenBlock blk) throws IOException {
 
-		long sectionsize = blk.getLength() - 4
-				- 4 * MDF3Util.getLinkcount(blk.getId());
+		long sectionsize = blk.getLength() - 4 - 4 * MDF3Util.getLinkcount(blk.getId());
 
 		byte[] content = null;
 
@@ -355,17 +344,14 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 				MDF3GenBlock datasec = dgthis.getLnkData();
 				if (datasec != null) {
 					long datalength = 0;
-					MDF3GenBlock cgfirst =dgthis.getLnkCgFirst();
-					if(!(cgfirst instanceof CGBLOCK)){
+					MDF3GenBlock cgfirst = dgthis.getLnkCgFirst();
+					if (!(cgfirst instanceof CGBLOCK)) {
 						throw new RuntimeException("Error reading CGBLOCK");
 					}
 					CGBLOCK childcg = (CGBLOCK) dgthis.getLnkCgFirst();
 					do {
-						datalength += (childcg.getDataBytes()
-								+ dgthis.getNumOfRecId())
-								* childcg.getCycleCount();
-					} while ((childcg = (CGBLOCK) childcg
-							.getLnkCgNext()) != null);
+						datalength += (childcg.getDataBytes() + dgthis.getNumOfRecId()) * childcg.getCycleCount();
+					} while ((childcg = (CGBLOCK) childcg.getLnkCgNext()) != null);
 
 					datasec.setLength(datalength);
 				}

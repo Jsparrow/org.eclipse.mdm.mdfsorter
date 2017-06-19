@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.zip.DataFormatException;
 
-
 public class ReadDataCache {
 	private ByteBuffer cache;
 	private long cachestart = -1;
@@ -27,8 +26,7 @@ public class ReadDataCache {
 		maxreadlen = prov.getLength();
 	}
 
-	public ByteBuffer read(long startoffset, int length)
-			throws IOException, DataFormatException {
+	public ByteBuffer read(long startoffset, int length) throws IOException, DataFormatException {
 		if (length < CACHESIZE) {
 			if (startoffset >= cachestart && startoffset + length < cacheend) {
 				// cache hit!
@@ -42,12 +40,9 @@ public class ReadDataCache {
 				if (cacheend > maxreadlen) {
 					// maximum reached.
 					cacheend = maxreadlen;
-					cache = ByteBuffer
-							.allocate((int) (maxreadlen - startoffset));
+					cache = ByteBuffer.allocate((int) (maxreadlen - startoffset));
 					if (maxreadlen - startoffset < length) {
-						throw new RuntimeException("Length " + length
-								+ " Bytes are not available from "
-								+ startoffset);
+						throw new RuntimeException("Length " + length + " Bytes are not available from " + startoffset);
 					}
 				} else if (cache.capacity() < CACHESIZE) {
 					cache = ByteBuffer.allocate(CACHESIZE);
