@@ -70,8 +70,8 @@ public class MDF3BlocksSplittMerger {
 	 * @param prov
 	 *            The DataProvider to read from.
 	 */
-	public MDF3BlocksSplittMerger(MDF3ProcessWriter ps, MDF3GenBlock parentnode,
-			long totdatalength, MDF3DataProvider prov) {
+	public MDF3BlocksSplittMerger(MDF3ProcessWriter ps, MDF3GenBlock parentnode, long totdatalength,
+			MDF3DataProvider prov) {
 		this.ps = ps;
 		this.parentnode = parentnode;
 
@@ -97,8 +97,7 @@ public class MDF3BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void splitmerge(long startaddress, long length)
-			throws IOException, DataFormatException {
+	public void splitmerge(long startaddress, long length) throws IOException, DataFormatException {
 		globalReadPtr = startaddress;
 		appendDataFromPos(length);
 	}
@@ -114,8 +113,7 @@ public class MDF3BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void appendDataFromPos(long leftbytes)
-			throws IOException, DataFormatException {
+	public void appendDataFromPos(long leftbytes) throws IOException, DataFormatException {
 		// check if space in curr-Block is available, and fill with first data,
 		// or attach all data if it fits
 		if (curr == null) {
@@ -126,8 +124,7 @@ public class MDF3BlocksSplittMerger {
 			abstractcopy(leftbytes);
 			datawritten += leftbytes;
 		} else {
-			throw new RuntimeException(
-					"MDF3Merger got more data than space was reserved.");
+			throw new RuntimeException("MDF3Merger got more data than space was reserved.");
 		}
 	}
 
@@ -142,8 +139,7 @@ public class MDF3BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public ByteBuffer abstractread(int length)
-			throws IOException, DataFormatException {
+	public ByteBuffer abstractread(int length) throws IOException, DataFormatException {
 		return prov.cachedRead(globalReadPtr, length);
 	}
 
@@ -177,27 +173,23 @@ public class MDF3BlocksSplittMerger {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void abstractcopy(long length)
-			throws IOException, DataFormatException {
+	public void abstractcopy(long length) throws IOException, DataFormatException {
 		long written = 0L;
 		do {
 			int bytesread = 0;
-			if (written
-					+ MDFAbstractProcessWriter.MAX_OUTPUTBLOCKSIZE > length) {
+			if (written + MDFAbstractProcessWriter.MAX_OUTPUTBLOCKSIZE > length) {
 				bytesread = (int) (length - written);
 				ByteBuffer custombuffer = abstractread(bytesread);
 				abstractput(custombuffer, bytesread);
 			} else {
-				ByteBuffer buffer = abstractread(
-						MDFAbstractProcessWriter.MAX_OUTPUTBLOCKSIZE);
+				ByteBuffer buffer = abstractread(MDFAbstractProcessWriter.MAX_OUTPUTBLOCKSIZE);
 				bytesread = MDFAbstractProcessWriter.MAX_OUTPUTBLOCKSIZE;
 				abstractput(buffer, bytesread);
 			}
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: "
-					+ length + "/" + written);
+			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
 		}
 	}
 
@@ -205,8 +197,7 @@ public class MDF3BlocksSplittMerger {
 		if (parentnode instanceof DGBLOCK) {
 			parentnode.setLink(3, curr);
 		} else {
-			System.err.println(
-					"Unable to set link to data block. Parent block not recognized.");
+			System.err.println("Unable to set link to data block. Parent block not recognized.");
 		}
 	}
 

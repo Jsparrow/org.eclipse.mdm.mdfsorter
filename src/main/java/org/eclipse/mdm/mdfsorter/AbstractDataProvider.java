@@ -14,17 +14,17 @@ import java.util.zip.DataFormatException;
 
 /**
  * Abstract Parent Class of MDF3DataProvider and MDF4DataProvider.
+ * 
  * @author Tobias Leemann
  */
 public interface AbstractDataProvider {
-	abstract void read(long globaloffset, ByteBuffer data)
-			throws IOException, DataFormatException;
+	abstract void read(long globaloffset, ByteBuffer data) throws IOException, DataFormatException;
 
-	ByteBuffer cachedRead(long globaloffset, int length)
-			throws IOException, DataFormatException;
+	ByteBuffer cachedRead(long globaloffset, int length) throws IOException, DataFormatException;
 
 	/**
 	 * Get the length of a data section.
+	 * 
 	 * @return The length of the data section.
 	 */
 	abstract long getLength();

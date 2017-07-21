@@ -16,6 +16,7 @@ import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
 
 /**
  * The Conversion Block
+ * 
  * @author Tobias Leemann, Christian Rechner
  */
 @SuppressWarnings("unused")
@@ -49,14 +50,17 @@ public class CCBLOCK extends MDF3GenBlock {
 	// 65535 = 1:1 conversion formula (Int = Phys)
 	private int formulaIdent;
 
-	// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or number of
+	// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or
+	// number of
 	// parameters
 	private int noOfValuePairsForFormula;
 
 	private byte[] conversionData;
 
-	// ... Parameter (for type 0,6,7,8,9) or table (for type 1, 2, 11, or 12) or text (for type
-	// 10), depending on the conversion formula identifier. See formula-specific block
+	// ... Parameter (for type 0,6,7,8,9) or table (for type 1, 2, 11, or 12) or
+	// text (for type
+	// 10), depending on the conversion formula identifier. See formula-specific
+	// block
 	// supplement.
 	private double[] valuePairsForFormula; // formula = 0,6,7,8,9
 
@@ -67,7 +71,6 @@ public class CCBLOCK extends MDF3GenBlock {
 	private double[] lowerRangeKeysForTextRangeTable; // formula = 12
 	private double[] upperRangeKeysForTextRangeTable; // formula = 12
 	private String[] valuesForTextRangeTable; // formula = 12
-
 
 	/**
 	 * Parse a CCBLOCK from an existing MDFGenBlock
@@ -152,7 +155,6 @@ public class CCBLOCK extends MDF3GenBlock {
 		return valuesForTextTable;
 	}
 
-
 	private void setValuesForTextTable(String[] valuesForTextTable) {
 		this.valuesForTextTable = valuesForTextTable;
 	}
@@ -193,8 +195,9 @@ public class CCBLOCK extends MDF3GenBlock {
 	public String toString() {
 		return "CCBLOCK [knownPhysValue=" + knownPhysValue + ", minPhysValue=" + minPhysValue + ", maxPhysValue="
 				+ maxPhysValue + ", physUnit=" + physUnit + ", formulaIdent=" + formulaIdent
-				+ ", noOfValuePairsForFormula=" + noOfValuePairsForFormula+"]";
+				+ ", noOfValuePairsForFormula=" + noOfValuePairsForFormula + "]";
 	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -203,7 +206,7 @@ public class CCBLOCK extends MDF3GenBlock {
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// BOOL 1 Value range – known physical value
-		setKnownPhysValue(MDF3Util.readBool(MDFParser.getDataBuffer(content, 0, 2),isBigEndian()));
+		setKnownPhysValue(MDF3Util.readBool(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// REAL 1 Value range – minimum physical value
 		setMinPhysValue(MDF4Util.readReal(MDFParser.getDataBuffer(content, 2, 10)));
@@ -213,7 +216,6 @@ public class CCBLOCK extends MDF3GenBlock {
 
 		// CHAR 20 Physical unit
 		setPhysUnit(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 18, 38), 20));
-
 
 		// UINT16 1 Conversion formula identifier
 		// 0 = parametric, linear
@@ -231,34 +233,34 @@ public class CCBLOCK extends MDF3GenBlock {
 		// 65535 = 1:1 conversion formula (Int = Phys)
 		setFormulaIdent(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 38, 40), isBigEndian()));
 
-		if(content.length>40){
-			// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11 and 12 or number of parameters
+		if (content.length > 40) {
+			// UINT16 1 Number of value pairs for conversion formulas 1, 2, 11
+			// and 12 or number of parameters
 			setNoOfValuePairsForFormula(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 40, 42), isBigEndian()));
 		}
 
-		if(content.length > 42){
-			conversionData = new byte[content.length-42];
+		if (content.length > 42) {
+			conversionData = new byte[content.length - 42];
 			System.arraycopy(content, 42, conversionData, 0, conversionData.length);
 		}
 	}
 
 	@Override
 	public void updateLinks(RandomAccessFile r) throws IOException {
-		if(getLinkCount()==0) {
+		if (getLinkCount() == 0) {
 			return;
 		}
 
-		if(formulaIdent!= 12){
+		if (formulaIdent != 12) {
 			throw new RuntimeException("Only a CC block with formula type 12 can have links.");
 		}
 
 		MDF3GenBlock linkedblock;
 		for (int i = 0; i < getLinkCount(); i++) {
-			r.seek(getOutputpos() + 4L +42L + 20L*i +16L);
-			//position of links, see specification.
+			r.seek(getOutputpos() + 4L + 42L + 20L * i + 16L);
+			// position of links, see specification.
 			if ((linkedblock = getLink(i)) != null) {
-				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(),
-						isBigEndian()));
+				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(), isBigEndian()));
 			} else {
 				r.write(MDF3Util.getBytesLink(0, isBigEndian()));
 			}

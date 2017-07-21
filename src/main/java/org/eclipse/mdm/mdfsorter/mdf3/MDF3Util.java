@@ -27,8 +27,7 @@ public abstract class MDF3Util {
 	 */
 	public static int getLinkcount(String blockID) {
 		if (blockID.length() != 2) {
-			throw new IllegalArgumentException(
-					"ID-Length = " + blockID.length());
+			throw new IllegalArgumentException("ID-Length = " + blockID.length());
 		}
 
 		switch (blockID) {

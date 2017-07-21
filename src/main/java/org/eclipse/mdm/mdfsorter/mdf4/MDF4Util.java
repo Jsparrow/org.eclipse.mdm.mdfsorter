@@ -152,13 +152,9 @@ public abstract class MDF4Util {
 	public static long readUInt64(ByteBuffer bb) {
 		byte[] data = new byte[8];
 		bb.get(data);
-		long l1 = ((long) data[0] & 0xff) << 0
-				| ((long) data[1] & 0xff) << 8
-				| ((long) data[2] & 0xff) << 16
+		long l1 = ((long) data[0] & 0xff) << 0 | ((long) data[1] & 0xff) << 8 | ((long) data[2] & 0xff) << 16
 				| ((long) data[3] & 0xff) << 24;
-		long l2 = ((long) data[4] & 0xff) << 0
-				| ((long) data[5] & 0xff) << 8
-				| ((long) data[6] & 0xff) << 16
+		long l2 = ((long) data[4] & 0xff) << 0 | ((long) data[5] & 0xff) << 8 | ((long) data[6] & 0xff) << 16
 				| ((long) data[7] & 0xff) << 24;
 		return l1 << 0 | l2 << 32;
 	}
@@ -220,13 +216,9 @@ public abstract class MDF4Util {
 	public static long readLink(ByteBuffer bb) {
 		byte[] data = new byte[8];
 		bb.get(data);
-		long l1 = ((long) data[0] & 0xff) << 0
-				| ((long) data[1] & 0xff) << 8
-				| ((long) data[2] & 0xff) << 16
+		long l1 = ((long) data[0] & 0xff) << 0 | ((long) data[1] & 0xff) << 8 | ((long) data[2] & 0xff) << 16
 				| ((long) data[3] & 0xff) << 24;
-		long l2 = ((long) data[4] & 0xff) << 0
-				| ((long) data[5] & 0xff) << 8
-				| ((long) data[6] & 0xff) << 16
+		long l2 = ((long) data[4] & 0xff) << 0 | ((long) data[5] & 0xff) << 8 | ((long) data[6] & 0xff) << 16
 				| ((long) data[7] & 0xff) << 24;
 		return l1 << 0 | l2 << 32;
 	}
@@ -257,8 +249,7 @@ public abstract class MDF4Util {
 	 * @throws IOException
 	 *             If an reading error occurs.
 	 */
-	public static String readCharsISO8859(ByteBuffer bb, int length)
-			throws IOException {
+	public static String readCharsISO8859(ByteBuffer bb, int length) throws IOException {
 		byte[] b = new byte[length];
 		bb.get(b);
 		return new String(b, 0, length, CHARSET_ISO8859);
@@ -275,8 +266,7 @@ public abstract class MDF4Util {
 	 * @throws IOException
 	 *             If an reading error occurs.
 	 */
-	public static String readCharsUTF8(ByteBuffer bb, int length)
-			throws IOException {
+	public static String readCharsUTF8(ByteBuffer bb, int length) throws IOException {
 		byte[] b = new byte[length];
 		bb.get(b);
 		return new String(b, 0, length, CHARSET_UTF8);
@@ -286,8 +276,7 @@ public abstract class MDF4Util {
 		return s.getBytes(CHARSET_UTF8);
 	}
 
-	public static byte[] getBytesCharsUTF8WithTerminator(String s)
-			throws IOException {
+	public static byte[] getBytesCharsUTF8WithTerminator(String s) throws IOException {
 		String term = "\0";
 		return (s + term).getBytes(CHARSET_UTF8);
 	}
@@ -305,8 +294,7 @@ public abstract class MDF4Util {
 	 *            Array.
 	 * @return An array containing the transposed Data.
 	 */
-	public static byte[] transposeArray(byte[] data, int columnsize,
-			boolean forward) {
+	public static byte[] transposeArray(byte[] data, int columnsize, boolean forward) {
 		byte[] out = new byte[data.length];
 		int len = data.length;
 		int rows = len / columnsize;

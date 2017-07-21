@@ -10,10 +10,11 @@ package org.eclipse.mdm.mdfsorter;
 
 /**
  * Exception thrown by the MDFSorter Argument parser.
+ * 
  * @author Tobias Leemann
  *
  */
-public class MDFSorterArgException extends IllegalArgumentException{
+public class MDFSorterArgException extends IllegalArgumentException {
 
 	public MDFSorterArgException(String string) {
 		super(string);

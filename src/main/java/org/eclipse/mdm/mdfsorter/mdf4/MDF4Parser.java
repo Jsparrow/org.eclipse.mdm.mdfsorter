@@ -44,13 +44,11 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 	 * @throws IOException
 	 *             If an input error occurs.
 	 */
-	private static byte[] readBytes(int bytes, FileChannel in)
-			throws IOException {
+	private static byte[] readBytes(int bytes, FileChannel in) throws IOException {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;
 		if ((bytesread = in.read(chunk)) != bytes) {
-			System.err.println(
-					"Read only " + bytesread + " Bytes instead of " + bytes);
+			System.err.println("Read only " + bytesread + " Bytes instead of " + bytes);
 		}
 		return chunk.array();
 	}
@@ -104,8 +102,8 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 
 		MDFSorter.log.log(Level.INFO, "Needed " + fileruns + " runs.");
 		MDFSorter.log.log(Level.INFO, "Found " + blocklist.size() + " blocks.");
-		MDFSorter.log.log(Level.FINE,
-				"ValidatorListSize: " + (foundblocks + 1)); // Expected number
+		MDFSorter.log.log(Level.FINE, "ValidatorListSize: " + (foundblocks + 1)); // Expected
+																					// number
 		// of node in Vector
 		// MDFValidators
 		// node list for
@@ -136,8 +134,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 		// Read links and create new blocks
 		head = readBytes((int) (blklinkcount * 8), in);
 		for (int i = 0; i < blklinkcount; i++) {
-			long nextlink = MDF4Util
-					.readLink(getDataBuffer(head, i * 8, (i + 1) * 8));
+			long nextlink = MDF4Util.readLink(getDataBuffer(head, i * 8, (i + 1) * 8));
 			if (nextlink != 0) {
 				if (blocklist.containsKey(nextlink)) {
 					start.addLink(i, blocklist.get(nextlink));
@@ -169,13 +166,11 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 	 */
 	public static ByteBuffer getDataBuffer(byte[] data, int start, int end) {
 		if (start >= 0 && end <= data.length) {
-			return java.nio.ByteBuffer
-					.wrap(Arrays.copyOfRange(data, start, end));
+			return java.nio.ByteBuffer.wrap(Arrays.copyOfRange(data, start, end));
 		} else {
 			// just for testing
 			throw new ArrayIndexOutOfBoundsException(
-					"Tried to access bytes " + start + " to " + end
-					+ "with array length " + data.length);
+					"Tried to access bytes " + start + " to " + end + "with array length " + data.length);
 		}
 	}
 
@@ -192,18 +187,17 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 		byte[] content = null;
 		// parse special blocktypes more precisely.
 
-
 		MDF4GenBlock sp = null;
 		switch (blk.getId()) {
 		case "##AT":
-			//sp = new ATBLOCK(blk);
+			// sp = new ATBLOCK(blk);
 			break;
 		case "##CA":
-			//sp = new CABLOCK(blk);
+			// sp = new CABLOCK(blk);
 			break;
-			//throw new UnsupportedOperationException("CA Block found!");
+		// throw new UnsupportedOperationException("CA Block found!");
 		case "##CC":
-			//sp = new CCBLOCK(blk);
+			// sp = new CCBLOCK(blk);
 			break;
 		case "##CG":
 			sp = new CGBLOCK(blk);
@@ -212,7 +206,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			sp = new CNBLOCK(blk);
 			break;
 		case "##CH":
-			//sp = new CHBLOCK(blk);
+			// sp = new CHBLOCK(blk);
 			break;
 		case "##DG":
 			sp = new DGBLOCK(blk);
@@ -229,7 +223,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			sp = new DZBLOCK(blk);
 			break;
 		case "##EV":
-			//sp = new EVBLOCK(blk);
+			// sp = new EVBLOCK(blk);
 			break;
 		case "##FH":
 			sp = new FHBLOCK(blk);
@@ -244,21 +238,21 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			sp = new MDBLOCK(blk);
 			break;
 		case "##SI":
-			//sp = new SIBLOCK(blk);
+			// sp = new SIBLOCK(blk);
 			break;
 		case "##SR":
-			//sp = new SRBLOCK(blk);
+			// sp = new SRBLOCK(blk);
 			break;
 		case "##TX":
 			sp = new TXBLOCK(blk);
 			break;
 		default:
-			System.err.println("Unknown block of type "+ blk.getId() + " found.");
+			System.err.println("Unknown block of type " + blk.getId() + " found.");
 		}
 
-		if (blk.getId().equals("##DZ")){
+		if (blk.getId().equals("##DZ")) {
 			content = readBytes(24, in);
-		} else if (sp!=null) {
+		} else if (sp != null) {
 			content = readBytes((int) sectionsize, in);
 		}
 

@@ -74,9 +74,9 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 *            FileChannel to the input file.
 	 */
 	public MDF4DataProvider(MDF4GenBlock datasectionhead, FileChannel reader) {
-		//empty data section
-		if(datasectionhead == null){
-			sectype='0';
+		// empty data section
+		if (datasectionhead == null) {
+			sectype = '0';
 			return;
 		}
 		this.datasectionhead = datasectionhead;
@@ -138,13 +138,11 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 *             If zipped data is in an invalid format.
 	 */
 	@Override
-	public void read(long globaloffset, ByteBuffer data)
-			throws IOException, DataFormatException {
+	public void read(long globaloffset, ByteBuffer data) throws IOException, DataFormatException {
 
 		if (globaloffset + data.capacity() > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only "
-							+ sectionlength + " bytes long.");
+					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
 		}
 		if (dataarr != null) {
 			data.put(dataarr, (int) globaloffset, data.capacity());
@@ -157,8 +155,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 
 		// check if block was last processed block (performance optimization)
 		if (lastprocessed != null) {
-			if (lastprocessedstart <= globaloffset
-					&& lastprocessedend > globaloffset) {
+			if (lastprocessedstart <= globaloffset && lastprocessedend > globaloffset) {
 				blk = lastprocessed;
 				blkoffset = globaloffset - lastprocessedstart;
 			}
@@ -171,41 +168,38 @@ public class MDF4DataProvider implements AbstractDataProvider {
 			blkoffset = (long) bo[1];
 			lastprocessedstart = (long) bo[2];
 			lastprocessed = blk;
-			long lpdatasize = lastprocessed instanceof DZBLOCK
-					? ((DZBLOCK) lastprocessed).getOrg_data_length()
-							: lastprocessed.getLength() - 24L;
-					lastprocessedend = lastprocessedstart + lpdatasize;
+			long lpdatasize = lastprocessed instanceof DZBLOCK ? ((DZBLOCK) lastprocessed).getOrg_data_length()
+					: lastprocessed.getLength() - 24L;
+			lastprocessedend = lastprocessedstart + lpdatasize;
 		}
 
 		// length check
-		long datasize = blk instanceof DZBLOCK
-				? ((DZBLOCK) blk).getOrg_data_length() : blk.getLength() - 24L;
-				if (blkoffset + data.capacity() > datasize) {
-					int readablesize = (int) (datasize - blkoffset);
-					ByteBuffer readable = ByteBuffer.allocate(readablesize);
+		long datasize = blk instanceof DZBLOCK ? ((DZBLOCK) blk).getOrg_data_length() : blk.getLength() - 24L;
+		if (blkoffset + data.capacity() > datasize) {
+			int readablesize = (int) (datasize - blkoffset);
+			ByteBuffer readable = ByteBuffer.allocate(readablesize);
 
-					// divide and conquer: Read available section first
-					read(globaloffset, readable);
+			// divide and conquer: Read available section first
+			read(globaloffset, readable);
 
-					// read unavailable section
-					ByteBuffer unreadable = ByteBuffer
-							.allocate(data.capacity() - readablesize);
-					read(globaloffset + readablesize, unreadable);
+			// read unavailable section
+			ByteBuffer unreadable = ByteBuffer.allocate(data.capacity() - readablesize);
+			read(globaloffset + readablesize, unreadable);
 
-					// merge sections
-					data.put(readable);
-					data.put(unreadable);
-					data.rewind();
-					return;
-				}
+			// merge sections
+			data.put(readable);
+			data.put(unreadable);
+			data.rewind();
+			return;
+		}
 
-				if (blk.getId().equals("##DZ")) {
-					cache.read((DZBLOCK) blk, blkoffset, data);
-				} else {
-					reader.position(blk.getPos() + 24L + blkoffset);
-					reader.read(data);
-				}
-				data.rewind();
+		if (blk.getId().equals("##DZ")) {
+			cache.read((DZBLOCK) blk, blkoffset, data);
+		} else {
+			reader.position(blk.getPos() + 24L + blkoffset);
+			reader.read(data);
+		}
+		data.rewind();
 	}
 
 	/**
@@ -225,13 +219,11 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 *             If zipped data is in an invalid format.
 	 */
 	@Override
-	public ByteBuffer cachedRead(long globaloffset, int length)
-			throws IOException, DataFormatException {
+	public ByteBuffer cachedRead(long globaloffset, int length) throws IOException, DataFormatException {
 		// argument check
 		if (globaloffset + length > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only "
-							+ sectionlength + " bytes long.");
+					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
 		}
 
 		if (dataarr != null) {
@@ -262,24 +254,21 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void read(long blockoffset, ByteBuffer data, MDF4GenBlock blk)
-			throws IOException, DataFormatException {
+	public void read(long blockoffset, ByteBuffer data, MDF4GenBlock blk) throws IOException, DataFormatException {
 		// argument check
-		long datalength = blk instanceof DZBLOCK
-				? ((DZBLOCK) blk).getOrg_data_length() : blk.getLength() - 24L;
-				if (blockoffset + data.capacity() > datalength) {
-					throw new IllegalArgumentException(
-							"Invalid read access on Data Provider. Block is only "
-									+ datalength + " bytes long.");
-				}
+		long datalength = blk instanceof DZBLOCK ? ((DZBLOCK) blk).getOrg_data_length() : blk.getLength() - 24L;
+		if (blockoffset + data.capacity() > datalength) {
+			throw new IllegalArgumentException(
+					"Invalid read access on Data Provider. Block is only " + datalength + " bytes long.");
+		}
 
-				if (blk.getId().equals("##DZ")) {
-					cache.read((DZBLOCK) blk, blockoffset, data);
-				} else {
-					reader.position(blk.getPos() + 24L + blockoffset);
-					reader.read(data);
-					data.rewind();
-				}
+		if (blk.getId().equals("##DZ")) {
+			cache.read((DZBLOCK) blk, blockoffset, data);
+		} else {
+			reader.position(blk.getPos() + 24L + blockoffset);
+			reader.read(data);
+			data.rewind();
+		}
 	}
 
 	/**
@@ -316,8 +305,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 					drag = curr;
 					curr = (DLBLOCK) curr.getLink(0);
 				}
-				ret[0] = drag.getLink(
-						(int) (blknum - (pastblocks - drag.getCount()) + 1));
+				ret[0] = drag.getLink((int) (blknum - (pastblocks - drag.getCount()) + 1));
 				ret[1] = globaloffset % drag.getEqualLength();
 				ret[2] = drag.getEqualLength() * blknum;
 			} else {
@@ -328,18 +316,17 @@ public class MDF4DataProvider implements AbstractDataProvider {
 				long draglength = 0; // length of drag block.
 				while (curroff <= globaloffset) {
 					drag = actlist.getLink(listblknum + 1);
-					draglength = drag.getId().equals("##DZ")
-							? ((DZBLOCK) drag).getOrg_data_length()
-									: drag.getLength() - 24L;
+					draglength = drag.getId().equals("##DZ") ? ((DZBLOCK) drag).getOrg_data_length()
+							: drag.getLength() - 24L;
 
-							curroff = actlist.getOffset()[listblknum] + draglength;
+					curroff = actlist.getOffset()[listblknum] + draglength;
 
-							listblknum++;
-							// switch to next list, if end is reached.
-							if (listblknum == actlist.getCount()) {
-								actlist = (DLBLOCK) actlist.getLnkDlNext();
-								listblknum = 0;
-							}
+					listblknum++;
+					// switch to next list, if end is reached.
+					if (listblknum == actlist.getCount()) {
+						actlist = (DLBLOCK) actlist.getLnkDlNext();
+						listblknum = 0;
+					}
 				}
 				ret[0] = drag;
 				ret[1] = globaloffset - (curroff - draglength);
@@ -360,7 +347,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 * @return The length.
 	 */
 	private long calculateLength() {
-		if(datasectionhead ==null){
+		if (datasectionhead == null) {
 			return 0;
 		}
 		long newlength = 0;

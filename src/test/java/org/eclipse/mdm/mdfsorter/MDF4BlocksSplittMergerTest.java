@@ -30,20 +30,20 @@ public class MDF4BlocksSplittMergerTest {
 
 	@Test
 	public void testLength0() {
-		//test if a splitmerger with length 0 works, and links are correctly set to null.
+		// test if a splitmerger with length 0 works, and links are correctly
+		// set to null.
 		DGBLOCK blk = new DGBLOCK();
 		blk.setId("##DG");
-
 
 		MDFFileContent<MDF4GenBlock> con = new MDFFileContent<MDF4GenBlock>(null, null, null, false);
 		MDF4ProcessWriter ps = new MDF4ProcessWriter(con, new ArgumentStruct());
 
 		MDF4BlocksSplittMerger splitmerger = new MDF4BlocksSplittMerger(ps, "##DT", blk, 0, null, 1024);
 
-		//test setLinks.
-		//set links to a random block.
+		// test setLinks.
+		// set links to a random block.
 		MDF4GenBlock blablablock = new MDF4GenBlock(0xbad);
-		for(int i = 0; i < blk.getLinkCount(); i++){
+		for (int i = 0; i < blk.getLinkCount(); i++) {
 			blk.setLink(i, blablablock);
 		}
 		splitmerger.setLinks();

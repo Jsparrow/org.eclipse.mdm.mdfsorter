@@ -62,8 +62,7 @@ abstract public class MDFUnsorter {
 	 *            output file.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void unsortMDF(String inputfile, String outputfile,
-			long maxblocksize, boolean unzip) {
+	public static void unsortMDF(String inputfile, String outputfile, long maxblocksize, boolean unzip) {
 		ArgumentStruct struct = new ArgumentStruct();
 		struct.inputname = inputfile;
 		struct.outputname = outputfile;
@@ -75,18 +74,15 @@ abstract public class MDFUnsorter {
 			bufstream = new FileInputStream(inputfile);
 			MDFSorter.log.log(Level.INFO, "File opened.");
 			// 1. Parse file and get Content-Struct
-			MDFFileContent<? extends MDFGenBlock> con = MDFParser
-					.serializeFile(bufstream.getChannel());
+			MDFFileContent<? extends MDFGenBlock> con = MDFParser.serializeFile(bufstream.getChannel());
 
 			MDFAbstractProcessWriter<?> processorwriter;
 
 			if (con.isMDF3()) {
-				processorwriter = new MDF3UnsortProcessor(
-						(MDFFileContent<MDF3GenBlock>) con, struct);
+				processorwriter = new MDF3UnsortProcessor((MDFFileContent<MDF3GenBlock>) con, struct);
 				processorwriter.processAndWriteOut();
 			} else {
-				processorwriter = new MDFUnsortProcessor(
-						(MDFFileContent<MDF4GenBlock>) con, struct);
+				processorwriter = new MDFUnsortProcessor((MDFFileContent<MDF4GenBlock>) con, struct);
 				processorwriter.processAndWriteOut();
 			}
 

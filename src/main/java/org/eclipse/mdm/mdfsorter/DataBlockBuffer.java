@@ -21,7 +21,7 @@ import java.util.Map.Entry;
  * @see WriteWorker
  *
  */
-public class DataBlockBuffer implements AutoCloseable{
+public class DataBlockBuffer implements AutoCloseable {
 
 	/**
 	 * This list contains the pointers to the data, and an integer with the
@@ -85,7 +85,9 @@ public class DataBlockBuffer implements AutoCloseable{
 	}
 
 	/*
-	 * Puts null into the buffer, which causes the write tread using this buffer to finish.
+	 * Puts null into the buffer, which causes the write tread using this buffer
+	 * to finish.
+	 * 
 	 * @see java.lang.AutoCloseable#close()
 	 */
 	@Override

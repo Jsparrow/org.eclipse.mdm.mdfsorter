@@ -13,7 +13,6 @@ import java.io.RandomAccessFile;
 
 import org.eclipse.mdm.mdfsorter.MDFParser;
 
-
 /**
  * The Channel Group Block
  *
@@ -112,9 +111,8 @@ public class CGBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount
-				+ ", dataBytes=" + dataBytes + ", numChannels=" + numChannels
-				+ "]";
+		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount + ", dataBytes=" + dataBytes
+				+ ", numChannels=" + numChannels + "]";
 	}
 
 	/*
@@ -125,21 +123,17 @@ public class CGBLOCK extends MDF3GenBlock {
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// UINT16: Record ID
-		setRecordId(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2),
-				isBigEndian()));
+		setRecordId(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// UINT16: Number of Channel
-		setNumChannels(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 2, 4), isBigEndian()));
+		setNumChannels(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 2, 4), isBigEndian()));
 
 		// UINT16: Number of data Bytes (after record ID) used for signal values
 		// in record.
-		setDataBytes(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 4, 6),
-				isBigEndian()));
+		setDataBytes(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 4, 6), isBigEndian()));
 
 		// UINT32: Number of cycles
-		setCycleCount(MDF3Util.readUInt32(
-				MDFParser.getDataBuffer(content, 6, 10), isBigEndian()));
+		setCycleCount(MDF3Util.readUInt32(MDFParser.getDataBuffer(content, 6, 10), isBigEndian()));
 	}
 
 	@Override
@@ -169,24 +163,20 @@ public class CGBLOCK extends MDF3GenBlock {
 		System.arraycopy(recID, 0, ret, 0, 2);
 
 		// UINT16 Number of Channels
-		byte[] channelCount = MDF3Util.getBytesUInt16(getNumChannels(),
-				isBigEndian());
+		byte[] channelCount = MDF3Util.getBytesUInt16(getNumChannels(), isBigEndian());
 		System.arraycopy(channelCount, 0, ret, 2, 2);
 
 		// UINT16 Size of a record in bytes
-		byte[] databytes = MDF3Util.getBytesUInt16(getDataBytes(),
-				isBigEndian());
+		byte[] databytes = MDF3Util.getBytesUInt16(getDataBytes(), isBigEndian());
 		System.arraycopy(databytes, 0, ret, 4, 2);
 
 		// UINT32
-		byte[] cyccount = MDF3Util.getBytesUInt32(getCycleCount(),
-				isBigEndian());
+		byte[] cyccount = MDF3Util.getBytesUInt32(getCycleCount(), isBigEndian());
 		System.arraycopy(cyccount, 0, ret, 6, 4);
 
 		// Last link address!
 		if (getLinkCount() == 4) {
-			byte[] lnk = MDF3Util.getBytesLink(links[3].getOutputpos(),
-					isBigEndian());
+			byte[] lnk = MDF3Util.getBytesLink(links[3].getOutputpos(), isBigEndian());
 			System.arraycopy(lnk, 0, ret, 10, 2);
 		}
 		// LINK
@@ -201,8 +191,7 @@ public class CGBLOCK extends MDF3GenBlock {
 		// Update first three blocks normally
 		for (int i = 0; i < 3; i++) {
 			if ((linkedblock = getLink(i)) != null) {
-				r.write(MDF3Util.getBytesLink((int) linkedblock.getOutputpos(),
-						isBigEndian()));
+				r.write(MDF3Util.getBytesLink((int) linkedblock.getOutputpos(), isBigEndian()));
 			} else {
 				r.write(MDF3Util.getBytesLink(0, isBigEndian()));
 			}
@@ -210,8 +199,7 @@ public class CGBLOCK extends MDF3GenBlock {
 		// update fourth link manually
 		if (getLinkCount() == 4) {
 			r.seek(getOutputpos() + 4L + 3L * 4L + 10L);
-			r.write(MDF3Util.getBytesLink(getLink(4).getOutputpos(),
-					isBigEndian()));
+			r.write(MDF3Util.getBytesLink(getLink(4).getOutputpos(), isBigEndian()));
 		}
 	}
 

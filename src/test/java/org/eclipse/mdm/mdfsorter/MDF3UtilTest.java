@@ -33,12 +33,10 @@ public class MDF3UtilTest {
 	@Test
 	public void testGetBytesUInt32() {
 		long l = Integer.MAX_VALUE * 2L + 1L;
-		assertArrayEquals(MDF3Util.getBytesUInt32(l, false),
-				new byte[] { -1, -1, -1, -1 });
+		assertArrayEquals(MDF3Util.getBytesUInt32(l, false), new byte[] { -1, -1, -1, -1 });
 
 		l = Integer.MAX_VALUE * 2L + 1L;
-		assertArrayEquals(MDF3Util.getBytesUInt32(l, true),
-				new byte[] { -1, -1, -1, -1 });
+		assertArrayEquals(MDF3Util.getBytesUInt32(l, true), new byte[] { -1, -1, -1, -1 });
 	}
 
 	@Test
@@ -50,25 +48,25 @@ public class MDF3UtilTest {
 	@Test
 	public void ReadUINT32() {
 		long val = Integer.MAX_VALUE + 1L;
-		ByteBuffer buf1 = ByteBuffer.wrap(new byte[] {-128, 0, 0, 0});
+		ByteBuffer buf1 = ByteBuffer.wrap(new byte[] { -128, 0, 0, 0 });
 		assertEquals(val, MDF3Util.readUInt32(buf1, true));
 
-		ByteBuffer buf2 = ByteBuffer.wrap(new byte[] {0, 0, 0, -128});
+		ByteBuffer buf2 = ByteBuffer.wrap(new byte[] { 0, 0, 0, -128 });
 		assertEquals(val, MDF3Util.readUInt32(buf2, false));
 	}
 
 	@Test
 	public void testGetBool() {
-		assertArrayEquals(new byte[] {1, 0}, MDF3Util.getBytesBool(true, false));
+		assertArrayEquals(new byte[] { 1, 0 }, MDF3Util.getBytesBool(true, false));
 	}
 
 	@Test
 	public void testParseBool() {
-		ByteBuffer buf1 = ByteBuffer.wrap(new byte[] {0, -1});
+		ByteBuffer buf1 = ByteBuffer.wrap(new byte[] { 0, -1 });
 		assertTrue(MDF3Util.readBool(buf1, false));
 		buf1.rewind();
 		assertTrue(MDF3Util.readBool(buf1, true));
-		ByteBuffer buf2 = ByteBuffer.wrap(new byte[] {0, 0});
+		ByteBuffer buf2 = ByteBuffer.wrap(new byte[] { 0, 0 });
 		assertFalse(MDF3Util.readBool(buf2, false));
 	}
 

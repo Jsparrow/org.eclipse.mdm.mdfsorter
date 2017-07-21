@@ -205,10 +205,8 @@ public class CGBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount
-				+ ", flags=" + flags + ", pathSeparator=" + pathSeparator
-				+ ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes
-				+ "]";
+		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount + ", flags=" + flags + ", pathSeparator="
+				+ pathSeparator + ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes + "]";
 	}
 
 	/**
@@ -218,30 +216,25 @@ public class CGBLOCK extends MDF4GenBlock {
 	public void parse(byte[] content) throws IOException {
 
 		// UINT64: Record ID
-		setRecordId(
-				MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 0, 8)));
+		setRecordId(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 0, 8)));
 
 		// UINT64: Number of cycles
-		setCycleCount(
-				MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
+		setCycleCount(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
 
 		// UINT16: Flags
 		setFlags(MDF4Util.readUInt16(MDFParser.getDataBuffer(content, 16, 18)));
 
 		// UINT16: Value of character to be used as path separator, 0 if no path
 		// separator specified.
-		setPathSeparator(
-				MDF4Util.readUInt16(MDFParser.getDataBuffer(content, 18, 20)));
+		setPathSeparator(MDF4Util.readUInt16(MDFParser.getDataBuffer(content, 18, 20)));
 
 		// UINT32: Number of data Bytes (after record ID) used for signal values
 		// in record.
-		setDataBytes(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 24, 28)));
+		setDataBytes(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 24, 28)));
 
 		// UINT32: Number of additional Bytes for record used for invalidation
 		// bits.
-		setInvalBytes(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 28, 32)));
+		setInvalBytes(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 28, 32)));
 	}
 
 	@Override

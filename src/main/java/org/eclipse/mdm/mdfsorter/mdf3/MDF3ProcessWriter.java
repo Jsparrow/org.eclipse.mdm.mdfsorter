@@ -48,8 +48,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 	 * @param args
 	 *            The arguments of this programm call.
 	 */
-	public MDF3ProcessWriter(MDFFileContent<MDF3GenBlock> filestructure,
-			ArgumentStruct args) {
+	public MDF3ProcessWriter(MDFFileContent<MDF3GenBlock> filestructure, ArgumentStruct args) {
 		this.filestructure = filestructure;
 		this.args = args;
 		writtenblocks = new LinkedList<MDF3GenBlock>();
@@ -79,17 +78,18 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		}
 		// Check if zip flag is not set
 		if (!args.unzip) {
-			throw new IllegalArgumentException(
-					"MDF3.x Files mustn't be zipped!");
+			throw new IllegalArgumentException("MDF3.x Files mustn't be zipped!");
 		}
 
 		// Open outputfile
 		FileOutputStream out = new FileOutputStream(args.outputname);
 
-		long start; Thread t; //Start time will be stored here later.
+		long start;
+		Thread t; // Start time will be stored here later.
 
-		try(DataBlockBuffer buf = new DataBlockBuffer()){
-			//automatically stop writer thread if exeptions occur (Writer Thread is stopped vie the DataBlock Buffer.
+		try (DataBlockBuffer buf = new DataBlockBuffer()) {
+			// automatically stop writer thread if exeptions occur (Writer
+			// Thread is stopped vie the DataBlock Buffer.
 
 			myCache = new WriteDataCache(buf);
 
@@ -124,8 +124,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 				} else {
 					if (blk.getProblems() != null) {
 						for (MDFCompatibilityProblem p : blk.getProblems()) {
-							MDFSorter.log.log(Level.FINE,
-									"Problem of Type: " + p.getType());
+							MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType());
 						}
 						solveProblem(blk.getProblems());
 					} else {
@@ -139,18 +138,17 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 			// Flush Cache
 			myCache.flush();
 		}
-		//Wait for completion of write operation.
+		// Wait for completion of write operation.
 		try {
 			t.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		//Close output stream.
+		// Close output stream.
 		out.close();
 
 		MDFSorter.log.log(Level.INFO, "Wrote " + writeptr / 1000 + " kB.");
-		MDFSorter.log.log(Level.INFO,
-				"Writing took " + (System.currentTimeMillis() - start) + " ms");
+		MDFSorter.log.log(Level.INFO, "Writing took " + (System.currentTimeMillis() - start) + " ms");
 
 		// Update links with RandomAccessFile
 		RandomAccessFile r = new RandomAccessFile(args.outputname, "rw");
@@ -171,8 +169,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 	 * @throws DataFormatException
 	 *             If zipped Data is in an invalid format
 	 */
-	public void solveProblem(List<MDFCompatibilityProblem> l)
-			throws IOException, DataFormatException {
+	public void solveProblem(List<MDFCompatibilityProblem> l) throws IOException, DataFormatException {
 		if (l.size() != 1) {
 			System.out.println("To many Problems.");
 			// This may be supported in later versions.
@@ -186,10 +183,8 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 				// We have more than one channel group in a single
 				// DataGroup. We have to create new DataGroups for each
 				// Channel Group.
-				LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup(
-						(DGBLOCK) node);
-				MDFSorter.log.log(Level.INFO,
-						"Found " + groups.size() + " Channel Groups in DG.");
+				LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
+				MDFSorter.log.log(Level.INFO, "Found " + groups.size() + " Channel Groups in DG.");
 				MDF3GenBlock datasection = ((DGBLOCK) node).getLnkData();
 				SortDataGroup(prob, groups, datasection);
 
@@ -200,8 +195,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		}
 	}
 
-	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(
-			DGBLOCK startDataGroup) {
+	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(DGBLOCK startDataGroup) {
 		LinkedList<CGBLOCK> ret = new LinkedList<CGBLOCK>();
 		CGBLOCK next = (CGBLOCK) startDataGroup.getLnkCgFirst();
 		while (next != null) {
@@ -211,14 +205,12 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		return ret;
 	}
 
-	public void SortDataGroup(MDFCompatibilityProblem prob,
-			LinkedList<CGBLOCK> groups, MDF3GenBlock datasection)
-					throws IOException, DataFormatException {
+	public void SortDataGroup(MDFCompatibilityProblem prob, LinkedList<CGBLOCK> groups, MDF3GenBlock datasection)
+			throws IOException, DataFormatException {
 
 		DGBLOCK datagroup = (DGBLOCK) prob.getStartnode();
 		// sort records.
-		MDF3DataProvider prov = new MDF3DataProvider(datasection,
-				filestructure.getInput());
+		MDF3DataProvider prov = new MDF3DataProvider(datasection, filestructure.getInput());
 
 		int idSize = 1;
 
@@ -236,7 +228,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 
 		for (CGBLOCK cgroup : groups) {
 
-			//Loop through records, and initialize variables
+			// Loop through records, and initialize variables
 			recCounters[i] = cgroup.getCycleCount();
 			int recID = cgroup.getRecordId();
 			recNumtoArrIdx.put(recID, i++);
@@ -256,8 +248,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 			last = copyChannelInfrastructure(last, cgroup);
 			long reclen = cgroup.getDataBytes();
 			newlength = cgroup.getCycleCount() * cgroup.getDataBytes();
-			MDF3BlocksSplittMerger splitmerger = new MDF3BlocksSplittMerger(
-					this, last, newlength, prov);
+			MDF3BlocksSplittMerger splitmerger = new MDF3BlocksSplittMerger(this, last, newlength, prov);
 
 			// write data sections.
 			for (long l : startaddresses[arridx]) {
@@ -267,27 +258,27 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		}
 	}
 
-
-	public long[][] fillRecordArray(long[] recordCounters, Map<Integer, Integer> recNumtoArrIdx, Map<Integer,
-			Integer> recNumtoSize, AbstractDataProvider prov, boolean redundantids) throws IOException, DataFormatException{
+	public long[][] fillRecordArray(long[] recordCounters, Map<Integer, Integer> recNumtoArrIdx,
+			Map<Integer, Integer> recNumtoSize, AbstractDataProvider prov, boolean redundantids)
+			throws IOException, DataFormatException {
 
 		MDFSorter.log.info("Searching Records.");
 
 		long[][] startaddresses = new long[recordCounters.length][];
 		int idSize = 1;
 
-		//initilize array.
-		int counter =0;
-		long totalRecords = 0; //total number of records
-		for(long i : recordCounters){
-			totalRecords+=i;
+		// initilize array.
+		int counter = 0;
+		long totalRecords = 0; // total number of records
+		for (long i : recordCounters) {
+			totalRecords += i;
 			startaddresses[counter++] = new long[(int) i];
 		}
 
 		int[] foundrecCounters = new int[recordCounters.length];
 
-		long sectionoffset = 0; //our position in the data section
-		long foundrecords = 0; //number of records we found
+		long sectionoffset = 0; // our position in the data section
+		long foundrecords = 0; // number of records we found
 
 		ByteBuffer databuf;
 		while (foundrecords < totalRecords) {
@@ -295,22 +286,21 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 			databuf = prov.cachedRead(sectionoffset, idSize);
 			int foundID = MDF3Util.readUInt8(databuf);
 			Integer foundsize = recNumtoSize.get(foundID);
-			if(foundsize == null){ //Check if a size was found.
-				throw new RuntimeException("No Size known for record ID "+ foundID+ ".");
+			if (foundsize == null) { // Check if a size was found.
+				throw new RuntimeException("No Size known for record ID " + foundID + ".");
 			}
 			if (redundantids) {
 				// do a sanity check with the second id
 				databuf = prov.cachedRead(sectionoffset, idSize + foundsize);
 				int endID = MDF3Util.readUInt8(databuf);
 				if (endID != foundID) {
-					MDFSorter.log.warning("Found ID " + foundID
-							+ " at start of records, but ID " + endID
-							+ " at its end.");
+					MDFSorter.log
+							.warning("Found ID " + foundID + " at start of records, but ID " + endID + " at its end.");
 				}
 			}
 			Integer arridx = recNumtoArrIdx.get(foundID);
-			if(arridx == null){ //Check if an entry was found.
-				throw new RuntimeException("Record ID "+ foundID+ " is not known.");
+			if (arridx == null) { // Check if an entry was found.
+				throw new RuntimeException("Record ID " + foundID + " is not known.");
 			}
 			startaddresses[arridx][foundrecCounters[arridx]++] = sectionoffset; // remember
 			// start
@@ -328,8 +318,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		return startaddresses;
 	}
 
-	public DGBLOCK copyChannelInfrastructure(MDF3GenBlock last, CGBLOCK towrite)
-			throws IOException {
+	public DGBLOCK copyChannelInfrastructure(MDF3GenBlock last, CGBLOCK towrite) throws IOException {
 		// Create new Data Group with default values, and write to file.
 		DGBLOCK newdg = new DGBLOCK(filestructure.isBigEndian());
 		newdg.setChannelGroups(1);

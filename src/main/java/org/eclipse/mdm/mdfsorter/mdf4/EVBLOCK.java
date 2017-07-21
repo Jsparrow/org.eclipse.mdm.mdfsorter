@@ -14,16 +14,14 @@ import java.io.IOException;
  * <p>
  * THE Event BLOCK <code>EVBLOCK</code>
  * </p>
- * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string encoded in UTF-8. The text length results
- * from the block size.
+ * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string
+ * encoded in UTF-8. The text length results from the block size.
  *
  * @author Tobias Leemann
  */
 public class EVBLOCK extends MDF4GenBlock {
 
 	/** Data section */
-
-
 
 	/**
 	 * Parse a TXBLOCK from an existing MDFGenBlock
@@ -40,7 +38,6 @@ public class EVBLOCK extends MDF4GenBlock {
 		parent.setPrec(this);
 	}
 
-
 	@Override
 	public String toString() {
 		return "EVBLOCK";
@@ -49,8 +46,10 @@ public class EVBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a TXBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {

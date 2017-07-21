@@ -187,59 +187,45 @@ public class HDBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [dateStarted=" + dateStarted + ", timeStarted="
-				+ timeStarted + ", author=" + author + ", department="
-				+ department + ", projectName=" + projectName + ", meaObject="
-				+ meaObject + ", timestamp=" + timestamp
-				+ ", utcTimeOffsetHours=" + utcTimeOffsetHours
-				+ ", timeQualityClass=" + timeQualityClass + ", timerIdent="
-				+ timerIdent + "]";
+		return "HDBLOCK [dateStarted=" + dateStarted + ", timeStarted=" + timeStarted + ", author=" + author
+				+ ", department=" + department + ", projectName=" + projectName + ", meaObject=" + meaObject
+				+ ", timestamp=" + timestamp + ", utcTimeOffsetHours=" + utcTimeOffsetHours + ", timeQualityClass="
+				+ timeQualityClass + ", timerIdent=" + timerIdent + "]";
 	}
 
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// UNINT16 Number of Data Groups
-		setNumberOfDataGroups(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
+		setNumberOfDataGroups(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// CHAR 10 Date when the recording was started
-		setDateStarted(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 12), 10));
+		setDateStarted(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 12), 10));
 
 		// CHAR 8 Signal name, i.e. the first 32 characters of the ASAM-MCD
 		// unique name
-		setTimeStarted(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 12, 20), 8));
+		setTimeStarted(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 12, 20), 8));
 
-		setAuthor(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 20, 52), 32));
-		setDepartment(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 52, 84), 32));
-		setProjectName(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 84, 116), 32));
-		setMeaObject(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 116, 148), 32));
+		setAuthor(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 20, 52), 32));
+		setDepartment(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 52, 84), 32));
+		setProjectName(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 84, 116), 32));
+		setMeaObject(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 116, 148), 32));
 
 		if (content.length > 148) {
 			// UNINT 64 Timestamp
-			setTimestamp(MDF3Util.readUInt64(
-					MDFParser.getDataBuffer(content, 148, 156), isBigEndian()));
+			setTimestamp(MDF3Util.readUInt64(MDFParser.getDataBuffer(content, 148, 156), isBigEndian()));
 		}
 		if (content.length > 156) {
 			// INT16, Time zone offset in hours
-			setUtcTimeOffsetHours(MDF3Util.readInt16(
-					MDFParser.getDataBuffer(content, 156, 158), isBigEndian()));
+			setUtcTimeOffsetHours(MDF3Util.readInt16(MDFParser.getDataBuffer(content, 156, 158), isBigEndian()));
 		}
 
 		if (content.length > 158) {
 			// UINT16, Time Quality
-			setTimeQualityClass(MDF3Util.readUInt16(
-					MDFParser.getDataBuffer(content, 158, 160), isBigEndian()));
+			setTimeQualityClass(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 158, 160), isBigEndian()));
 		}
 
 		if (content.length > 160) {
-			setTimerIdent(MDF4Util.readCharsUTF8(
-					MDFParser.getDataBuffer(content, 160, 192), 32));
+			setTimerIdent(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 160, 192), 32));
 		}
 
 	}
@@ -269,13 +255,11 @@ public class HDBLOCK extends MDF3GenBlock {
 		}
 
 		if (arraylength > 156) {
-			b.put(MDF3Util.getBytesInt16(getUtcTimeOffsetHours(),
-					isBigEndian()));
+			b.put(MDF3Util.getBytesInt16(getUtcTimeOffsetHours(), isBigEndian()));
 		}
 
 		if (arraylength > 158) {
-			b.put(MDF3Util.getBytesUInt16(getTimeQualityClass(),
-					isBigEndian()));
+			b.put(MDF3Util.getBytesUInt16(getTimeQualityClass(), isBigEndian()));
 		}
 
 		if (arraylength > 160) {

@@ -25,31 +25,27 @@ public class ArgumentParserTest {
 	// Unknown Flag test
 	@Test(expected = IllegalArgumentException.class)
 	public void testUnknownFlag() {
-		String[] test1 = { "process", "file1", "file2", "-somerandomflag=0",
-		"-unzip" };
+		String[] test1 = { "process", "file1", "file2", "-somerandomflag=0", "-unzip" };
 		ArgumentStruct.parseArgs(test1);
 	}
 
 	// Two different zipflags
 	@Test(expected = IllegalArgumentException.class)
 	public void testZipFlags() {
-		String[] test1 = { "process", "file1", "file2", "-zip",
-				"-maxblocksize=4g", "-unzip" };
+		String[] test1 = { "process", "file1", "file2", "-zip", "-maxblocksize=4g", "-unzip" };
 		ArgumentStruct.parseArgs(test1);
 	}
 
 	// Check maxblocksize without value
 	@Test(expected = IllegalArgumentException.class)
 	public void testNoValue() {
-		String[] test1 = { "process", "file1", "file2", "-zip",
-		"-maxblocksize=" };
+		String[] test1 = { "process", "file1", "file2", "-zip", "-maxblocksize=" };
 		ArgumentStruct.parseArgs(test1);
 	}
 
 	@Test // Check values of ArgumentStruct
 	public void testParsing1() {
-		String[] test1 = { "process", "file1", "file2", "-zip",
-		"-maxblocksize=300" };
+		String[] test1 = { "process", "file1", "file2", "-zip", "-maxblocksize=300" };
 		ArgumentStruct ar = ArgumentStruct.parseArgs(test1);
 		assertEquals(ar.inputname, "file1");
 		assertEquals(ar.outputname, "file2");

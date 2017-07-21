@@ -57,33 +57,26 @@ public class ZippedDataCache {
 		byte[] uncompressedData;
 		Inflater decompresser = new Inflater();
 		uncompressedData = new byte[(int) dzblk.getOrg_data_length()];
-		ByteBuffer compressedData = ByteBuffer
-				.allocate((int) dzblk.getData_length());
+		ByteBuffer compressedData = ByteBuffer.allocate((int) dzblk.getData_length());
 		// Skip header section of DZ Block
 		reader.position(dzblk.getPos() + 48L);
 		reader.read(compressedData);
-		decompresser.setInput(compressedData.array(), 0,
-				(int) dzblk.getData_length());
+		decompresser.setInput(compressedData.array(), 0, (int) dzblk.getData_length());
 
 		int resultLength = decompresser.inflate(uncompressedData);
 		decompresser.end();
 
 		if (dzblk.transposeNeeded()) {
 			int columnsize = (int) dzblk.getZip_parameters();
-			uncompressedData = MDF4Util.transposeArray(uncompressedData,
-					columnsize, false);
-			MDFSorter.log.log(Level.FINER,
-					"Transposing data with columnsize " + columnsize + ".");
+			uncompressedData = MDF4Util.transposeArray(uncompressedData, columnsize, false);
+			MDFSorter.log.log(Level.FINER, "Transposing data with columnsize " + columnsize + ".");
 		}
 
 		if (resultLength != dzblk.getOrg_data_length()) {
-			throw new RuntimeException(
-					"Data gain or loss detected while unziping. Expected "
-							+ dzblk.getOrg_data_length() + " bytes, got "
-							+ resultLength);
+			throw new RuntimeException("Data gain or loss detected while unziping. Expected "
+					+ dzblk.getOrg_data_length() + " bytes, got " + resultLength);
 		}
-		MDFSorter.log.log(Level.FINER,
-				"Unzipped block of size " + resultLength + ".");
+		MDFSorter.log.log(Level.FINER, "Unzipped block of size " + resultLength + ".");
 
 		// Store Data in Cache
 		if (cacheblocks.size() == MAXENTRIES) {
@@ -110,8 +103,7 @@ public class ZippedDataCache {
 	 * @throws IOException
 	 *             If an input error occurs.
 	 */
-	public void read(DZBLOCK dzblk, long offset, ByteBuffer buf)
-			throws DataFormatException, IOException {
+	public void read(DZBLOCK dzblk, long offset, ByteBuffer buf) throws DataFormatException, IOException {
 		// Load block if not available
 		if (!isAvailable(dzblk)) {
 			load(dzblk);

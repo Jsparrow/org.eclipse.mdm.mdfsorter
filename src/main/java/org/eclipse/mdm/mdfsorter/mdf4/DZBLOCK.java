@@ -118,19 +118,15 @@ public class DZBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {
-		setBlock_type(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 0, 2), 2));
+		setBlock_type(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 0, 2), 2));
 
 		setZip_type(MDF4Util.readUInt8(MDFParser.getDataBuffer(content, 2, 3)));
 
-		setZip_parameters(
-				MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 4, 8)));
+		setZip_parameters(MDF4Util.readUInt32(MDFParser.getDataBuffer(content, 4, 8)));
 
-		setOrg_data_length(
-				MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
+		setOrg_data_length(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 8, 16)));
 
-		setData_length(
-				MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 16, 24)));
+		setData_length(MDF4Util.readUInt64(MDFParser.getDataBuffer(content, 16, 24)));
 
 	}
 

@@ -49,8 +49,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	 * @param args
 	 *            The arguments of this programm call.
 	 */
-	public MDF4ProcessWriter(MDFFileContent<MDF4GenBlock> filestructure,
-			ArgumentStruct args) {
+	public MDF4ProcessWriter(MDFFileContent<MDF4GenBlock> filestructure, ArgumentStruct args) {
 		this.filestructure = filestructure;
 		this.args = args;
 		writtenblocks = new LinkedList<MDF4GenBlock>();
@@ -75,11 +74,10 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 
 		// Start writer Thread
 
+		Thread t;
+		long start; // Variables used inside try.
 
-
-		Thread t; long start; //Variables used inside try.
-
-		try(DataBlockBuffer buf = new DataBlockBuffer()){
+		try (DataBlockBuffer buf = new DataBlockBuffer()) {
 			start = System.currentTimeMillis();
 			t = new Thread(new WriteWorker(out, buf));
 			t.start();
@@ -108,8 +106,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				} else {
 					if (blk.getProblems() != null) {
 						for (MDFCompatibilityProblem p : blk.getProblems()) {
-							MDFSorter.log.log(Level.FINE,
-									"Problem of Type: " + p.getType());
+							MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType());
 						}
 						solveProblem(blk.getProblems());
 					} else {
@@ -127,7 +124,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			// Flush Cache
 			myCache.flush();
 		}
-		// signal buffer that all data is send (try), and wait for completion of the
+		// signal buffer that all data is send (try), and wait for completion of
+		// the
 		// write operation.
 		try {
 			t.join();
@@ -137,8 +135,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 
 		out.close();
 		MDFSorter.log.log(Level.INFO, "Wrote " + writeptr / 1000 + " kB.");
-		MDFSorter.log.log(Level.INFO,
-				"Writing took " + (System.currentTimeMillis() - start) + " ms");
+		MDFSorter.log.log(Level.INFO, "Writing took " + (System.currentTimeMillis() - start) + " ms");
 
 		// Update links with RandomAccessFile
 		RandomAccessFile r = new RandomAccessFile(args.outputname, "rw");
@@ -167,10 +164,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		boolean ret = false;
 		for (MDF4GenBlock blk : filestructure.getList()) {
 			for (int i = 0; i < blk.getLinkCount(); i++) {
-				if (blk.getLink(i) != null
-						&& blk.getLink(i).getProblems() != null) {
-					for (MDFCompatibilityProblem p : blk.getLink(i)
-							.getProblems()) {
+				if (blk.getLink(i) != null && blk.getLink(i).getProblems() != null) {
+					for (MDFCompatibilityProblem p : blk.getLink(i).getProblems()) {
 						p.setParentnode(blk);
 					}
 					ret = true;
@@ -191,8 +186,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	 *             If an I/O error occurs.
 	 */
 	@Override
-	public void copyBlock(MDF4GenBlock blk, FileChannel reader)
-			throws IOException {
+	public void copyBlock(MDF4GenBlock blk, FileChannel reader) throws IOException {
 		reader.position(blk.getPos());
 		blk.setOutputpos(writeptr);
 
@@ -204,8 +198,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		do {
 			int bytesread;
 			if (written + MAX_OUTPUTBLOCKSIZE > length) {
-				ByteBuffer custombuffer = ByteBuffer
-						.allocate((int) (length - written));
+				ByteBuffer custombuffer = ByteBuffer.allocate((int) (length - written));
 				bytesread = reader.read(custombuffer);
 				performPut(custombuffer, bytesread, false);
 			} else {
@@ -216,8 +209,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: "
-					+ length + "/" + written);
+			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
 		}
 		// insert space if length%8!=0
 		if (length % 8 != 0) {
@@ -252,8 +244,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	 * @throws DataFormatException
 	 *             If zipped data is in an invalid format.
 	 */
-	public void solveProblem(List<MDFCompatibilityProblem> l)
-			throws IOException, DataFormatException {
+	public void solveProblem(List<MDFCompatibilityProblem> l) throws IOException, DataFormatException {
 		if (l.size() != 1) {
 			System.out.println("To many Problems.");
 			// This may be supported in later versions.
@@ -264,8 +255,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			MDF4GenBlock node = (MDF4GenBlock) prob.getStartnode();
 			MDF4GenBlock parentnode = (MDF4GenBlock) prob.getParentnode();
 
-			if (probtype == MDFProblemType.LINKED_DATALIST_PROBLEM
-					|| probtype == MDFProblemType.UNZIPPED_DATA_PROBLEM
+			if (probtype == MDFProblemType.LINKED_DATALIST_PROBLEM || probtype == MDFProblemType.UNZIPPED_DATA_PROBLEM
 					|| prob.getType() == MDFProblemType.ZIPPED_DATA_PROBLEM) {
 
 				// What types of Elements are stored in the list? Possible ##DT,
@@ -286,11 +276,12 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 
 				// Skip DL block to first child
 				if (typechecknode instanceof DLBLOCK) {
-					if(typechecknode.getLinkCount()>1){
-						//Data list with children
+					if (typechecknode.getLinkCount() > 1) {
+						// Data list with children
 						typechecknode = typechecknode.getLink(1);
 					} else {
-						//Data list with no children, can just be omitted, remove link
+						// Data list with no children, can just be omitted,
+						// remove link
 						parentnode.replaceLink(typechecknode, null);
 						return;
 					}
@@ -298,38 +289,39 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				}
 
 				if (typechecknode instanceof DZBLOCK) {
-					blocktype = "##"
-							+ ((DZBLOCK) typechecknode).getBlock_type();
+					blocktype = "##" + ((DZBLOCK) typechecknode).getBlock_type();
 				} else {
 					blocktype = typechecknode.getId();
 				}
 
-				// calculate realnew blocksize in order that records are not split up.
+				// calculate realnew blocksize in order that records are not
+				// split up.
 				long realmaxblksize = args.maxblocksize;
-				long recordlength=-1;
-				if(parentnode instanceof DGBLOCK){
-					MDF4GenBlock cgBlock = ((DGBLOCK)parentnode).getLnkCgFirst();
-					int recIDsize = ((DGBLOCK)parentnode).getRecIdSize();
-					if(cgBlock instanceof CGBLOCK){
-						recordlength = ((CGBLOCK)cgBlock).getDataBytes()+ recIDsize + ((CGBLOCK)cgBlock).getInvalBytes();
+				long recordlength = -1;
+				if (parentnode instanceof DGBLOCK) {
+					MDF4GenBlock cgBlock = ((DGBLOCK) parentnode).getLnkCgFirst();
+					int recIDsize = ((DGBLOCK) parentnode).getRecIdSize();
+					if (cgBlock instanceof CGBLOCK) {
+						recordlength = ((CGBLOCK) cgBlock).getDataBytes() + recIDsize
+								+ ((CGBLOCK) cgBlock).getInvalBytes();
 					}
 				}
 
-				if(recordlength!=-1){
-					//at least one record has to be included.
-					realmaxblksize = recordlength > args.maxblocksize ? recordlength : recordlength*(args.maxblocksize/recordlength);
+				if (recordlength != -1) {
+					// at least one record has to be included.
+					realmaxblksize = recordlength > args.maxblocksize ? recordlength
+							: recordlength * (args.maxblocksize / recordlength);
 				}
 
 				// Create new SplitMerger for this section.
-				MDF4BlocksSplittMerger bsm = new MDF4BlocksSplittMerger(this, blocktype, parentnode, node, realmaxblksize);
+				MDF4BlocksSplittMerger bsm = new MDF4BlocksSplittMerger(this, blocktype, parentnode, node,
+						realmaxblksize);
 
 				// Now attach data sections
 				if (probtype == MDFProblemType.LINKED_DATALIST_PROBLEM) {
 					if (!(firstlistnode instanceof DLBLOCK)) {
-						MDFSorter.log
-						.severe("List header is no DL Node. Aborting.");
-						throw new RuntimeException(
-								"List header is no DL Node.");
+						MDFSorter.log.severe("List header is no DL Node. Aborting.");
+						throw new RuntimeException("List header is no DL Node.");
 					}
 					DLBLOCK dlnode = (DLBLOCK) firstlistnode;
 					do {
@@ -351,10 +343,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 					// We have more than one channel group in a single
 					// DataGroup. We have to create new DataGroups for each
 					// Channel Group.
-					LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup(
-							(DGBLOCK) node);
-					MDFSorter.log.log(Level.INFO, "Found " + groups.size()
-					+ " Channel Groups in DG.");
+					LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
+					MDFSorter.log.log(Level.INFO, "Found " + groups.size() + " Channel Groups in DG.");
 					MDF4GenBlock datasection = ((DGBLOCK) node).getLnkData();
 					SortDataGroup(prob, groups, datasection);
 
@@ -365,8 +355,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		}
 	}
 
-	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(
-			DGBLOCK startDataGroup) {
+	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(DGBLOCK startDataGroup) {
 		LinkedList<CGBLOCK> ret = new LinkedList<CGBLOCK>();
 		CGBLOCK next = (CGBLOCK) startDataGroup.getLnkCgFirst();
 		while (next != null) {
@@ -411,29 +400,33 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			}
 			pre.addLink(0, fhblk);
 		} else {
-			MDFSorter.log.warning(
-					"Cannot attach file history. No suitable Block found.");
+			MDFSorter.log.warning("Cannot attach file history. No suitable Block found.");
 		}
 
 		// After link update, all connections will be set correctly
 	}
 
 	/**
-	 * Main sorting function. Sorts a datagroup consisting of more than on channel group.
-	 * @param prob The MDFCompatibilityProblem that describes the situation.
-	 * @param groups List of ChannelGroups contained in that block.
-	 * @param datasection Data section of the DGBLOCK.
-	 * @throws IOException If an I/O-Error occurs.
-	 * @throws DataFormatException If zipped data is in an invalid format.
+	 * Main sorting function. Sorts a datagroup consisting of more than on
+	 * channel group.
+	 * 
+	 * @param prob
+	 *            The MDFCompatibilityProblem that describes the situation.
+	 * @param groups
+	 *            List of ChannelGroups contained in that block.
+	 * @param datasection
+	 *            Data section of the DGBLOCK.
+	 * @throws IOException
+	 *             If an I/O-Error occurs.
+	 * @throws DataFormatException
+	 *             If zipped data is in an invalid format.
 	 */
-	public void SortDataGroup(MDFCompatibilityProblem prob,
-			LinkedList<CGBLOCK> groups, MDF4GenBlock datasection)
-					throws IOException, DataFormatException {
+	public void SortDataGroup(MDFCompatibilityProblem prob, LinkedList<CGBLOCK> groups, MDF4GenBlock datasection)
+			throws IOException, DataFormatException {
 
 		DGBLOCK datagroup = (DGBLOCK) prob.getStartnode();
 		// sort records.
-		MDF4DataProvider prov = new MDF4DataProvider(datasection,
-				filestructure.getInput());
+		MDF4DataProvider prov = new MDF4DataProvider(datasection, filestructure.getInput());
 
 		int[] recCounters = new int[groups.size()];
 
@@ -452,7 +445,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			if (cgroup.isVLSDChannel()) {
 				recNumtoSize.put(recID, -1L);
 			} else {
-				recNumtoSize.put(recID, cgroup.getDataBytes()+cgroup.getInvalBytes());
+				recNumtoSize.put(recID, cgroup.getDataBytes() + cgroup.getInvalBytes());
 			}
 		}
 
@@ -469,14 +462,14 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				// only normal channels.
 				last = copyChannelInfrastructure(last, cgroup);
 				newlength = cgroup.getCycleCount() * cgroup.getDataBytes();
-				long reclen = cgroup.getDataBytes() +cgroup.getInvalBytes();
+				long reclen = cgroup.getDataBytes() + cgroup.getInvalBytes();
 				newlength = cgroup.getCycleCount() * reclen;
 
-				//at least one record has to be included.
-				long realmaxblksize = reclen > args.maxblocksize ? reclen : reclen*(args.maxblocksize/reclen);
+				// at least one record has to be included.
+				long realmaxblksize = reclen > args.maxblocksize ? reclen : reclen * (args.maxblocksize / reclen);
 
-				MDF4BlocksSplittMerger splitmerger = new MDF4BlocksSplittMerger(
-						this, "##DT", last, newlength, prov, realmaxblksize);
+				MDF4BlocksSplittMerger splitmerger = new MDF4BlocksSplittMerger(this, "##DT", last, newlength, prov,
+						realmaxblksize);
 
 				// write data sections.
 				for (long l : startaddresses[arridx]) {
@@ -490,28 +483,23 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 					for (CNBLOCK vlsdchan : vlsdchanlist) {
 						MDFGenBlock signaldata = vlsdchan.getLnkData();
 						if (signaldata == null) {
-							MDFSorter.log.severe(
-									"VLSD-Block without attached Data found!");
+							MDFSorter.log.severe("VLSD-Block without attached Data found!");
 							continue;
 						}
 						if (signaldata instanceof CGBLOCK) {
 							// we need to write a sdblock...
 							CGBLOCK vlsdcg = (CGBLOCK) signaldata;
-							int parsingidx = recNumtoArrIdx
-									.get(vlsdcg.getRecordId());
-							long expectedlength = vlsdcg.getVLSDlength()
-									+ vlsdcg.getCycleCount() * 4L;
-							MDF4BlocksSplittMerger signalsplitmerger = new MDF4BlocksSplittMerger(
-									this, "##SD", vlsdchan, expectedlength,
-									prov, args.maxblocksize);
+							int parsingidx = recNumtoArrIdx.get(vlsdcg.getRecordId());
+							long expectedlength = vlsdcg.getVLSDlength() + vlsdcg.getCycleCount() * 4L;
+							MDF4BlocksSplittMerger signalsplitmerger = new MDF4BlocksSplittMerger(this, "##SD",
+									vlsdchan, expectedlength, prov, args.maxblocksize);
 							ByteBuffer databuf;
 							// write data sections.
 							for (long l : startaddresses[parsingidx]) {
 								databuf = ByteBuffer.allocate(4);
 								prov.read(l + idSize, databuf);
 								long vllen = MDF4Util.readUInt32(databuf);
-								signalsplitmerger.splitmerge(l + idSize,
-										vllen + 4L);
+								signalsplitmerger.splitmerge(l + idSize, vllen + 4L);
 							}
 							signalsplitmerger.setLinks();
 						}
@@ -521,24 +509,25 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		}
 	}
 
-	public long[][] fillRecordArray(int[] recordCounters, Map<Long, Integer> recNumtoArrIdx, Map<Long, Long> recNumtoSize,
-			AbstractDataProvider prov, int idSize) throws IOException, DataFormatException{
+	public long[][] fillRecordArray(int[] recordCounters, Map<Long, Integer> recNumtoArrIdx,
+			Map<Long, Long> recNumtoSize, AbstractDataProvider prov, int idSize)
+			throws IOException, DataFormatException {
 
 		MDFSorter.log.info("Searching Records.");
 		long[][] startaddresses = new long[recordCounters.length][];
 
-		//initilize array.
-		int counter =0;
-		long totalRecords = 0; //total number of records
-		for(long i : recordCounters){
-			totalRecords+=i;
+		// initilize array.
+		int counter = 0;
+		long totalRecords = 0; // total number of records
+		for (long i : recordCounters) {
+			totalRecords += i;
 			startaddresses[counter++] = new long[(int) i];
 		}
 
 		int[] foundrecCounters = new int[recordCounters.length];
 
-		long sectionoffset = 0; //our position in the data section
-		long foundrecords = 0; //number of records we found
+		long sectionoffset = 0; // our position in the data section
+		long foundrecords = 0; // number of records we found
 
 		ByteBuffer databuf;
 		while (foundrecords < totalRecords) {
@@ -580,8 +569,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		}
 	}
 
-	public DGBLOCK copyChannelInfrastructure(MDF4GenBlock last, CGBLOCK towrite)
-			throws IOException {
+	public DGBLOCK copyChannelInfrastructure(MDF4GenBlock last, CGBLOCK towrite) throws IOException {
 		// Create new Data Group with default values, and write to file.
 		DGBLOCK newdg = new DGBLOCK();
 		writeBlock(newdg, null);
@@ -637,8 +625,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	 *             If an I/O error occurs.
 	 */
 	@Override
-	public void writeBlock(MDF4GenBlock blk, byte[] appendData)
-			throws IOException {
+	public void writeBlock(MDF4GenBlock blk, byte[] appendData) throws IOException {
 		blk.setOutputpos(writeptr);
 
 		performPut(blk.getHeaderBytes());
@@ -665,9 +652,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		byte[] spacer = new byte[spcsize];
 		performPut(spacer);
 		if (writeptr % 8L != 0) {
-			System.err.println("Wrote spacer of size " + spcsize
-					+ " but writeptr is still wrong. Len:" + length + " PTR:"
-					+ writeptr);
+			System.err.println("Wrote spacer of size " + spcsize + " but writeptr is still wrong. Len:" + length
+					+ " PTR:" + writeptr);
 		}
 	}
 }

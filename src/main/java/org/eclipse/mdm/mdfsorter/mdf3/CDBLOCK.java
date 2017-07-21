@@ -14,10 +14,9 @@ import java.io.RandomAccessFile;
 import org.eclipse.mdm.mdfsorter.MDFParser;
 
 /**
- * @author Tobias Leemann
- * The Channel Dependency Block
+ * @author Tobias Leemann The Channel Dependency Block
  */
-public class CDBLOCK extends MDF3GenBlock{
+public class CDBLOCK extends MDF3GenBlock {
 
 	/**
 	 * Dependency Type
@@ -85,14 +84,16 @@ public class CDBLOCK extends MDF3GenBlock{
 		// UINT16 number of dependencies
 		setNoDependencies(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 2, 4), isBigEndian()));
 
-		if(dependancyType > 256){ //if dependency type is n-dimensional, the sizes of each dimesions are stored after the links.
-			if(content.length > 4 + getNoDependencies()*4){
-				int numvalues = (content.length - (4 + getNoDependencies()*4)) /2;
+		if (dependancyType > 256) { // if dependency type is n-dimensional, the
+									// sizes of each dimesions are stored after
+									// the links.
+			if (content.length > 4 + getNoDependencies() * 4) {
+				int numvalues = (content.length - (4 + getNoDependencies() * 4)) / 2;
 				int[] sizes = new int[numvalues];
-				int readptr = 4 + getNoDependencies()*4;
-				for(int i = 0; i < numvalues; i++){
-					sizes[i]= MDF3Util.readUInt16(MDFParser.getDataBuffer(content, readptr, readptr+2), bigendian);
-					readptr +=2;
+				int readptr = 4 + getNoDependencies() * 4;
+				for (int i = 0; i < numvalues; i++) {
+					sizes[i] = MDF3Util.readUInt16(MDFParser.getDataBuffer(content, readptr, readptr + 2), bigendian);
+					readptr += 2;
 				}
 			}
 		}
@@ -100,13 +101,12 @@ public class CDBLOCK extends MDF3GenBlock{
 
 	@Override
 	public void updateLinks(RandomAccessFile r) throws IOException {
-		r.seek(getOutputpos() + 4L +4L);
+		r.seek(getOutputpos() + 4L + 4L);
 		MDF3GenBlock linkedblock;
 		for (int i = 0; i < getLinkCount(); i++) {
-			//position of links, see specification.
+			// position of links, see specification.
 			if ((linkedblock = getLink(i)) != null) {
-				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(),
-						isBigEndian()));
+				r.write(MDF3Util.getBytesLink(linkedblock.getOutputpos(), isBigEndian()));
 			} else {
 				r.write(MDF3Util.getBytesLink(0, isBigEndian()));
 			}

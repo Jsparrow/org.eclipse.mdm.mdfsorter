@@ -203,14 +203,11 @@ public class CNBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "CNBLOCK [ channelType=" + channelType + ", signalName="
-				+ signalName + ", signalDescription=" + signalDescription
-				+ ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits="
-				+ numberOfBits + ", signalDataType=" + signalDataType
-				+ ", knownImplValue=" + knownImplValue + ", minImplValue="
-				+ minImplValue + ", maxImplValue=" + maxImplValue
-				+ ", sampleRate=" + sampleRate + " byteOffset=" + byteOffset
-				+ "]";
+		return "CNBLOCK [ channelType=" + channelType + ", signalName=" + signalName + ", signalDescription="
+				+ signalDescription + ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits=" + numberOfBits
+				+ ", signalDataType=" + signalDataType + ", knownImplValue=" + knownImplValue + ", minImplValue="
+				+ minImplValue + ", maxImplValue=" + maxImplValue + ", sampleRate=" + sampleRate + " byteOffset="
+				+ byteOffset + "]";
 	}
 
 	@Override
@@ -232,8 +229,7 @@ public class CNBLOCK extends MDF3GenBlock {
 		MDF3GenBlock linkedblock;
 		for (int i = 0; i < 5; i++) {
 			if ((linkedblock = getLink(i)) != null) {
-				r.write(MDF3Util.getBytesLink((int) linkedblock.getOutputpos(),
-						isBigEndian()));
+				r.write(MDF3Util.getBytesLink((int) linkedblock.getOutputpos(), isBigEndian()));
 			} else {
 				r.write(MDF3Util.getBytesLink(0, isBigEndian()));
 			}
@@ -242,12 +238,8 @@ public class CNBLOCK extends MDF3GenBlock {
 		// update last two links manually
 		if (getLinkCount() == 7) {
 			r.seek(getOutputpos() + 4L + 20L + 194L);
-			r.write(MDF3Util.getBytesLink(
-					getLink(5) != null ? getLink(5).getOutputpos() : 0,
-							isBigEndian()));
-			r.write(MDF3Util.getBytesLink(
-					getLink(6) != null ? getLink(6).getOutputpos() : 0,
-							isBigEndian()));
+			r.write(MDF3Util.getBytesLink(getLink(5) != null ? getLink(5).getOutputpos() : 0, isBigEndian()));
+			r.write(MDF3Util.getBytesLink(getLink(6) != null ? getLink(6).getOutputpos() : 0, isBigEndian()));
 		}
 
 	}
@@ -264,27 +256,22 @@ public class CNBLOCK extends MDF3GenBlock {
 		// 1 = time channel for all signals of this group (in each channel
 		// group, exactly one
 		// channel must be defined as time channel)
-		setChannelType(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
+		setChannelType(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD
 		// unique name
-		setSignalName(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 34), 32));
+		setSignalName(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 34), 32));
 
 		// CHAR 128 Signal description
-		setSignalDescription(MDF4Util
-				.readCharsUTF8(MDFParser.getDataBuffer(content, 34, 162), 128));
+		setSignalDescription(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 34, 162), 128));
 
 		// UINT16 1 Number of the first bits [0..n] (bit position within a byte:
 		// bit 0 is the least significant
 		// bit, bit 7 is the most significant bit)
-		setNumberOfFirstBits(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 162, 164), isBigEndian()));
+		setNumberOfFirstBits(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 162, 164), isBigEndian()));
 
 		// UINT16 1 Number of bits
-		setNumberOfBits(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 164, 166), isBigEndian()));
+		setNumberOfBits(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 164, 166), isBigEndian()));
 
 		// UINT16 1 Signal data type
 		// 0 = unsigned integer
@@ -292,24 +279,19 @@ public class CNBLOCK extends MDF3GenBlock {
 		// 2,3 = IEEE 754 floating-point format
 		// 7 = String (NULL terminated)
 		// 8 = Byte Array
-		setSignalDataType(MDF3Util.readUInt16(
-				MDFParser.getDataBuffer(content, 166, 168), isBigEndian()));
+		setSignalDataType(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 166, 168), isBigEndian()));
 
 		// BOOL 1 Value range – known implementation value
-		setKnownImplValue(MDF3Util.readBool(
-				MDFParser.getDataBuffer(content, 168, 170), isBigEndian()));
+		setKnownImplValue(MDF3Util.readBool(MDFParser.getDataBuffer(content, 168, 170), isBigEndian()));
 
 		// REAL 1 Value range – minimum implementation value
-		setMinImplValue(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 170, 178)));
+		setMinImplValue(MDF4Util.readReal(MDFParser.getDataBuffer(content, 170, 178)));
 
 		// REAL 1 Value range – maximum implementation value
-		setMaxImplValue(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 178, 186)));
+		setMaxImplValue(MDF4Util.readReal(MDFParser.getDataBuffer(content, 178, 186)));
 
 		// REAL 1 Rate in which the variable was sampled. Unit [s]
-		setSampleRate(
-				MDF4Util.readReal(MDFParser.getDataBuffer(content, 186, 194)));
+		setSampleRate(MDF4Util.readReal(MDFParser.getDataBuffer(content, 186, 194)));
 
 		// skip two links (2* 4Bytes, they are already read.
 
@@ -321,8 +303,7 @@ public class CNBLOCK extends MDF3GenBlock {
 			// is larger than 8192 Bytes to ensure compatibility; it enables to
 			// write data blocks
 			// larger than 8kBytes
-			setByteOffset(MDF3Util.readUInt16(
-					MDFParser.getDataBuffer(content, 202, 204), isBigEndian()));
+			setByteOffset(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 202, 204), isBigEndian()));
 		}
 	}
 

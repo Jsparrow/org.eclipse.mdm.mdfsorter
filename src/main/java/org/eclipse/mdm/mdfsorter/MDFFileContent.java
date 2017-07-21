@@ -38,20 +38,17 @@ public class MDFFileContent<T extends MDFGenBlock> {
 
 	/**
 	 * True, if the parsed File is of MDF 3.x Format; False if it is an MDF 4.x
-	 * file.
-	 * The value of this attribute also defines the generic type parameter of this object.
-	 * If this attribute is set to true, the FileContent can be securely casted to
-	 * FileContent&lt;MDF3GenBlock&gt;.
-	 * If this attribute is set to false, the FileContent can be securely casted to
+	 * file. The value of this attribute also defines the generic type parameter
+	 * of this object. If this attribute is set to true, the FileContent can be
+	 * securely casted to FileContent&lt;MDF3GenBlock&gt;. If this attribute is
+	 * set to false, the FileContent can be securely casted to
 	 * FileContent&lt;MDF4GenBlock&gt;.
 	 */
 	private boolean isMDF3 = false;
 
-
 	/**
-	 * Only used in MDF3.
-	 * BigEndian value from the IDBLOCK.
-	 * True if numbers are stored as LittleEndian. False if they are stored BigEndian encoding.
+	 * Only used in MDF3. BigEndian value from the IDBLOCK. True if numbers are
+	 * stored as LittleEndian. False if they are stored BigEndian encoding.
 	 */
 	private boolean isBigEndian = false;
 
@@ -68,8 +65,7 @@ public class MDFFileContent<T extends MDFGenBlock> {
 	 * @param isMDF3
 	 *            True, if the file is of version 3.x, false if it is 4.x.
 	 */
-	public MDFFileContent(FileChannel in, T blk, LinkedList<T> list,
-			boolean isMDF3) {
+	public MDFFileContent(FileChannel in, T blk, LinkedList<T> list, boolean isMDF3) {
 		this.input = in;
 		this.root = blk;
 		this.list = list;

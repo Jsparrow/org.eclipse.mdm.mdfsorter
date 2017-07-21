@@ -15,8 +15,8 @@ import java.nio.ByteBuffer;
  * <p>
  * THE TEXT BLOCK <code>TXBLOCK</code>
  * </p>
- * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string encoded in UTF-8. The text length results
- * from the block size.
+ * The TXBLOCK is very similar to the MDBLOCK but only contains a plain string
+ * encoded in UTF-8. The text length results from the block size.
  *
  * @author Christian Rechner, Tobias Leemann
  */
@@ -28,7 +28,6 @@ public class TXBLOCK extends MDF4GenBlock {
 	// UTF-8 encoded, zero terminated, new line indicated by CR and LF.
 	// CHAR
 	private String txData;
-
 
 	/**
 	 * Parse a TXBLOCK from an existing MDFGenBlock
@@ -53,7 +52,6 @@ public class TXBLOCK extends MDF4GenBlock {
 		this.txData = txData;
 	}
 
-
 	@Override
 	public String toString() {
 		return "TXBLOCK [txData=" + txData + "]";
@@ -62,14 +60,16 @@ public class TXBLOCK extends MDF4GenBlock {
 	/**
 	 * Reads a TXBLOCK from its content.
 	 *
-	 * @param content The data section of this block
-	 * @throws IOException If an I/O error occurs.
+	 * @param content
+	 *            The data section of this block
+	 * @throws IOException
+	 *             If an I/O error occurs.
 	 */
 	@Override
 	public void parse(byte[] content) throws IOException {
 		// Read text String
 		setTxData(MDF4Util.readCharsUTF8(ByteBuffer.wrap(content), content.length));
-		//TODO: Bytes after zero termination?
+		// TODO: Bytes after zero termination?
 	}
 
 }

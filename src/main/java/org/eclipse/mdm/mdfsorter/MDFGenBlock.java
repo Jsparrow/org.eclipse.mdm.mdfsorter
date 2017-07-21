@@ -17,7 +17,7 @@ abstract public class MDFGenBlock {
 	/** Header section */
 
 	// Block type identifier, e.g. "##HD", "##MD", in MDF4 or "HD", "CG" in MDF3
-	protected String id ="";
+	protected String id = "";
 
 	// the position of the block within the input MDF file
 	protected final long pos;
