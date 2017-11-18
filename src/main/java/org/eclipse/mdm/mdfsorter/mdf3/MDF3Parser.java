@@ -120,7 +120,7 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 		in.position(start.getPos());
 		byte[] head = readBytes(4, in);
 		// Read header of this block
-		String blktyp = MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(head, 0, 2), 2);
+		String blktyp = MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(head, 0, 2), 2);
 		start.setId(blktyp);
 		int blklength = MDF4Util.readUInt16(MDFParser.getDataBuffer(head, 2, 4));
 		start.setLength(blklength);

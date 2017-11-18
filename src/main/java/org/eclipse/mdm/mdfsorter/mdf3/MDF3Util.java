@@ -8,6 +8,7 @@
 
 package org.eclipse.mdm.mdfsorter.mdf3;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -225,4 +226,26 @@ public abstract class MDF3Util {
 	public static byte[] getBytesLink(long val, boolean bigendian) {
 		return getBytesUInt32(val, bigendian);
 	}
+
+	/**
+	 * Read a String from ISO8859 encoded bytes
+	 *
+	 * @param bb
+	 *            The ByteBuffer to use.
+	 * @param length
+	 *            Number of chars to read.
+	 * @return The result as String.
+	 * @throws IOException
+	 *             If an reading error occurs.
+	 */
+	public static String readCharsISO8859(ByteBuffer bb, int length) throws IOException {
+		byte[] b = new byte[length];
+		bb.get(b);
+		return new String(b, 0, length, "ISO-8859-1");
+	}
+
+	public static byte[] getBytesCharsISO8859(String s) throws IOException {
+		return s.getBytes("ISO-8859-1");
+	}
+
 }

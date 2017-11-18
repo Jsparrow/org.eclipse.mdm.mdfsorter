@@ -215,7 +215,7 @@ public class CCBLOCK extends MDF3GenBlock {
 		setMaxPhysValue(MDF4Util.readReal(MDFParser.getDataBuffer(content, 10, 18)));
 
 		// CHAR 20 Physical unit
-		setPhysUnit(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 18, 38), 20));
+		setPhysUnit(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 18, 38), 20));
 
 		// UINT16 1 Conversion formula identifier
 		// 0 = parametric, linear

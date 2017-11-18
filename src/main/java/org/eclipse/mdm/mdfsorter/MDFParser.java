@@ -58,6 +58,13 @@ public abstract class MDFParser {
 			MDFSorter.log.severe("MDF Version " + String.valueOf(versionnum) + "is not supported. Aborting.");
 			throw new IllegalArgumentException("Unsupported MDF Version.");
 		} else if (version < 400) {
+			if (version == 330) {
+				int codePage = MDF4Util.readUInt16(getDataBuffer(idblock, 30, 32));
+				if (codePage != 0) {
+					MDFSorter.log.warning("code page is defined to be '" + codePage
+							+ "' (value is ignored and ISO-8859-1 is used for string en-/decoding)");
+				}
+			}
 			boolean bigendian = MDF4Util.readUInt16(getDataBuffer(idblock, 24, 26)) != 0;
 			myParser = new MDF3Parser(in, bigendian);
 		} else {

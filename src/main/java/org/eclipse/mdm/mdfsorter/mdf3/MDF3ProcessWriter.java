@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,8 @@ import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
  *
  */
 public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
+
+	private MDF3GenBlock lastDGBlockParent;
 
 	/**
 	 * Main Constructor.
@@ -74,6 +77,8 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		for (MDF3GenBlock blk : filestructure.getList()) {
 			if (blk instanceof CGBLOCK) {
 				numberOfDatagroups++;
+			} else if(blk instanceof HDBLOCK) {
+				lastDGBlockParent = blk;
 			}
 		}
 		// Check if zip flag is not set
@@ -237,25 +242,44 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 
 		long[][] startaddresses = fillRecordArray(recCounters, recNumtoArrIdx, recNumtoSize, prov, redundantids);
 
-		MDF3GenBlock last = (MDF3GenBlock) prob.getParentnode();
-
 		// write new blocks
 		for (CGBLOCK cgroup : groups) {
 			int arridx = recNumtoArrIdx.get(cgroup.getRecordId());
 			MDFSorter.log.fine("Writing data for Block " + arridx + ".");
 			long newlength;
+
+			long newCycleCount = newCycleCount(startaddresses[arridx]);
+			if (newCycleCount > -1) {
+				// missing records exist, update cycle count
+				// to match number of existing records
+				cgroup.setCycleCount(newCycleCount);
+			}
+
 			// create new datagroup
-			last = copyChannelInfrastructure(last, cgroup);
+			lastDGBlockParent = copyChannelInfrastructure(lastDGBlockParent, cgroup);
 			long reclen = cgroup.getDataBytes();
 			newlength = cgroup.getCycleCount() * cgroup.getDataBytes();
-			MDF3BlocksSplittMerger splitmerger = new MDF3BlocksSplittMerger(this, last, newlength, prov);
+			MDF3BlocksSplittMerger splitmerger = new MDF3BlocksSplittMerger(this, lastDGBlockParent, newlength, prov);
 
 			// write data sections.
 			for (long l : startaddresses[arridx]) {
+				if (l == -1L) {
+					// remaining records are missing => trim
+					break;
+				}
 				splitmerger.splitmerge(l + idSize, reclen);
 			}
 			splitmerger.setLinks();
 		}
+	}
+
+	private long newCycleCount(long[] addrs) {
+		for (int i = 0; i < addrs.length; i++) {
+			if (addrs[i] == -1L) {
+				return i;
+			}
+		}
+		return -1L;
 	}
 
 	public long[][] fillRecordArray(long[] recordCounters, Map<Integer, Integer> recNumtoArrIdx,
@@ -273,6 +297,7 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 		for (long i : recordCounters) {
 			totalRecords += i;
 			startaddresses[counter++] = new long[(int) i];
+			Arrays.fill(startaddresses[counter - 1], -1L);
 		}
 
 		int[] foundrecCounters = new int[recordCounters.length];
@@ -287,7 +312,12 @@ public class MDF3ProcessWriter extends MDFAbstractProcessWriter<MDF3GenBlock> {
 			int foundID = MDF3Util.readUInt8(databuf);
 			Integer foundsize = recNumtoSize.get(foundID);
 			if (foundsize == null) { // Check if a size was found.
-				throw new RuntimeException("No Size known for record ID " + foundID + ".");
+				if (foundID == 0) {
+					MDFSorter.log.info("Record ID '0' found => cutting off missing records,"
+							+ " since those are not recoverable.");
+					return startaddresses;
+				}
+				throw new RuntimeException("Record ID '" + foundID + "' does not exist, file may be corrupt.");
 			}
 			if (redundantids) {
 				// do a sanity check with the second id

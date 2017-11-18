@@ -260,10 +260,10 @@ public class CNBLOCK extends MDF3GenBlock {
 
 		// CHAR 32 Signal name, i.e. the first 32 characters of the ASAM-MCD
 		// unique name
-		setSignalName(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 34), 32));
+		setSignalName(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 2, 34), 32));
 
 		// CHAR 128 Signal description
-		setSignalDescription(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 34, 162), 128));
+		setSignalDescription(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 34, 162), 128));
 
 		// UINT16 1 Number of the first bits [0..n] (bit position within a byte:
 		// bit 0 is the least significant
@@ -315,9 +315,9 @@ public class CNBLOCK extends MDF3GenBlock {
 
 		b.put(MDF3Util.getBytesUInt16(getChannelType(), isBigEndian()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getSignalName()));
+		b.put(MDF3Util.getBytesCharsISO8859(getSignalName()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getSignalDescription()));
+		b.put(MDF3Util.getBytesCharsISO8859(getSignalDescription()));
 
 		b.put(MDF3Util.getBytesUInt16(getNumberOfFirstBits(), isBigEndian()));
 

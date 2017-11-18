@@ -36,7 +36,7 @@ abstract public class MDFSorter {
 	/**
 	 * Version of this tool as String. (Used in the file Header)
 	 */
-	public static final String VERSIONSTRING = "1.0.2";
+	public static final String VERSIONSTRING = "1.0.3";
 
 	/**
 	 * The logger for this application

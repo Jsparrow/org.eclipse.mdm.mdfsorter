@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.eclipse.mdm.mdfsorter.MDFParser;
-import org.eclipse.mdm.mdfsorter.mdf4.MDF4Util;
 
 /**
  * The Data Group Block
@@ -199,16 +198,16 @@ public class HDBLOCK extends MDF3GenBlock {
 		setNumberOfDataGroups(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 0, 2), isBigEndian()));
 
 		// CHAR 10 Date when the recording was started
-		setDateStarted(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 2, 12), 10));
+		setDateStarted(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 2, 12), 10));
 
 		// CHAR 8 Signal name, i.e. the first 32 characters of the ASAM-MCD
 		// unique name
-		setTimeStarted(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 12, 20), 8));
+		setTimeStarted(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 12, 20), 8));
 
-		setAuthor(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 20, 52), 32));
-		setDepartment(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 52, 84), 32));
-		setProjectName(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 84, 116), 32));
-		setMeaObject(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 116, 148), 32));
+		setAuthor(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 20, 52), 32));
+		setDepartment(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 52, 84), 32));
+		setProjectName(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 84, 116), 32));
+		setMeaObject(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 116, 148), 32));
 
 		if (content.length > 148) {
 			// UNINT 64 Timestamp
@@ -225,7 +224,7 @@ public class HDBLOCK extends MDF3GenBlock {
 		}
 
 		if (content.length > 160) {
-			setTimerIdent(MDF4Util.readCharsUTF8(MDFParser.getDataBuffer(content, 160, 192), 32));
+			setTimerIdent(MDF3Util.readCharsISO8859(MDFParser.getDataBuffer(content, 160, 192), 32));
 		}
 
 	}
@@ -238,17 +237,17 @@ public class HDBLOCK extends MDF3GenBlock {
 
 		b.put(MDF3Util.getBytesUInt16(getNumberOfDataGroups(), isBigEndian()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getDateStarted()));
+		b.put(MDF3Util.getBytesCharsISO8859(getDateStarted()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getTimeStarted()));
+		b.put(MDF3Util.getBytesCharsISO8859(getTimeStarted()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getAuthor()));
+		b.put(MDF3Util.getBytesCharsISO8859(getAuthor()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getDepartment()));
+		b.put(MDF3Util.getBytesCharsISO8859(getDepartment()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getProjectName()));
+		b.put(MDF3Util.getBytesCharsISO8859(getProjectName()));
 
-		b.put(MDF4Util.getBytesCharsUTF8(getMeaObject()));
+		b.put(MDF3Util.getBytesCharsISO8859(getMeaObject()));
 
 		if (arraylength > 148) {
 			b.put(MDF3Util.getBytesUInt64(getTimestamp(), isBigEndian()));
@@ -263,7 +262,7 @@ public class HDBLOCK extends MDF3GenBlock {
 		}
 
 		if (arraylength > 160) {
-			b.put(MDF4Util.getBytesCharsUTF8(getTimerIdent()));
+			b.put(MDF3Util.getBytesCharsISO8859(getTimerIdent()));
 		}
 
 		return b.array();
