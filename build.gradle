@@ -13,16 +13,17 @@ version = '1.0.3'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-repositories {
-    mavenCentral()
-}
+repositories { mavenCentral() }
 
-dependencies {
-    // testing
-    testCompile 'junit:junit:4.12'
-}
+dependencies { // testing
+	testCompile 'junit:junit:4.12' }
 
 tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
+	sourceCompatibility = '1.7'
+	targetCompatibility = '1.7'
+}
+
+jar {
+	metaInf { from 'NOTICE.txt' }
+	metaInf { from 'LICENSE.txt' }
 }
