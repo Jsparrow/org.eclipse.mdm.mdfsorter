@@ -1,19 +1,16 @@
-/********************************************************************************
- * Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- ********************************************************************************/
-
 # Documentation for MDFSorter
-Tobias Leemann, AUDI AG
+
+## Copyright and License ##
+Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v. 2.0 which is available at
+ http://www.eclipse.org/legal/epl-2.0.
+
+ SPDX-License-Identifier: EPL-2.0
 
 ## Introduction
 This documentation will provide a small "quick reference"-guide to the MDFSorter Application.
@@ -85,3 +82,15 @@ The following limits of this tool are known:
  - __UINT64 Values:__ Due to the lack of a larger basic type than *long* in Java, this application will not be able to work with any values larger than *Long.MAX_VALUE*, even if the MDF-Standard defines the UINT64 data type. If the values don't need to be processed, they will be written out in the same form as they were before, so no damage to the file will be expected.
  - __Number of Links:__ Even though the number of links to child block is stored as in UINT64 value in the MDF-File, this application uses an array to access them, which is *int*-based in Java. The number of children a block can have is therefore limited to *Integer.MAX_VALUE*.
  - __The Channel Array Block (CABLOCK):__ In MDF4 a special block to store a group (array) of Channels exists. This Block is not fully supported by MDFSorter 0.2.0, and will only be copied as it was before. If it has links to any channels stored in an unsorted data group, that are resorted during processing, the behavior is not defined.
+ 
+## Copyright and License ##
+Copyright (c) 2015-2018 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v. 2.0 which is available at
+ http://www.eclipse.org/legal/epl-2.0.
+
+ SPDX-License-Identifier: EPL-2.0
