@@ -34,7 +34,8 @@ org.eclipse.mdm.mdfsorter.git - The MDFSorter is a tools to preprocess MDF3.x an
 
 ## Third-party Content
 
-no
+Gradle Wrapper (4.10.2)
+    * License: Apache License, 2.0 
 
 ## Cryptography
 
