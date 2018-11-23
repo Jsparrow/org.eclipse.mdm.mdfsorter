@@ -138,20 +138,48 @@ public class MDF3Parser extends MDFAbstractParser<MDF3GenBlock> {
 
 		// Read links and create new blocks
 		head = readBytes(blklinkcount * 4, in);
+		long position = in.position();
 		for (int i = 0; i < blklinkcount; i++) {
 			long nextlink = MDF3Util.readLink(MDFParser.getDataBuffer(head, i * 4, (i + 1) * 4), isBigEndian);
 			if (nextlink != 0) {
-				if (blktyp.equals("DG") && i == 3) { // special case: pointer to
-					// data section (4th
-					// link of a DG-BLock)
-					checkFoundDataBlockLink(start, nextlink, i);
+				if (blktyp.equals("DG") && i == 3) {
+					// special case: pointer to data section (4th link of a DG-BLock)
+
+					/*
+					 * the following lines ensure validity of a given link to a DTBLOCK,
+					 * since there are cases where a LINK is given but points to a non
+					 * DTBLOCK. therefore such links are only proceeded if the corresponding
+					 * DGBLOCK has at least one CGBLOCK with at least one measured value!
+					 */
+					DGBLOCK dgBlock = new DGBLOCK(start);
+					in.position(dgBlock.getPos() + 20);
+					byte[] bb = readBytes(2, in);
+					int cgCount = MDF3Util.readUInt16(MDFParser.getDataBuffer(bb, 0, 2), isBigEndian);
+					if (cgCount < 1) {
+						// ignore link, since DGBLOCK does not have any CGBLOCKs
+						continue;
+					}
+
+					// iterate over all CGBLOCKS. link is valid if at least one of them has measured values
+					CGBLOCK cgBlock = new CGBLOCK(dgBlock.getLnkCgFirst());
+					while (cgBlock != null) {
+						in.position(cgBlock.getPos() + 22);
+						bb = readBytes(4, in);
+						long cycleCount = MDF3Util.readUInt32(MDFParser.getDataBuffer(bb, 0, 4), isBigEndian);
+						if (cycleCount > 0) {
+							checkFoundDataBlockLink(start, nextlink, i);
+							break;
+						}
+						cgBlock = --cgCount == 0 ? null : new CGBLOCK(cgBlock.getLnkCgNext());
+					}
 				} else {
 					checkFoundLink(start, nextlink, i);
 				}
 			}
 		}
-		// store begin of data section.
-		long position = in.position();
+
+		// set to begin of data section.
+		in.position(position);
 
 		// read possible extra links in CGBLOCK
 		if (blktyp.equals("CG") && blklength == 30) {
