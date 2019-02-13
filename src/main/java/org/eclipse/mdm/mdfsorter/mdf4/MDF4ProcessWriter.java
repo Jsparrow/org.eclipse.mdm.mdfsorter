@@ -59,7 +59,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	public MDF4ProcessWriter(MDFFileContent<MDF4GenBlock> filestructure, ArgumentStruct args) {
 		this.filestructure = filestructure;
 		this.args = args;
-		writtenblocks = new LinkedList<MDF4GenBlock>();
+		writtenblocks = new LinkedList<>();
 	}
 
 	/**
@@ -77,14 +77,14 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		checkProblems();
 
 		// Open outputfile
-		FileOutputStream out = new FileOutputStream(args.outputname);
+		var out = new FileOutputStream(args.outputname);
 
 		// Start writer Thread
 
 		Thread t;
 		long start; // Variables used inside try.
 
-		try (DataBlockBuffer buf = new DataBlockBuffer()) {
+		try (var buf = new DataBlockBuffer()) {
 			start = System.currentTimeMillis();
 			t = new Thread(new WriteWorker(out, buf));
 			t.start();
@@ -112,9 +112,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 					copyBlock(blk, reader);
 				} else {
 					if (blk.getProblems() != null) {
-						for (MDFCompatibilityProblem p : blk.getProblems()) {
-							MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType());
-						}
+						blk.getProblems().forEach(p -> MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType()));
 						solveProblem(blk.getProblems());
 					} else {
 						// Do nothing if block is part of a bigger Problem.
@@ -141,11 +139,11 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		}
 
 		out.close();
-		MDFSorter.log.log(Level.INFO, "Wrote " + writeptr / 1000 + " kB.");
-		MDFSorter.log.log(Level.INFO, "Writing took " + (System.currentTimeMillis() - start) + " ms");
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Wrote ").append(writeptr / 1000).append(" kB.").toString());
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Writing took ").append(System.currentTimeMillis() - start).append(" ms").toString());
 
 		// Update links with RandomAccessFile
-		RandomAccessFile r = new RandomAccessFile(args.outputname, "rw");
+		var r = new RandomAccessFile(args.outputname, "rw");
 		for (MDF4GenBlock blk : writtenblocks) {
 			// set position to start of Block link section
 			r.seek(blk.getOutputpos() + 24L);
@@ -165,16 +163,12 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 
 	@Override
 	public boolean checkProblems() {
-		for (MDF4GenBlock blk : filestructure.getList()) {
-			blk.analyseProblems(args);
-		}
+		filestructure.getList().forEach(blk -> blk.analyseProblems(args));
 		boolean ret = false;
 		for (MDF4GenBlock blk : filestructure.getList()) {
 			for (int i = 0; i < blk.getLinkCount(); i++) {
 				if (blk.getLink(i) != null && blk.getLink(i).getProblems() != null) {
-					for (MDFCompatibilityProblem p : blk.getLink(i).getProblems()) {
-						p.setParentnode(blk);
-					}
+					blk.getLink(i).getProblems().forEach(p -> p.setParentnode(blk));
 					ret = true;
 				}
 			}
@@ -216,7 +210,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
+			throw new IOException(new StringBuilder().append("written length not equal to blocklength: ").append(length).append("/").append(written).toString());
 		}
 		// insert space if length%8!=0
 		if (length % 8 != 0) {
@@ -258,9 +252,9 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			return;
 		} else {
 			MDFCompatibilityProblem prob = l.get(0);
-			MDFProblemType probtype = prob.getType();
+			var probtype = prob.getType();
 			MDF4GenBlock node = (MDF4GenBlock) prob.getStartnode();
-			MDF4GenBlock parentnode = (MDF4GenBlock) prob.getParentnode();
+			var parentnode = (MDF4GenBlock) prob.getParentnode();
 
 			if (probtype == MDFProblemType.LINKED_DATALIST_PROBLEM || probtype == MDFProblemType.UNZIPPED_DATA_PROBLEM
 					|| prob.getType() == MDFProblemType.ZIPPED_DATA_PROBLEM) {
@@ -273,7 +267,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				MDF4GenBlock typechecknode = node;
 
 				// First list node.
-				MDF4GenBlock firstlistnode = node;
+				var firstlistnode = node;
 
 				// Skip HLBlock
 				if (node instanceof HLBLOCK) {
@@ -306,7 +300,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				long realmaxblksize = args.maxblocksize;
 				long recordlength = -1;
 				if (parentnode instanceof DGBLOCK) {
-					MDF4GenBlock cgBlock = ((DGBLOCK) parentnode).getLnkCgFirst();
+					var cgBlock = ((DGBLOCK) parentnode).getLnkCgFirst();
 					int recIDsize = ((DGBLOCK) parentnode).getRecIdSize();
 					if (cgBlock instanceof CGBLOCK) {
 						recordlength = ((CGBLOCK) cgBlock).getDataBytes() + recIDsize
@@ -321,7 +315,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				}
 
 				// Create new SplitMerger for this section.
-				MDF4BlocksSplittMerger bsm = new MDF4BlocksSplittMerger(this, blocktype, parentnode, node,
+				var bsm = new MDF4BlocksSplittMerger(this, blocktype, parentnode, node,
 						realmaxblksize);
 
 				// Now attach data sections
@@ -330,7 +324,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 						MDFSorter.log.severe("List header is no DL Node. Aborting.");
 						throw new RuntimeException("List header is no DL Node.");
 					}
-					DLBLOCK dlnode = (DLBLOCK) firstlistnode;
+					var dlnode = (DLBLOCK) firstlistnode;
 					do {
 						for (int i = 1; i < dlnode.getLinkCount(); i++) {
 							bsm.splitmerge(dlnode.links[i]);
@@ -351,7 +345,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 					// DataGroup. We have to create new DataGroups for each
 					// Channel Group.
 					LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
-					MDFSorter.log.log(Level.INFO, "Found " + groups.size() + " Channel Groups in DG.");
+					MDFSorter.log.log(Level.INFO, new StringBuilder().append("Found ").append(groups.size()).append(" Channel Groups in DG.").toString());
 					MDF4GenBlock datasection = ((DGBLOCK) node).getLnkData();
 					SortDataGroup(prob, groups, datasection);
 
@@ -363,7 +357,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	}
 
 	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(DGBLOCK startDataGroup) {
-		LinkedList<CGBLOCK> ret = new LinkedList<CGBLOCK>();
+		LinkedList<CGBLOCK> ret = new LinkedList<>();
 		CGBLOCK next = (CGBLOCK) startDataGroup.getLnkCgFirst();
 		while (next != null) {
 			ret.add(next);
@@ -382,14 +376,13 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 
 		// create FHblock (File History Block)
 		FHBLOCK fhblk = new FHBLOCK();
-		Date dte = new Date();
+		var dte = new Date();
 		fhblk.setTime_ns(dte.getTime() * 1000L * 1000L);
 
 		writeBlock(fhblk, null);
 
 		// create MetaDataBlock
-		String metaData = "<FHcomment><TX>Change</TX><tool_id>MDFSorter for ODS Database</tool_id><tool_vendor>AUDI AG</tool_vendor><tool_version>"
-				+ MDFSorter.VERSIONSTRING + "</tool_version></FHcomment>";
+		String metaData = new StringBuilder().append("<FHcomment><TX>Change</TX><tool_id>MDFSorter for ODS Database</tool_id><tool_vendor>AUDI AG</tool_vendor><tool_version>").append(MDFSorter.VERSIONSTRING).append("</tool_version></FHcomment>").toString();
 		MDF4GenBlock mdblk = new MDF4GenBlock();
 		mdblk.setLength(metaData.length() + 1 + 24L);
 		mdblk.setId("##MD");
@@ -431,7 +424,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 	public void SortDataGroup(MDFCompatibilityProblem prob, LinkedList<CGBLOCK> groups, MDF4GenBlock datasection)
 			throws IOException, DataFormatException {
 
-		DGBLOCK datagroup = (DGBLOCK) prob.getStartnode();
+		var datagroup = (DGBLOCK) prob.getStartnode();
 		// sort records.
 		MDF4DataProvider prov = new MDF4DataProvider(datasection, filestructure.getInput());
 
@@ -440,8 +433,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		byte idSize = datagroup.getRecIdSize();
 
 		int i = 0;
-		Map<Long, Integer> recNumtoArrIdx = new HashMap<Long, Integer>();
-		Map<Long, Long> recNumtoSize = new HashMap<Long, Long>();
+		Map<Long, Integer> recNumtoArrIdx = new HashMap<>();
+		Map<Long, Long> recNumtoSize = new HashMap<>();
 
 		for (CGBLOCK cgroup : groups) {
 			// create an Array for the startaddresses of each record
@@ -462,7 +455,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		// write new blocks
 		for (CGBLOCK cgroup : groups) {
 			int arridx = recNumtoArrIdx.get(cgroup.getRecordId());
-			MDFSorter.log.fine("Writing data for Block " + arridx + ".");
+			MDFSorter.log.fine(new StringBuilder().append("Writing data for Block ").append(arridx).append(".").toString());
 			long newlength;
 			if (!cgroup.isVLSDChannel()) {
 				// create new datagroup
@@ -475,7 +468,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				// at least one record has to be included.
 				long realmaxblksize = reclen > args.maxblocksize ? reclen : reclen * (args.maxblocksize / reclen);
 
-				MDF4BlocksSplittMerger splitmerger = new MDF4BlocksSplittMerger(this, "##DT", last, newlength, prov,
+				var splitmerger = new MDF4BlocksSplittMerger(this, "##DT", last, newlength, prov,
 						realmaxblksize);
 
 				// write data sections.
@@ -485,20 +478,20 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 				splitmerger.setLinks();
 
 				// write corresponding SD-Blocks if needed.
-				List<CNBLOCK> vlsdchanlist = cgroup.getVLSDChannels();
+				var vlsdchanlist = cgroup.getVLSDChannels();
 				if (vlsdchanlist.size() != 0) {
-					for (CNBLOCK vlsdchan : vlsdchanlist) {
-						MDFGenBlock signaldata = vlsdchan.getLnkData();
+					for (var vlsdchan : vlsdchanlist) {
+						var signaldata = vlsdchan.getLnkData();
 						if (signaldata == null) {
 							MDFSorter.log.severe("VLSD-Block without attached Data found!");
 							continue;
 						}
 						if (signaldata instanceof CGBLOCK) {
 							// we need to write a sdblock...
-							CGBLOCK vlsdcg = (CGBLOCK) signaldata;
+							var vlsdcg = (CGBLOCK) signaldata;
 							int parsingidx = recNumtoArrIdx.get(vlsdcg.getRecordId());
 							long expectedlength = vlsdcg.getVLSDlength() + vlsdcg.getCycleCount() * 4L;
-							MDF4BlocksSplittMerger signalsplitmerger = new MDF4BlocksSplittMerger(this, "##SD",
+							var signalsplitmerger = new MDF4BlocksSplittMerger(this, "##SD",
 									vlsdchan, expectedlength, prov, args.maxblocksize);
 							ByteBuffer databuf;
 							// write data sections.
@@ -556,7 +549,7 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 			}
 			foundrecords++;
 		}
-		MDFSorter.log.fine("Found " + foundrecords + " Records.");
+		MDFSorter.log.fine(new StringBuilder().append("Found ").append(foundrecords).append(" Records.").toString());
 		return startaddresses;
 	}
 
@@ -659,8 +652,8 @@ public class MDF4ProcessWriter extends MDFAbstractProcessWriter<MDF4GenBlock> {
 		byte[] spacer = new byte[spcsize];
 		performPut(spacer);
 		if (writeptr % 8L != 0) {
-			System.err.println("Wrote spacer of size " + spcsize + " but writeptr is still wrong. Len:" + length
-					+ " PTR:" + writeptr);
+			System.err.println(new StringBuilder().append("Wrote spacer of size ").append(spcsize).append(" but writeptr is still wrong. Len:").append(length).append(" PTR:").append(writeptr)
+					.toString());
 		}
 	}
 }

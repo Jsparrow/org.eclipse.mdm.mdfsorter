@@ -82,7 +82,7 @@ public abstract class MDF4Util {
 	 * @return The bytes.
 	 */
 	public static byte[] getBytesUInt16(int val) {
-		ByteBuffer b = ByteBuffer.allocate(2);
+		var b = ByteBuffer.allocate(2);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putShort((short) val);
 		return b.array();
@@ -107,7 +107,7 @@ public abstract class MDF4Util {
 	 * @return The bytes.
 	 */
 	public static byte[] getBytesInt16(int val) {
-		ByteBuffer b = ByteBuffer.allocate(2);
+		var b = ByteBuffer.allocate(2);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putShort((short) val);
 		return b.array();
@@ -132,7 +132,7 @@ public abstract class MDF4Util {
 	 * @return The bytes.
 	 */
 	public static byte[] getBytesUInt32(long val) {
-		ByteBuffer b = ByteBuffer.allocate(4);
+		var b = ByteBuffer.allocate(4);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putInt((int) val);
 		return b.array();
@@ -174,7 +174,7 @@ public abstract class MDF4Util {
 	 * @return The bytes.
 	 */
 	public static byte[] getBytesUInt64(long val) {
-		ByteBuffer b = ByteBuffer.allocate(8);
+		var b = ByteBuffer.allocate(8);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putLong(val);
 		return b.array();
@@ -206,7 +206,7 @@ public abstract class MDF4Util {
 	}
 
 	public static byte[] getBytesReal(double val) {
-		ByteBuffer bb = ByteBuffer.allocate(8);
+		var bb = ByteBuffer.allocate(8);
 		bb.order(ByteOrder.LITTLE_ENDIAN).putDouble(val);
 		return bb.array();
 	}
@@ -239,7 +239,7 @@ public abstract class MDF4Util {
 	 * @return The bytes.
 	 */
 	public static byte[] getBytesLink(long lnk) {
-		ByteBuffer b = ByteBuffer.allocate(8);
+		var b = ByteBuffer.allocate(8);
 		b.order(ByteOrder.LITTLE_ENDIAN);
 		b.putLong(lnk);
 		return b.array();
@@ -284,7 +284,7 @@ public abstract class MDF4Util {
 	}
 
 	public static byte[] getBytesCharsUTF8WithTerminator(String s) throws IOException {
-		String term = "\0";
+		var term = "\0";
 		return (s + term).getBytes(CHARSET_UTF8);
 	}
 

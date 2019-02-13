@@ -204,9 +204,9 @@ public class CCBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CCBLOCK [type=" + type + ", precision=" + precision + ", flags=" + flags + ", refCount=" + refCount
-				+ ", valCount=" + valCount + ", phyRangeMin=" + phyRangeMin + ", phyRangeMax=" + phyRangeMax + ", val="
-				+ Arrays.toString(val) + "]";
+		return new StringBuilder().append("CCBLOCK [type=").append(type).append(", precision=").append(precision).append(", flags=").append(flags).append(", refCount=")
+				.append(refCount).append(", valCount=").append(valCount).append(", phyRangeMin=").append(phyRangeMin).append(", phyRangeMax=").append(phyRangeMax)
+				.append(", val=").append(Arrays.toString(val)).append("]").toString();
 	}
 
 	/**

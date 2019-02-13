@@ -99,7 +99,7 @@ public class DGBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "DGBLOCK [numberOfRecId=" + numberOfRecId + ", channelGroups=" + channelGroups + "]";
+		return new StringBuilder().append("DGBLOCK [numberOfRecId=").append(numberOfRecId).append(", channelGroups=").append(channelGroups).append("]").toString();
 	}
 
 	@Override

@@ -62,14 +62,14 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 		LinkedList<DGBLOCK> dgroups = analyse();
 
 		// Open outputfile
-		FileOutputStream out = new FileOutputStream(args.outputname);
+		var out = new FileOutputStream(args.outputname);
 
 		// Start writer Thread
 		DataBlockBuffer buf = new DataBlockBuffer();
 		myCache = new WriteDataCache(buf);
 
 		long start = System.currentTimeMillis();
-		Thread t = new Thread(new WriteWorker(out, buf));
+		var t = new Thread(new WriteWorker(out, buf));
 		t.start();
 
 		// write out blocks
@@ -96,9 +96,7 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 				copyBlock(blk, reader);
 			} else {
 				if (blk.getProblems() != null) {
-					for (MDFCompatibilityProblem p : blk.getProblems()) {
-						MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType());
-					}
+					blk.getProblems().forEach(p -> MDFSorter.log.log(Level.FINE, "Problem of Type: " + p.getType()));
 					solveProblem(blk.getProblems(), buf, dgroups);
 				} else {
 					// Do nothing if block is part of a bigger Problem.
@@ -123,11 +121,11 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 		}
 
 		out.close();
-		MDFSorter.log.log(Level.INFO, "Wrote " + writeptr / 1000 + " kB.");
-		MDFSorter.log.log(Level.INFO, "Writing took " + (System.currentTimeMillis() - start) + " ms");
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Wrote ").append(writeptr / 1000).append(" kB.").toString());
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Writing took ").append(System.currentTimeMillis() - start).append(" ms").toString());
 
 		// Update links with RandomAccessFile
-		RandomAccessFile r = new RandomAccessFile(args.outputname, "rw");
+		var r = new RandomAccessFile(args.outputname, "rw");
 		for (MDF4GenBlock blk : writtenblocks) {
 			// set position to start of Block link section
 			r.seek(blk.getOutputpos() + 24L);
@@ -161,15 +159,15 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 			return;
 		} else {
 			MDFCompatibilityProblem prob = l.get(0);
-			MDFProblemType probtype = prob.getType();
-			MDF4GenBlock node = (MDF4GenBlock) prob.getStartnode();
+			var probtype = prob.getType();
+			var node = (MDF4GenBlock) prob.getStartnode();
 			if (probtype == MDFProblemType.UNSORTED_DATA_PROBLEM) {
 				// Refactor Channel Group!
 				// We have more than one channel group in a single
 				// DataGroup. We have to create new DataGroups for each
 				// Channel Group.
-				LinkedList<CGBLOCK> groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
-				MDFSorter.log.log(Level.INFO, "Found " + groups.size() + " Channel Groups in DG.");
+				var groups = getChannelGroupsfromDataGroup((DGBLOCK) node);
+				MDFSorter.log.log(Level.INFO, new StringBuilder().append("Found ").append(groups.size()).append(" Channel Groups in DG.").toString());
 				MDF4GenBlock datasection = ((DGBLOCK) node).getLnkData();
 				UnSortDataGroup(prob, dgroups, datasection, buf);
 
@@ -181,7 +179,7 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 
 	@Override
 	public LinkedList<CGBLOCK> getChannelGroupsfromDataGroup(DGBLOCK startDataGroup) {
-		LinkedList<CGBLOCK> ret = new LinkedList<CGBLOCK>();
+		LinkedList<CGBLOCK> ret = new LinkedList<>();
 		CGBLOCK next = (CGBLOCK) startDataGroup.getLnkCgFirst();
 		while (next != null) {
 			ret.add(next);
@@ -197,11 +195,11 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 		master.setRecIdSize((byte) 1);
 		writeBlock(master, null);
 
-		MDF4GenBlock root = (MDF4GenBlock) prob.getParentnode();
+		var root = (MDF4GenBlock) prob.getParentnode();
 		root.setLink(0, master);
 
 		int numgroups = dgroups.size();
-		MDF4DataProvider[] providers = new MDF4DataProvider[numgroups];
+		var providers = new MDF4DataProvider[numgroups];
 		long records[] = new long[numgroups];
 		long written[] = new long[numgroups];
 		long sizes[] = new long[numgroups];
@@ -210,7 +208,7 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 		long newsize = 0;
 		long totreccount = 0;
 		int count = 0;
-		for (DGBLOCK dgblk : dgroups) {
+		for (var dgblk : dgroups) {
 			if (count == 0) {
 				master.setLink(1, dgblk.getLnkCgFirst());
 			} else {
@@ -228,7 +226,7 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 
 		// unsort records.
 		newsize += totreccount;
-		MDF4BlocksSplittMerger bsm = new MDF4BlocksSplittMerger(this, "##DT", master, newsize, providers[0],
+		var bsm = new MDF4BlocksSplittMerger(this, "##DT", master, newsize, providers[0],
 				args.maxblocksize);
 
 		MDF4DataProvider idprovider = new MDF4DataProvider(new byte[] { 0 });
@@ -251,7 +249,7 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 			written[rectowrite]++;
 			writtenrecords++;
 			if (rectowrite == 10) {
-				System.out.println("Wrote " + writtenrecords + " of " + totreccount + " Records.");
+				System.out.println(new StringBuilder().append("Wrote ").append(writtenrecords).append(" of ").append(totreccount).append(" Records.").toString());
 			}
 		}
 		bsm.setLinks();
@@ -274,14 +272,14 @@ public class MDFUnsortProcessor extends MDF4ProcessWriter {
 	}
 
 	public LinkedList<DGBLOCK> analyse() {
-		LinkedList<DGBLOCK> ret = new LinkedList<DGBLOCK>();
+		LinkedList<DGBLOCK> ret = new LinkedList<>();
 		HDBLOCK hdroot = (HDBLOCK) filestructure.getRoot();
 		// Set Problem to first datagroup
 		MDFCompatibilityProblem prob = new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM,
 				hdroot.getLnkDgFirst());
 		prob.setParentnode(hdroot);
 		hdroot.getLnkDgFirst().addProblem(prob);
-		for (MDF4GenBlock blk : filestructure.getList()) {
+		for (var blk : filestructure.getList()) {
 			switch (blk.getId()) {
 			case "##DG":
 				if (!blk.equals(prob.getStartnode())) {

@@ -96,7 +96,7 @@ public class MDF3DataProvider implements AbstractDataProvider {
 
 		if (globaloffset + data.capacity() > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
+					new StringBuilder().append("Invalid read access on Data Provider. Section is only ").append(sectionlength).append(" bytes long.").toString());
 		}
 
 		if (dataarr != null) {
@@ -131,17 +131,16 @@ public class MDF3DataProvider implements AbstractDataProvider {
 		// argument check
 		if (globaloffset + length > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
+					new StringBuilder().append("Invalid read access on Data Provider. Section is only ").append(sectionlength).append(" bytes long.").toString());
 		}
 
-		if (dataarr != null) {
-			ByteBuffer data = ByteBuffer.allocate(length);
-			data.put(dataarr, (int) globaloffset, data.capacity());
-			data.rewind();
-			return data;
-		} else {
+		if (dataarr == null) {
 			return readCache.read(globaloffset, length);
 		}
+		var data = ByteBuffer.allocate(length);
+		data.put(dataarr, (int) globaloffset, data.capacity());
+		data.rewind();
+		return data;
 
 	}
 

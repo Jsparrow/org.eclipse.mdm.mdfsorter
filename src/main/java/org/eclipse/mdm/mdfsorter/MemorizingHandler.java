@@ -43,7 +43,7 @@ public class MemorizingHandler extends StreamHandler {
 
 	public MemorizingHandler(OutputStream out, Formatter f) {
 		super(out, f);
-		memory = new LinkedList<LogRecord>();
+		memory = new LinkedList<>();
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class MemorizingHandler extends StreamHandler {
 	 */
 	public int getOccurences(String msg) {
 		int ret = 0;
-		for (LogRecord rec : memory) {
+		for (var rec : memory) {
 			if (rec.getMessage().equals(msg)) {
 				ret++;
 			}

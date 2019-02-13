@@ -43,15 +43,15 @@ public class ArgumentStruct {
 	 * @throws IllegalArgumentException
 	 *             If the arguments are not valid.
 	 */
-	public static ArgumentStruct parseArgs(String[] argv) throws IllegalArgumentException {
+	public static ArgumentStruct parseArgs(String[] argv) {
 		if (argv.length < 3) {
 			throw new IllegalArgumentException("At least two arguments must be provided.");
 		} else {
-			ArgumentStruct args = new ArgumentStruct();
+			var args = new ArgumentStruct();
 			args.inputname = argv[1];
 			args.outputname = argv[2];
 			for (int i = 3; i < argv.length; i++) {
-				String[] splitted = argv[i].split("=");
+				var splitted = argv[i].split("=");
 				switch (splitted[0]) {
 				case "-unzip":
 					if (args.zipflagset) {
@@ -97,8 +97,8 @@ public class ArgumentStruct {
 		}
 	}
 
-	public static ArgumentStruct parseArgsCheck(String[] argv) throws IllegalArgumentException {
-		ArgumentStruct args = new ArgumentStruct();
+	public static ArgumentStruct parseArgsCheck(String[] argv) {
+		var args = new ArgumentStruct();
 		if (argv.length < 1) {
 			throw new MDFSorterArgException("At least one arguments must be provided.");
 		}
@@ -107,9 +107,9 @@ public class ArgumentStruct {
 		if (argv.length <= 2) {
 			args.maxblocksize = parseLong(argv[1]);
 			if (argv.length == 3) {
-				if (argv[2].equals("-unzip")) {
+				if ("-unzip".equals(argv[2])) {
 					args.unzip = true;
-				} else if (argv[2].equals("-zip")) {
+				} else if ("-zip".equals(argv[2])) {
 					args.unzip = false;
 				} else {
 					throw new MDFSorterArgException("Unknown zipflag");

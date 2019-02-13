@@ -227,9 +227,9 @@ public class HDBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [ startTimeNs=" + startTimeNs + ", tzOffsetMin=" + tzOffsetMin + ", dstOffsetMin="
-				+ dstOffsetMin + ", timeFlags=" + timeFlags + ", timeClass=" + timeClass + ", flags=" + flags
-				+ ", startAngleRad=" + startAngleRad + ", startDistanceM=" + startDistanceM + "]";
+		return new StringBuilder().append("HDBLOCK [ startTimeNs=").append(startTimeNs).append(", tzOffsetMin=").append(tzOffsetMin).append(", dstOffsetMin=").append(dstOffsetMin).append(", timeFlags=")
+				.append(timeFlags).append(", timeClass=").append(timeClass).append(", flags=").append(flags).append(", startAngleRad=").append(startAngleRad)
+				.append(", startDistanceM=").append(startDistanceM).append("]").toString();
 	}
 
 	@Override

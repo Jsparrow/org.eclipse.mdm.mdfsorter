@@ -210,11 +210,10 @@ public class CNBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "CNBLOCK [ channelType=" + channelType + ", signalName=" + signalName + ", signalDescription="
-				+ signalDescription + ", numberOfFirstBits=" + numberOfFirstBits + ", numberOfBits=" + numberOfBits
-				+ ", signalDataType=" + signalDataType + ", knownImplValue=" + knownImplValue + ", minImplValue="
-				+ minImplValue + ", maxImplValue=" + maxImplValue + ", sampleRate=" + sampleRate + " byteOffset="
-				+ byteOffset + "]";
+		return new StringBuilder().append("CNBLOCK [ channelType=").append(channelType).append(", signalName=").append(signalName).append(", signalDescription=").append(signalDescription).append(", numberOfFirstBits=")
+				.append(numberOfFirstBits).append(", numberOfBits=").append(numberOfBits).append(", signalDataType=").append(signalDataType).append(", knownImplValue=").append(knownImplValue)
+				.append(", minImplValue=").append(minImplValue).append(", maxImplValue=").append(maxImplValue).append(", sampleRate=").append(sampleRate).append(" byteOffset=")
+				.append(byteOffset).append("]").toString();
 	}
 
 	@Override
@@ -243,11 +242,12 @@ public class CNBLOCK extends MDF3GenBlock {
 		}
 
 		// update last two links manually
-		if (getLinkCount() == 7) {
-			r.seek(getOutputpos() + 4L + 20L + 194L);
-			r.write(MDF3Util.getBytesLink(getLink(5) != null ? getLink(5).getOutputpos() : 0, isBigEndian()));
-			r.write(MDF3Util.getBytesLink(getLink(6) != null ? getLink(6).getOutputpos() : 0, isBigEndian()));
+		if (getLinkCount() != 7) {
+			return;
 		}
+		r.seek(getOutputpos() + 4L + 20L + 194L);
+		r.write(MDF3Util.getBytesLink(getLink(5) != null ? getLink(5).getOutputpos() : 0, isBigEndian()));
+		r.write(MDF3Util.getBytesLink(getLink(6) != null ? getLink(6).getOutputpos() : 0, isBigEndian()));
 
 	}
 
@@ -318,7 +318,7 @@ public class CNBLOCK extends MDF3GenBlock {
 	public byte[] getBodyBytes() throws IOException {
 		int arraylength = (int) (getLength() - 24L); // Length of header and 5
 		// links
-		ByteBuffer b = ByteBuffer.allocate(arraylength);
+		var b = ByteBuffer.allocate(arraylength);
 
 		b.put(MDF3Util.getBytesUInt16(getChannelType(), isBigEndian()));
 

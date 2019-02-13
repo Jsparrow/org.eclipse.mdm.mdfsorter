@@ -34,8 +34,8 @@ public class ZippedDataCache {
 	private static final int MAXENTRIES = 3;
 
 	public ZippedDataCache(FileChannel reader) {
-		cacheblocks = new LinkedList<DZBLOCK>();
-		cachedata = new LinkedList<byte[]>();
+		cacheblocks = new LinkedList<>();
+		cachedata = new LinkedList<>();
 		this.reader = reader;
 	}
 
@@ -62,7 +62,7 @@ public class ZippedDataCache {
 	 */
 	public void load(DZBLOCK dzblk) throws DataFormatException, IOException {
 		byte[] uncompressedData;
-		Inflater decompresser = new Inflater();
+		var decompresser = new Inflater();
 		uncompressedData = new byte[(int) dzblk.getOrg_data_length()];
 		ByteBuffer compressedData = ByteBuffer.allocate((int) dzblk.getData_length());
 		// Skip header section of DZ Block
@@ -76,14 +76,13 @@ public class ZippedDataCache {
 		if (dzblk.transposeNeeded()) {
 			int columnsize = (int) dzblk.getZip_parameters();
 			uncompressedData = MDF4Util.transposeArray(uncompressedData, columnsize, false);
-			MDFSorter.log.log(Level.FINER, "Transposing data with columnsize " + columnsize + ".");
+			MDFSorter.log.log(Level.FINER, new StringBuilder().append("Transposing data with columnsize ").append(columnsize).append(".").toString());
 		}
 
 		if (resultLength != dzblk.getOrg_data_length()) {
-			throw new RuntimeException("Data gain or loss detected while unziping. Expected "
-					+ dzblk.getOrg_data_length() + " bytes, got " + resultLength);
+			throw new RuntimeException(new StringBuilder().append("Data gain or loss detected while unziping. Expected ").append(dzblk.getOrg_data_length()).append(" bytes, got ").append(resultLength).toString());
 		}
-		MDFSorter.log.log(Level.FINER, "Unzipped block of size " + resultLength + ".");
+		MDFSorter.log.log(Level.FINER, new StringBuilder().append("Unzipped block of size ").append(resultLength).append(".").toString());
 
 		// Store Data in Cache
 		if (cacheblocks.size() == MAXENTRIES) {

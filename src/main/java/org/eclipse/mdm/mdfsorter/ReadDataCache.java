@@ -49,7 +49,7 @@ public class ReadDataCache {
 					cacheend = maxreadlen;
 					cache = ByteBuffer.allocate((int) (maxreadlen - startoffset));
 					if (maxreadlen - startoffset < length) {
-						throw new RuntimeException("Length " + length + " Bytes are not available from " + startoffset);
+						throw new RuntimeException(new StringBuilder().append("Length ").append(length).append(" Bytes are not available from ").append(startoffset).toString());
 					}
 				} else if (cache.capacity() < CACHESIZE) {
 					cache = ByteBuffer.allocate(CACHESIZE);

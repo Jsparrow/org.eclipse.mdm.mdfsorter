@@ -48,7 +48,7 @@ public class DTBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public String toString() {
-		return "DTBLOCK [pos=" + getPos() + "]";
+		return new StringBuilder().append("DTBLOCK [pos=").append(getPos()).append("]").toString();
 	}
 
 	/*

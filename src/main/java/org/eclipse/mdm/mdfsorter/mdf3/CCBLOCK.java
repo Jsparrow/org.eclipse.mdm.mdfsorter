@@ -200,9 +200,8 @@ public class CCBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "CCBLOCK [knownPhysValue=" + knownPhysValue + ", minPhysValue=" + minPhysValue + ", maxPhysValue="
-				+ maxPhysValue + ", physUnit=" + physUnit + ", formulaIdent=" + formulaIdent
-				+ ", noOfValuePairsForFormula=" + noOfValuePairsForFormula + "]";
+		return new StringBuilder().append("CCBLOCK [knownPhysValue=").append(knownPhysValue).append(", minPhysValue=").append(minPhysValue).append(", maxPhysValue=").append(maxPhysValue).append(", physUnit=")
+				.append(physUnit).append(", formulaIdent=").append(formulaIdent).append(", noOfValuePairsForFormula=").append(noOfValuePairsForFormula).append("]").toString();
 	}
 
 	/*
@@ -246,10 +245,11 @@ public class CCBLOCK extends MDF3GenBlock {
 			setNoOfValuePairsForFormula(MDF3Util.readUInt16(MDFParser.getDataBuffer(content, 40, 42), isBigEndian()));
 		}
 
-		if (content.length > 42) {
-			conversionData = new byte[content.length - 42];
-			System.arraycopy(content, 42, conversionData, 0, conversionData.length);
+		if (content.length <= 42) {
+			return;
 		}
+		conversionData = new byte[content.length - 42];
+		System.arraycopy(content, 42, conversionData, 0, conversionData.length);
 	}
 
 	@Override

@@ -62,7 +62,7 @@ abstract public class MDFGenBlock {
 	// Getters and Setters
 	public void addProblem(MDFCompatibilityProblem m) {
 		if (problems == null) {
-			problems = new LinkedList<MDFCompatibilityProblem>();
+			problems = new LinkedList<>();
 		}
 		problems.add(m);
 	}

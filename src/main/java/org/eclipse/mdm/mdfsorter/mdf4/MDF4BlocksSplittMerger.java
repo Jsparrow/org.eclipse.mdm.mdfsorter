@@ -229,7 +229,7 @@ public class MDF4BlocksSplittMerger {
 		prov = new MDF4DataProvider(datablock, reader);
 		BlockReadPtr = 0;
 		long leftbytes;
-		if (datablock.getId().equals("##DZ")) {
+		if ("##DZ".equals(datablock.getId())) {
 			leftbytes = ((DZBLOCK) datablock).getOrg_data_length();
 		} else {
 			leftbytes = datablock.getLength() - 24L;
@@ -323,11 +323,11 @@ public class MDF4BlocksSplittMerger {
 	 */
 	public void checkfinalized() throws IOException {
 		if (datawritten == thisblockend) {
-			if (curr.getId().equals("##DZ")) {
+			if ("##DZ".equals(curr.getId())) {
 				// Compress the bytes
-				DZBLOCK dzblk = (DZBLOCK) curr;
+				var dzblk = (DZBLOCK) curr;
 				byte[] output = new byte[(int) dzblk.getOrg_data_length()];
-				Deflater compresser = new Deflater();
+				var compresser = new Deflater();
 				compresser.setInput(uncompressedoutData);
 				compresser.finish();
 				int compressedDataLength = compresser.deflate(output);
@@ -361,19 +361,17 @@ public class MDF4BlocksSplittMerger {
 	 *             If zipped data is in an invalid format.
 	 */
 	public ByteBuffer abstractread(int length) throws IOException, DataFormatException {
-		if (towrite != null) {
-			// blockwise
-
-			// System.out.println(length);
-
-			ByteBuffer datasection = ByteBuffer.allocate(length);
-			prov.read(BlockReadPtr, datasection, towrite);
-			BlockReadPtr += datasection.limit();
-			return datasection;
-		} else {
+		// blockwise
+		// System.out.println(length);
+		// not blockwise
+		if (towrite == null) {
 			// not blockwise
 			return prov.cachedRead(GlobalReadPtr, length);
 		}
+		ByteBuffer datasection = ByteBuffer.allocate(length);
+		prov.read(BlockReadPtr, datasection, towrite);
+		BlockReadPtr += datasection.limit();
+		return datasection;
 
 	}
 
@@ -385,7 +383,7 @@ public class MDF4BlocksSplittMerger {
 	 *            The Data to be put in the buffer
 	 */
 	public void abstractput(byte[] datasection) {
-		if (curr.getId().equals("##DZ")) {
+		if ("##DZ".equals(curr.getId())) {
 			System.arraycopy(datasection, 0, uncompressedoutData, uncompressedWritePtr, datasection.length);
 			uncompressedWritePtr += datasection.length;
 		} else {
@@ -394,7 +392,7 @@ public class MDF4BlocksSplittMerger {
 	}
 
 	public void abstractput(ByteBuffer buf, int length) {
-		if (curr.getId().equals("##DZ")) {
+		if ("##DZ".equals(curr.getId())) {
 			buf.get(uncompressedoutData, uncompressedWritePtr, length);
 			uncompressedWritePtr += length;
 		} else {
@@ -448,7 +446,7 @@ public class MDF4BlocksSplittMerger {
 		if (unzip) {
 			ret = ps.createAndWriteHeader(newblocklength, blocktype);
 		} else {
-			DZBLOCK dzblock = new DZBLOCK();
+			var dzblock = new DZBLOCK();
 			dzblock.setId("##DZ");
 			dzblock.setBlock_type(blocktype.substring(2));
 			dzblock.setLinkCount(0);
@@ -533,7 +531,7 @@ public class MDF4BlocksSplittMerger {
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
+			throw new IOException(new StringBuilder().append("written length not equal to blocklength: ").append(length).append("/").append(written).toString());
 		}
 	}
 
@@ -542,7 +540,7 @@ public class MDF4BlocksSplittMerger {
 			parentnode.setLink(2, structuralroot);
 		} else if (parentnode instanceof CNBLOCK) {
 			parentnode.setLink(5, structuralroot);
-		} else if (parentnode.getId().equals("##SR")) {
+		} else if ("##SR".equals(parentnode.getId())) {
 			parentnode.setLink(1, structuralroot);
 		}
 	}

@@ -60,13 +60,12 @@ public class MDF3GenBlock extends MDFGenBlock implements Comparable<MDF3GenBlock
 		super(pos);
 		// Check with UINT32.Maxvalue.
 		if (pos > 2L * Integer.MAX_VALUE + 1L) {
-			throw new IllegalArgumentException("Block address " + pos + " is too large for MDF3 format.");
+			throw new IllegalArgumentException(new StringBuilder().append("Block address ").append(pos).append(" is too large for MDF3 format.").toString());
 		}
 		this.bigendian = bigendian;
 	}
 
 	public MDF3GenBlock(boolean bigendian) {
-		super();
 		this.bigendian = bigendian;
 	}
 
@@ -199,7 +198,8 @@ public class MDF3GenBlock extends MDFGenBlock implements Comparable<MDF3GenBlock
 	 */
 	@Override
 	public String toString() {
-		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length + ", linkCount=" + linkCount + "]";
+		return new StringBuilder().append("BLOCK [pos=").append(pos).append(", id=").append(id).append(", length=").append(length).append(", linkCount=")
+				.append(linkCount).append("]").toString();
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class MDF3GenBlock extends MDFGenBlock implements Comparable<MDF3GenBlock
 			return false;
 		}
 
-		MDF3GenBlock other = (MDF3GenBlock) obj;
+		var other = (MDF3GenBlock) obj;
 		if (pos != other.pos) {
 			return false;
 		}
@@ -330,21 +330,21 @@ public class MDF3GenBlock extends MDFGenBlock implements Comparable<MDF3GenBlock
 	@Override
 	public void analyseProblems(ArgumentStruct args) {
 		// TODO Auto-generated method stub
-		if (this instanceof DGBLOCK) {
-			DGBLOCK dgblk = (DGBLOCK) this;
+		if (!(this instanceof DGBLOCK)) {
+			return;
+		}
+		var dgblk = (DGBLOCK) this;
+		var blk = (CGBLOCK) dgblk.getLnkCgFirst();
+		if (blk.getLnkCgNext() != null) { // more than one channel group per
+			// datagroup! Unsorted.
+			addProblem(new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM, this));
+			// which block will be touched?
+			// all channel groups!
+			dgblk.getLnkData().touch();
+			do {
+				blk.touch();
+			} while ((blk = (CGBLOCK) blk.getLnkCgNext()) != null);
 
-			CGBLOCK blk = (CGBLOCK) dgblk.getLnkCgFirst();
-			if (blk.getLnkCgNext() != null) { // more than one channel group per
-				// datagroup! Unsorted.
-				addProblem(new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM, this));
-				// which block will be touched?
-				// all channel groups!
-				dgblk.getLnkData().touch();
-				do {
-					blk.touch();
-				} while ((blk = (CGBLOCK) blk.getLnkCgNext()) != null);
-
-			}
 		}
 	}
 

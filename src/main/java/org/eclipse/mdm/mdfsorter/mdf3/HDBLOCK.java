@@ -193,10 +193,9 @@ public class HDBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "HDBLOCK [dateStarted=" + dateStarted + ", timeStarted=" + timeStarted + ", author=" + author
-				+ ", department=" + department + ", projectName=" + projectName + ", meaObject=" + meaObject
-				+ ", timestamp=" + timestamp + ", utcTimeOffsetHours=" + utcTimeOffsetHours + ", timeQualityClass="
-				+ timeQualityClass + ", timerIdent=" + timerIdent + "]";
+		return new StringBuilder().append("HDBLOCK [dateStarted=").append(dateStarted).append(", timeStarted=").append(timeStarted).append(", author=").append(author).append(", department=")
+				.append(department).append(", projectName=").append(projectName).append(", meaObject=").append(meaObject).append(", timestamp=").append(timestamp)
+				.append(", utcTimeOffsetHours=").append(utcTimeOffsetHours).append(", timeQualityClass=").append(timeQualityClass).append(", timerIdent=").append(timerIdent).append("]").toString();
 	}
 
 	@Override
@@ -240,7 +239,7 @@ public class HDBLOCK extends MDF3GenBlock {
 	public byte[] getBodyBytes() throws IOException {
 		int arraylength = (int) (getLength() - 16L); // Length of header and 3
 		// links
-		ByteBuffer b = ByteBuffer.allocate(arraylength);
+		var b = ByteBuffer.allocate(arraylength);
 
 		b.put(MDF3Util.getBytesUInt16(getNumberOfDataGroups(), isBigEndian()));
 

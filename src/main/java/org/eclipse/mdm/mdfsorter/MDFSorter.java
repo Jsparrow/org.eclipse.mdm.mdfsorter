@@ -78,7 +78,7 @@ abstract public class MDFSorter {
 					printUsage();
 					return;
 				case "check":
-					ArgumentStruct structchk = ArgumentStruct.parseArgsCheck(args);
+					var structchk = ArgumentStruct.parseArgsCheck(args);
 					checkForProblems(structchk.inputname, structchk.maxblocksize, structchk.unzip);
 					return;
 				case "process":
@@ -199,11 +199,11 @@ abstract public class MDFSorter {
 		boolean ret = false;
 		if (!con.isMDF3()) {
 			@SuppressWarnings("unchecked")
-			MDF4ProcessWriter pw = new MDF4ProcessWriter((MDFFileContent<MDF4GenBlock>) con, struct);
+			var pw = new MDF4ProcessWriter((MDFFileContent<MDF4GenBlock>) con, struct);
 			ret = pw.checkProblems();
 		} else {
 			@SuppressWarnings("unchecked")
-			MDF3ProcessWriter pw = new MDF3ProcessWriter((MDFFileContent<MDF3GenBlock>) con, struct);
+			var pw = new MDF3ProcessWriter((MDFFileContent<MDF3GenBlock>) con, struct);
 			ret = pw.checkProblems();
 		}
 

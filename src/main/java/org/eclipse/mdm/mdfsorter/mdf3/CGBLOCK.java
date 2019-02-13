@@ -118,8 +118,8 @@ public class CGBLOCK extends MDF3GenBlock {
 
 	@Override
 	public String toString() {
-		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount + ", dataBytes=" + dataBytes
-				+ ", numChannels=" + numChannels + "]";
+		return new StringBuilder().append("CGBLOCK [recordId=").append(recordId).append(", cycleCount=").append(cycleCount).append(", dataBytes=").append(dataBytes).append(", numChannels=")
+				.append(numChannels).append("]").toString();
 	}
 
 	/*
@@ -204,10 +204,11 @@ public class CGBLOCK extends MDF3GenBlock {
 			}
 		}
 		// update fourth link manually
-		if (getLinkCount() == 4) {
-			r.seek(getOutputpos() + 4L + 3L * 4L + 10L);
-			r.write(MDF3Util.getBytesLink(getLink(4).getOutputpos(), isBigEndian()));
+		if (getLinkCount() != 4) {
+			return;
 		}
+		r.seek(getOutputpos() + 4L + 3L * 4L + 10L);
+		r.write(MDF3Util.getBytesLink(getLink(4).getOutputpos(), isBigEndian()));
 	}
 
 }

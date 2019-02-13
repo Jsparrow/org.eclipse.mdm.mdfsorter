@@ -149,7 +149,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 
 		if (globaloffset + data.capacity() > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
+					new StringBuilder().append("Invalid read access on Data Provider. Section is only ").append(sectionlength).append(" bytes long.").toString());
 		}
 		if (dataarr != null) {
 			data.put(dataarr, (int) globaloffset, data.capacity());
@@ -170,7 +170,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 
 		// we need to search for the block to read from
 		if (blk == null) {
-			Object[] bo = getBlockWithOffset(globaloffset);
+			var bo = getBlockWithOffset(globaloffset);
 			blk = (MDF4GenBlock) bo[0];
 			blkoffset = (long) bo[1];
 			lastprocessedstart = (long) bo[2];
@@ -200,7 +200,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 			return;
 		}
 
-		if (blk.getId().equals("##DZ")) {
+		if ("##DZ".equals(blk.getId())) {
 			cache.read((DZBLOCK) blk, blkoffset, data);
 		} else {
 			reader.position(blk.getPos() + 24L + blkoffset);
@@ -230,17 +230,16 @@ public class MDF4DataProvider implements AbstractDataProvider {
 		// argument check
 		if (globaloffset + length > sectionlength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Section is only " + sectionlength + " bytes long.");
+					new StringBuilder().append("Invalid read access on Data Provider. Section is only ").append(sectionlength).append(" bytes long.").toString());
 		}
 
-		if (dataarr != null) {
-			ByteBuffer data = ByteBuffer.allocate(length);
-			data.put(dataarr, (int) globaloffset, data.capacity());
-			data.rewind();
-			return data;
-		} else {
+		if (dataarr == null) {
 			return ReadCache.read(globaloffset, length);
 		}
+		var data = ByteBuffer.allocate(length);
+		data.put(dataarr, (int) globaloffset, data.capacity());
+		data.rewind();
+		return data;
 
 	}
 
@@ -266,10 +265,10 @@ public class MDF4DataProvider implements AbstractDataProvider {
 		long datalength = blk instanceof DZBLOCK ? ((DZBLOCK) blk).getOrg_data_length() : blk.getLength() - 24L;
 		if (blockoffset + data.capacity() > datalength) {
 			throw new IllegalArgumentException(
-					"Invalid read access on Data Provider. Block is only " + datalength + " bytes long.");
+					new StringBuilder().append("Invalid read access on Data Provider. Block is only ").append(datalength).append(" bytes long.").toString());
 		}
 
-		if (blk.getId().equals("##DZ")) {
+		if ("##DZ".equals(blk.getId())) {
 			cache.read((DZBLOCK) blk, blockoffset, data);
 		} else {
 			reader.position(blk.getPos() + 24L + blockoffset);
@@ -288,7 +287,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 	 *         at index 0, the offset (long) at index 1.
 	 */
 	private Object[] getBlockWithOffset(long globaloffset) {
-		Object[] ret = new Object[3];
+		var ret = new Object[3];
 		// No list walking needed, only a single block
 		if (sectype == 'd' || sectype == 'z') {
 			ret[0] = datasectionhead;
@@ -298,7 +297,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 		} else {
 			// list... Datasection head has to be a DL, because HLs are skipped
 			// in the constructor
-			DLBLOCK curr = (DLBLOCK) datasectionhead;
+			var curr = (DLBLOCK) datasectionhead;
 			if (curr.isEqualLengthFlag()) {
 				long blknum = globaloffset / curr.getEqualLength(); // block
 				// we
@@ -318,12 +317,12 @@ public class MDF4DataProvider implements AbstractDataProvider {
 			} else {
 				long curroff = -1;
 				int listblknum = 0; // Block number in active list
-				DLBLOCK actlist = curr; // active list.
+				var actlist = curr; // active list.
 				MDF4GenBlock drag = null;
 				long draglength = 0; // length of drag block.
 				while (curroff <= globaloffset) {
 					drag = actlist.getLink(listblknum + 1);
-					draglength = drag.getId().equals("##DZ") ? ((DZBLOCK) drag).getOrg_data_length()
+					draglength = "##DZ".equals(drag.getId()) ? ((DZBLOCK) drag).getOrg_data_length()
 							: drag.getLength() - 24L;
 
 					curroff = actlist.getOffset()[listblknum] + draglength;
@@ -364,12 +363,12 @@ public class MDF4DataProvider implements AbstractDataProvider {
 			return ((DZBLOCK) datasectionhead).getOrg_data_length();
 		} else {
 			DLBLOCK drag = null;
-			DLBLOCK blk = (DLBLOCK) datasectionhead;
+			var blk = (DLBLOCK) datasectionhead;
 			MDF4GenBlock lastchld;
 			do {
 				lastchld = blk.getLink((int) blk.getCount());
 				newlength += (blk.getCount() - 1) * blk.getEqualLength();
-				if (lastchld.getId().equals("##DZ")) {
+				if ("##DZ".equals(lastchld.getId())) {
 					newlength += ((DZBLOCK) lastchld).getOrg_data_length();
 				} else {
 					newlength += lastchld.getLength() - 24L;
@@ -381,7 +380,7 @@ public class MDF4DataProvider implements AbstractDataProvider {
 				// We were wrong, calculate newlength otherwise (last offset +
 				// length of last datablock)
 				newlength = drag.getOffset()[(int) drag.getCount() - 1];
-				if (lastchld.getId().equals("##DZ")) {
+				if ("##DZ".equals(lastchld.getId())) {
 					newlength += ((DZBLOCK) lastchld).getOrg_data_length();
 				} else {
 					newlength += lastchld.getLength() - 24L;

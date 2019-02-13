@@ -53,7 +53,7 @@ public class ArgumentParserTest {
 	@Test // Check values of ArgumentStruct
 	public void testParsing1() {
 		String[] test1 = { "process", "file1", "file2", "-zip", "-maxblocksize=300" };
-		ArgumentStruct ar = ArgumentStruct.parseArgs(test1);
+		var ar = ArgumentStruct.parseArgs(test1);
 		assertEquals(ar.inputname, "file1");
 		assertEquals(ar.outputname, "file2");
 		assertEquals(ar.unzip, false);
@@ -63,7 +63,7 @@ public class ArgumentParserTest {
 	@Test // Check values of ArgumentStruct
 	public void testParsing2() {
 		String[] test1 = { "process", "file1", "file2", "-maxblocksize=3M" };
-		ArgumentStruct ar = ArgumentStruct.parseArgs(test1);
+		var ar = ArgumentStruct.parseArgs(test1);
 		assertEquals(ar.maxblocksize, 3L * 1024L * 1024L);
 
 		test1[3] = "-maxblocksize=34k";

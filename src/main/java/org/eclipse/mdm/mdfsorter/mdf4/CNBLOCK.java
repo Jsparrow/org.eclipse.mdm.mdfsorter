@@ -224,13 +224,12 @@ public class CNBLOCK extends MDF4GenBlock {
 	}
 
 	public MDF4GenBlock[] getLnkDefaultX() {
-		if (getDefaultXFlag()) {
-			MDF4GenBlock[] ret = new MDF4GenBlock[3];
-			System.arraycopy(links, 8 + getAttachmentCount(), ret, 0, 3);
-			return ret;
-		} else {
+		if (!getDefaultXFlag()) {
 			return null;
 		}
+		MDF4GenBlock[] ret = new MDF4GenBlock[3];
+		System.arraycopy(links, 8 + getAttachmentCount(), ret, 0, 3);
+		return ret;
 
 	}
 
@@ -373,17 +372,15 @@ public class CNBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CNBLOCK [lnkCnNext=" + getLnkCnNext().getPos() + ", lnkComposition=" + getLnkComposition().getPos()
-				+ ", lnkTxName=" + getLnkTxName().getPos() + ", lnkSiSource=" + getLnkSiSource().getPos()
-				+ ", lnkCcConversion=" + getLnkComposition().getPos() + ", lnkData=" + getLnkData().getPos()
-				+ ", lnkMdUnit=" + getLnkMdUnit().getPos() + ", lnkMdComment=" + getLnkMdComment().getPos()
-				+ ", lnkAtReference=" + "{" + getLnkAtReference().length + "}" + ", lnkDefaultX=" + "{"
-				+ getLnkDefaultX().length + "}" + ", channelType=" + channelType + ", syncType=" + syncType
-				+ ", dataType=" + dataType + ", bitOffset=" + bitOffset + ", byteOffset=" + byteOffset + ", bitCount="
-				+ bitCount + ", flags=" + flags + ", invalBitPos=" + invalBitPos + ", precision=" + precision
-				+ ", attachmentCount=" + attachmentCount + ", valRangeMin=" + valRangeMin + ", valRangeMax="
-				+ valRangeMax + ", limitMin=" + limitMin + ", limitMax=" + limitMax + ", limitExtMin=" + limitExtMin
-				+ ", limitExtMax=" + limitExtMax + "]";
+		return new StringBuilder().append("CNBLOCK [lnkCnNext=").append(getLnkCnNext().getPos()).append(", lnkComposition=").append(getLnkComposition().getPos()).append(", lnkTxName=").append(getLnkTxName().getPos())
+				.append(", lnkSiSource=").append(getLnkSiSource().getPos()).append(", lnkCcConversion=").append(getLnkComposition().getPos()).append(", lnkData=").append(getLnkData().getPos()).append(", lnkMdUnit=")
+				.append(getLnkMdUnit().getPos()).append(", lnkMdComment=").append(getLnkMdComment().getPos()).append(", lnkAtReference=").append("{").append(getLnkAtReference().length).append("}")
+				.append(", lnkDefaultX=").append("{").append(getLnkDefaultX().length).append("}").append(", channelType=").append(channelType).append(", syncType=")
+				.append(syncType).append(", dataType=").append(dataType).append(", bitOffset=").append(bitOffset).append(", byteOffset=").append(byteOffset)
+				.append(", bitCount=").append(bitCount).append(", flags=").append(flags).append(", invalBitPos=").append(invalBitPos).append(", precision=")
+				.append(precision).append(", attachmentCount=").append(attachmentCount).append(", valRangeMin=").append(valRangeMin).append(", valRangeMax=").append(valRangeMax)
+				.append(", limitMin=").append(limitMin).append(", limitMax=").append(limitMax).append(", limitExtMin=").append(limitExtMin).append(", limitExtMax=")
+				.append(limitExtMax).append("]").toString();
 	}
 
 	@Override

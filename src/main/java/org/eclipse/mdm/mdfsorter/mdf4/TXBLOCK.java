@@ -61,7 +61,7 @@ public class TXBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "TXBLOCK [txData=" + txData + "]";
+		return new StringBuilder().append("TXBLOCK [txData=").append(txData).append("]").toString();
 	}
 
 	/**

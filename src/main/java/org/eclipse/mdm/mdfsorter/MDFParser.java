@@ -41,7 +41,7 @@ public abstract class MDFParser {
 		char[] versionnum = new char[8];
 		byte[] idblock = readBytes(64, in);
 
-		String expected = "MDF     ";
+		var expected = "MDF     ";
 		for (int i = 0; i < 8; i++) {
 			if (idblock[i] != expected.charAt(i)) {
 				MDFSorter.log.severe("No MDF File detected. Aborting.");
@@ -56,20 +56,19 @@ public abstract class MDFParser {
 		}
 
 		int version = MDF4Util.readUInt16(getDataBuffer(idblock, 28, 30));
-		MDFSorter.log.log(Level.FINE, "Found MDF Version " + String.valueOf(versionnum) + " (" + version + ")");
+		MDFSorter.log.log(Level.FINE, new StringBuilder().append("Found MDF Version ").append(String.valueOf(versionnum)).append(" (").append(version).append(")").toString());
 
 		@SuppressWarnings("rawtypes")
 		MDFAbstractParser myParser = null;
 
 		if (version < 300 || version > 411) {
-			MDFSorter.log.severe("MDF Version " + String.valueOf(versionnum) + "is not supported. Aborting.");
+			MDFSorter.log.severe(new StringBuilder().append("MDF Version ").append(String.valueOf(versionnum)).append("is not supported. Aborting.").toString());
 			throw new IllegalArgumentException("Unsupported MDF Version.");
 		} else if (version < 400) {
 			if (version == 330) {
 				int codePage = MDF4Util.readUInt16(getDataBuffer(idblock, 30, 32));
 				if (codePage != 0) {
-					MDFSorter.log.warning("code page is defined to be '" + codePage
-							+ "' (value is ignored and ISO-8859-1 is used for string en-/decoding)");
+					MDFSorter.log.warning(new StringBuilder().append("code page is defined to be '").append(codePage).append("' (value is ignored and ISO-8859-1 is used for string en-/decoding)").toString());
 				}
 			}
 			boolean bigendian = MDF4Util.readUInt16(getDataBuffer(idblock, 24, 26)) != 0;
@@ -97,7 +96,7 @@ public abstract class MDFParser {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;
 		if ((bytesread = in.read(chunk)) != bytes) {
-			System.err.println("Read only " + bytesread + " Bytes instead of " + bytes);
+			System.err.println(new StringBuilder().append("Read only ").append(bytesread).append(" Bytes instead of ").append(bytes).toString());
 		}
 		return chunk.array();
 	}
@@ -120,7 +119,8 @@ public abstract class MDFParser {
 		} else {
 			// just for testing
 			throw new ArrayIndexOutOfBoundsException(
-					"Tried to access bytes " + start + " to " + end + "with array length " + data.length);
+					new StringBuilder().append("Tried to access bytes ").append(start).append(" to ").append(end).append("with array length ")
+							.append(data.length).toString());
 		}
 	}
 

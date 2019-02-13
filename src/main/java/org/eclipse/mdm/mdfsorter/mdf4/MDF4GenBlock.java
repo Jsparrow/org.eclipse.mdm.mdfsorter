@@ -68,7 +68,6 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 	}
 
 	public MDF4GenBlock() {
-		super();
 	}
 
 	@Override
@@ -150,7 +149,7 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 			return;
 		}
 		if (problems == null) {
-			problems = new LinkedList<MDFCompatibilityProblem>();
+			problems = new LinkedList<>();
 		}
 		problems.add(m);
 	}
@@ -177,7 +176,8 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 	 */
 	@Override
 	public String toString() {
-		return "BLOCK [pos=" + pos + ", id=" + id + ", length=" + length + ", linkCount=" + linkCount + "]";
+		return new StringBuilder().append("BLOCK [pos=").append(pos).append(", id=").append(id).append(", length=").append(length).append(", linkCount=")
+				.append(linkCount).append("]").toString();
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 			return false;
 		}
 
-		MDF4GenBlock other = (MDF4GenBlock) obj;
+		var other = (MDF4GenBlock) obj;
 		if (pos != other.pos) {
 			return false;
 		}
@@ -337,7 +337,7 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 			if (!(this instanceof HLBLOCK)) {
 				throw new RuntimeException("Error parsing HL block.");
 			}
-			MDF4GenBlock dlblk = ((HLBLOCK) this).getLnkDlFirst();
+			var dlblk = ((HLBLOCK) this).getLnkDlFirst();
 			if (!(dlblk instanceof DLBLOCK)) {
 				throw new RuntimeException("Error parsing HL block.");
 			}
@@ -367,8 +367,8 @@ public class MDF4GenBlock extends MDFGenBlock implements Comparable<MDF4GenBlock
 			if (!(this instanceof DGBLOCK)) {
 				throw new RuntimeException("Error parsing DG block.");
 			}
-			DGBLOCK dgblk = (DGBLOCK) this;
-			CGBLOCK blk = (CGBLOCK) dgblk.getLnkCgFirst();
+			var dgblk = (DGBLOCK) this;
+			var blk = (CGBLOCK) dgblk.getLnkCgFirst();
 			if (blk.getLnkCgNext() != null) {
 				// more than one channel group per datagroup! Unsorted.
 				addProblem(new MDFCompatibilityProblem(MDFProblemType.UNSORTED_DATA_PROBLEM, this));

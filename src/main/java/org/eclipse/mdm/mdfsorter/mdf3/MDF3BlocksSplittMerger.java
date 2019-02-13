@@ -196,7 +196,7 @@ public class MDF3BlocksSplittMerger {
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
+			throw new IOException(new StringBuilder().append("written length not equal to blocklength: ").append(length).append("/").append(written).toString());
 		}
 	}
 

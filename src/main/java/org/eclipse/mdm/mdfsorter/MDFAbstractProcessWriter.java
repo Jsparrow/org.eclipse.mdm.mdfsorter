@@ -88,16 +88,12 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 	}
 
 	public boolean checkProblems() {
-		for (MDFXGenBlock blk : filestructure.getList()) {
-			blk.analyseProblems(args);
-		}
+		filestructure.getList().forEach(blk -> blk.analyseProblems(args));
 		boolean ret = false;
 		for (MDFXGenBlock blk : filestructure.getList()) {
 			for (int i = 0; i < blk.getLinkCount(); i++) {
 				if (blk.getLink(i) != null && blk.getLink(i).getProblems() != null) {
-					for (MDFCompatibilityProblem p : blk.getLink(i).getProblems()) {
-						p.setParentnode(blk);
-					}
+					blk.getLink(i).getProblems().forEach(p -> p.setParentnode(blk));
 					ret = true;
 				}
 			}
@@ -138,7 +134,7 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 			written += bytesread;
 		} while (written < length);
 		if (length != written) {
-			throw new IOException("written length not equal to blocklength: " + length + "/" + written);
+			throw new IOException(new StringBuilder().append("written length not equal to blocklength: ").append(length).append("/").append(written).toString());
 		}
 		// insert space if length%8!=0
 		if (length % 8 != 0) {
@@ -179,10 +175,11 @@ public abstract class MDFAbstractProcessWriter<MDFXGenBlock extends MDFGenBlock>
 	 *            The data to be written.
 	 */
 	public void performPut(byte[] data) {
-		if (data != null && data.length != 0) {
-			writeptr += data.length;
-			myCache.put(data);
+		if (!(data != null && data.length != 0)) {
+			return;
 		}
+		writeptr += data.length;
+		myCache.put(data);
 	}
 
 	/**

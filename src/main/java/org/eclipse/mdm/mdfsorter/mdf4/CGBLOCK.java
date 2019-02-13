@@ -198,7 +198,7 @@ public class CGBLOCK extends MDF4GenBlock {
 	 * @return The list of CNBLOCKs.
 	 */
 	public List<CNBLOCK> getVLSDChannels() {
-		LinkedList<CNBLOCK> ret = new LinkedList<CNBLOCK>();
+		LinkedList<CNBLOCK> ret = new LinkedList<>();
 		CNBLOCK next = (CNBLOCK) getLnkCnFirst();
 		while (next != null) {
 			// check if vlsd channel
@@ -212,8 +212,8 @@ public class CGBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "CGBLOCK [recordId=" + recordId + ", cycleCount=" + cycleCount + ", flags=" + flags + ", pathSeparator="
-				+ pathSeparator + ", dataBytes=" + dataBytes + ", invalBytes=" + invalBytes + "]";
+		return new StringBuilder().append("CGBLOCK [recordId=").append(recordId).append(", cycleCount=").append(cycleCount).append(", flags=").append(flags).append(", pathSeparator=")
+				.append(pathSeparator).append(", dataBytes=").append(dataBytes).append(", invalBytes=").append(invalBytes).append("]").toString();
 	}
 
 	/**

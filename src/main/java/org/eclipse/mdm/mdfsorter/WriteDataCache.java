@@ -103,7 +103,7 @@ public class WriteDataCache {
 		int length = data.length;
 		if (length > WRITE_CACHE_SIZE) {
 			flush(); // flush data from the cache
-			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(data, -1));
+			buf.putData(new AbstractMap.SimpleEntry<>(data, -1));
 		} else {
 			// use the cache
 			// first write part that still fits into cache.
@@ -134,19 +134,21 @@ public class WriteDataCache {
 	 */
 	public void flush() {
 		// Cache has been flushed?
-		if (cache != null) {
-			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(cache, cachewriteposition));
-			cachewriteposition = 0;
-			cache = null;
+		if (cache == null) {
+			return;
 		}
+		buf.putData(new AbstractMap.SimpleEntry<>(cache, cachewriteposition));
+		cachewriteposition = 0;
+		cache = null;
 	}
 
 	public void CheckAndWriteout() {
-		if (cachewriteposition == WRITE_CACHE_SIZE) {
-			// write all data out.
-			buf.putData(new AbstractMap.SimpleEntry<byte[], Integer>(cache, -1));
-			cache = new byte[WRITE_CACHE_SIZE];
-			cachewriteposition = 0;
+		if (cachewriteposition != WRITE_CACHE_SIZE) {
+			return;
 		}
+		// write all data out.
+		buf.putData(new AbstractMap.SimpleEntry<>(cache, -1));
+		cache = new byte[WRITE_CACHE_SIZE];
+		cachewriteposition = 0;
 	}
 }

@@ -46,7 +46,9 @@ public abstract class MDFAbstractParser<MDFXBlock extends MDFGenBlock> {
 	protected long lasthandled = 0;
 
 	// Debug purposes
-	protected int fileruns = 0, foundblocks = 0;
+	protected int fileruns = 0;
+
+	protected int foundblocks = 0;
 
 	/**
 	 * This map contains all MDFGenBlocks that have not been parsed, but their
@@ -64,10 +66,10 @@ public abstract class MDFAbstractParser<MDFXBlock extends MDFGenBlock> {
 	public MDFAbstractParser(FileChannel in) {
 		this.in = in;
 		// Initialize Datastructures
-		queue = new PriorityQueue<MDFXBlock>();
-		skipped = new PriorityQueue<MDFXBlock>();
-		blocklist = new TreeMap<Long, MDFXBlock>();
-		unfinished = new TreeMap<Long, MDFXBlock>();
+		queue = new PriorityQueue<>();
+		skipped = new PriorityQueue<>();
+		blocklist = new TreeMap<>();
+		unfinished = new TreeMap<>();
 	}
 
 }

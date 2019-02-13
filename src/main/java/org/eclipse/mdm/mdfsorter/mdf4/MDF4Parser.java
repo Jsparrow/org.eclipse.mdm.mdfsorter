@@ -55,7 +55,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 		ByteBuffer chunk = ByteBuffer.allocate(bytes);
 		int bytesread = 0;
 		if ((bytesread = in.read(chunk)) != bytes) {
-			System.err.println("Read only " + bytesread + " Bytes instead of " + bytes);
+			System.err.println(new StringBuilder().append("Read only ").append(bytesread).append(" Bytes instead of ").append(bytes).toString());
 		}
 		return chunk.array();
 	}
@@ -70,7 +70,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 		// Add headerblock to the queue
 		MDF4GenBlock g = new MDF4GenBlock(64);
 		queue.add(g);
-		MDF4GenBlock ret = g;
+		var ret = g;
 		do {
 			skipped.clear();
 			while (!queue.isEmpty()) {
@@ -107,8 +107,8 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			fileruns++;
 		} while (!skipped.isEmpty()); // another run is needed
 
-		MDFSorter.log.log(Level.INFO, "Needed " + fileruns + " runs.");
-		MDFSorter.log.log(Level.INFO, "Found " + blocklist.size() + " blocks.");
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Needed ").append(fileruns).append(" runs.").toString());
+		MDFSorter.log.log(Level.INFO, new StringBuilder().append("Found ").append(blocklist.size()).append(" blocks.").toString());
 		MDFSorter.log.log(Level.FINE, "ValidatorListSize: " + (foundblocks + 1)); // Expected
 																					// number
 		// of node in Vector
@@ -177,7 +177,8 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 		} else {
 			// just for testing
 			throw new ArrayIndexOutOfBoundsException(
-					"Tried to access bytes " + start + " to " + end + "with array length " + data.length);
+					new StringBuilder().append("Tried to access bytes ").append(start).append(" to ").append(end).append("with array length ")
+							.append(data.length).toString());
 		}
 	}
 
@@ -254,10 +255,10 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			sp = new TXBLOCK(blk);
 			break;
 		default:
-			System.err.println("Unknown block of type " + blk.getId() + " found.");
+			System.err.println(new StringBuilder().append("Unknown block of type ").append(blk.getId()).append(" found.").toString());
 		}
 
-		if (blk.getId().equals("##DZ")) {
+		if ("##DZ".equals(blk.getId())) {
 			content = readBytes(24, in);
 		} else if (sp != null) {
 			content = readBytes((int) sectionsize, in);
@@ -280,7 +281,7 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 	@Override
 	public MDFFileContent<MDF4GenBlock> parse() throws IOException {
 
-		MDF4GenBlock tree = parseBlocks();
+		var tree = parseBlocks();
 
 		// 2. run through tree, and change all blocks to their more special
 		// precedessors if they
@@ -289,12 +290,10 @@ public class MDF4Parser extends MDFAbstractParser<MDF4GenBlock> {
 			tree = tree.getPrec();
 		}
 
-		LinkedList<MDF4GenBlock> structlist = getBlocklist();
-		for (MDF4GenBlock block : structlist) {
-			block.updateChildren();
-		}
+		var structlist = getBlocklist();
+		structlist.forEach(MDF4GenBlock::updateChildren);
 
-		return new MDFFileContent<MDF4GenBlock>(in, tree, structlist, false);
+		return new MDFFileContent<>(in, tree, structlist, false);
 	}
 
 }

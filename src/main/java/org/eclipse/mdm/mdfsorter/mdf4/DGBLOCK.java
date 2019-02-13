@@ -54,7 +54,6 @@ public class DGBLOCK extends MDF4GenBlock {
 	}
 
 	public DGBLOCK() {
-		super();
 		setId("##DG");
 		setLength(64L);
 		setLinkCount(4);
@@ -92,9 +91,8 @@ public class DGBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public String toString() {
-		return "DGBLOCK [lnkDgNext=" + getLnkDgNext().getPos() + ", lnkCgFirst=" + getLnkCgFirst().getPos()
-				+ ", lnkData=" + getLnkData().getPos() + ", lnkMdComment=" + getLnkMdComment().getPos() + ", recIdSize="
-				+ recIdSize + "]";
+		return new StringBuilder().append("DGBLOCK [lnkDgNext=").append(getLnkDgNext().getPos()).append(", lnkCgFirst=").append(getLnkCgFirst().getPos()).append(", lnkData=").append(getLnkData().getPos())
+				.append(", lnkMdComment=").append(getLnkMdComment().getPos()).append(", recIdSize=").append(recIdSize).append("]").toString();
 	}
 
 	/**

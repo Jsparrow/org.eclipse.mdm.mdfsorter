@@ -43,7 +43,7 @@ public class DataBlockBuffer implements AutoCloseable {
 	public static final int maxlength = 10;
 
 	public DataBlockBuffer() {
-		data = new LinkedList<Entry<byte[], Integer>>();
+		data = new LinkedList<>();
 	}
 
 	/**

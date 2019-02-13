@@ -120,7 +120,8 @@ public class SIBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "SIBLOCK [sourceType=" + sourceType + ", busType=" + busType + ", flags=" + flags + "]";
+		return new StringBuilder().append("SIBLOCK [sourceType=").append(sourceType).append(", busType=").append(busType).append(", flags=").append(flags).append("]")
+				.toString();
 	}
 
 	/**

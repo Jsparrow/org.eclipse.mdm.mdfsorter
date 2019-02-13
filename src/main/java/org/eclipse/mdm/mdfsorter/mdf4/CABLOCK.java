@@ -115,73 +115,67 @@ public class CABLOCK extends MDF4GenBlock {
 	}
 
 	public MDF4GenBlock[] getLnkData() {
-		if (getStorageType() == 2) { // DG Template
-			MDF4GenBlock[] data = new MDF4GenBlock[(int) volume];
-			System.arraycopy(links, 1, getStartPosition(1), 0, (int) volume);
-			return data;
-		} else {
+		// DG Template
+		if (getStorageType() != 2) {
 			return null;
 		}
+		var data = new MDF4GenBlock[(int) volume];
+		System.arraycopy(links, 1, getStartPosition(1), 0, (int) volume);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkDynamicSize() {
-		if (isDynamicSize()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[getChannelDimensions() * 3];
-			System.arraycopy(links, getStartPosition(2), data, 0, getChannelDimensions() * 3);
-			return data;
-		} else {
+		if (!isDynamicSize()) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[getChannelDimensions() * 3];
+		System.arraycopy(links, getStartPosition(2), data, 0, getChannelDimensions() * 3);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkInputQuantity() {
-		if (isInputQuantityFlag()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[getChannelDimensions() * 3];
-			System.arraycopy(links, getStartPosition(3), data, 0, getChannelDimensions() * 3);
-			return data;
-		} else {
+		if (!isInputQuantityFlag()) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[getChannelDimensions() * 3];
+		System.arraycopy(links, getStartPosition(3), data, 0, getChannelDimensions() * 3);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkOutputQuantity() {
-		if (isOutputQuantityFlag()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[3];
-			System.arraycopy(links, getStartPosition(4), data, 0, 3);
-			return data;
-		} else {
+		if (!isOutputQuantityFlag()) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[3];
+		System.arraycopy(links, getStartPosition(4), data, 0, 3);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkComparisonQuantity() {
-		if (isComparisonQuantityFlag()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[3];
-			System.arraycopy(links, getStartPosition(5), data, 0, 3);
-			return data;
-		} else {
+		if (!isComparisonQuantityFlag()) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[3];
+		System.arraycopy(links, getStartPosition(5), data, 0, 3);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkAxisConversion() {
-		if (isAxis()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[channelDimensions];
-			System.arraycopy(links, getStartPosition(6), data, 0, channelDimensions);
-			return data;
-		} else {
+		if (!isAxis()) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[channelDimensions];
+		System.arraycopy(links, getStartPosition(6), data, 0, channelDimensions);
+		return data;
 	}
 
 	public MDF4GenBlock[] getLnkAxis() {
-		if (isAxis() && !isFixedAxis()) {
-			MDF4GenBlock[] data = new MDF4GenBlock[channelDimensions * 3];
-			System.arraycopy(links, getStartPosition(7), data, 0, 3 * channelDimensions);
-			return data;
-		} else {
+		if (!(isAxis() && !isFixedAxis())) {
 			return null;
 		}
+		MDF4GenBlock[] data = new MDF4GenBlock[channelDimensions * 3];
+		System.arraycopy(links, getStartPosition(7), data, 0, 3 * channelDimensions);
+		return data;
 	}
 
 	/**
@@ -376,14 +370,14 @@ public class CABLOCK extends MDF4GenBlock {
 
 		}
 
-		if (getStorageType() == 1 || getStorageType() == 2) {
-			// UINT64* PROD(D)
-			long[] cycCounters = new long[(int) volume];
-			for (int d = 0; d < sumd; d++) {
-				cycCounters[d] = MDF4Util.readUInt64(MDFParser.getDataBuffer(content, currpos, currpos + 8));
-				currpos += 8;
-			}
-
+		if (!(getStorageType() == 1 || getStorageType() == 2)) {
+			return;
+		}
+		// UINT64* PROD(D)
+		long[] cycCounters = new long[(int) volume];
+		for (int d = 0; d < sumd; d++) {
+			cycCounters[d] = MDF4Util.readUInt64(MDFParser.getDataBuffer(content, currpos, currpos + 8));
+			currpos += 8;
 		}
 	}
 }

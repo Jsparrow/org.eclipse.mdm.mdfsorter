@@ -70,7 +70,7 @@ abstract public class MDFUnsorter {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void unsortMDF(String inputfile, String outputfile, long maxblocksize, boolean unzip) {
-		ArgumentStruct struct = new ArgumentStruct();
+		var struct = new ArgumentStruct();
 		struct.inputname = inputfile;
 		struct.outputname = outputfile;
 		struct.maxblocksize = maxblocksize;

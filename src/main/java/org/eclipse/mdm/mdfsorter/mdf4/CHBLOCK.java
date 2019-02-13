@@ -85,7 +85,7 @@ public class CHBLOCK extends MDF4GenBlock {
 	// Links to DG, CG, CN of element i
 	public MDF4GenBlock getLnkElement(int i) {
 		if (i >= getElementCount()) {
-			System.out.println("Invalid acces to element " + i + ".");
+			System.out.println(new StringBuilder().append("Invalid acces to element ").append(i).append(".").toString());
 			return null;
 		}
 		MDF4GenBlock[] ret = new MDF4GenBlock[3];

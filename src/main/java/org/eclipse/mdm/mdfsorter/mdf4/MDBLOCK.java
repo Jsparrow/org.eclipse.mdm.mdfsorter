@@ -63,7 +63,7 @@ public class MDBLOCK extends MDF4GenBlock {
 
 	@Override
 	public String toString() {
-		return "MDBLOCK [mdData=" + mdData + "]";
+		return new StringBuilder().append("MDBLOCK [mdData=").append(mdData).append("]").toString();
 	}
 
 	/**

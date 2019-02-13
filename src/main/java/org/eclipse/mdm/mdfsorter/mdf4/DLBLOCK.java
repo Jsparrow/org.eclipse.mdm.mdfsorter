@@ -131,9 +131,9 @@ public class DLBLOCK extends MDF4GenBlock {
 	 */
 	@Override
 	public String toString() {
-		return "DLBLOCK [lnkDlNext=" + getLnkDlNext() + ", lnkDlData=" + Arrays.toString(getLnkDlData()) + ", flags="
-				+ flags + ", count=" + count + ", equalLength=" + equalLength + ", offset=" + Arrays.toString(offset)
-				+ "]";
+		return new StringBuilder().append("DLBLOCK [lnkDlNext=").append(getLnkDlNext()).append(", lnkDlData=").append(Arrays.toString(getLnkDlData())).append(", flags=").append(flags)
+				.append(", count=").append(count).append(", equalLength=").append(equalLength).append(", offset=").append(Arrays.toString(offset)).append("]")
+				.toString();
 	}
 
 	@Override
@@ -204,11 +204,11 @@ public class DLBLOCK extends MDF4GenBlock {
 		}
 		// check if list contains unzipped data but zipping is needed.
 		if (!args.unzip) {
-			DLBLOCK curr = this;
+			var curr = this;
 			do {
 				for (int i = 0; i < curr.count; i++) {
 					String chldid = curr.getLink(i + 1).getId();
-					if (chldid.equals("##DT") || chldid.equals("##RD") || chldid.equals("##SD")) {
+					if ("##DT".equals(chldid) || "##RD".equals(chldid) || "##SD".equals(chldid)) {
 						return true;
 					}
 				}
